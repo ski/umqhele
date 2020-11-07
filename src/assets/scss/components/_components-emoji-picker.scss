@@ -1,0 +1,78 @@
+.emoji-picker {
+    border-color: darken($fade-grey, 1%) !important;
+    box-shadow: $light-box-shadow !important;
+    margin: 0 !important;
+    top: -6px !important;
+    height: 24.5rem !important;
+
+    .emoji-picker__search-container {
+        display: none !important;
+
+        input {
+            outline: none !important;
+            padding-left: 12px !important;
+            transition: all .3s !important;
+            border-radius: 100px !important;
+
+            &:focus {
+                border-color: darken($fade-grey, 3%);
+                box-shadow: $light-box-shadow;
+
+                + span {
+                    color: $primary;
+                }
+            }
+
+            + span svg {
+                vertical-align: top;
+            }
+        }
+    }
+
+    .emoji-picker__content {
+        .emoji-picker__tabs-container {
+            .emoji-picker__tabs {
+                .emoji-picker__tab {
+                    color: $muted-grey;
+
+                    &.active {
+                        color: $primary;
+                        border-bottom-color: $primary;
+                    }
+                }
+            }
+
+            div {
+
+                > .emoji-picker__tab-body {
+                    border-bottom: 1px solid $fade-grey;
+
+                    h2 {
+                        padding: 4px 0;
+                    }
+
+                    .emoji-picker__emojis {
+                        height: 16.5rem;
+                        width: calc(1.3rem * 1.4 * 10);
+                        margin: 0 auto;
+                        overflow-x: hidden !important;
+
+                        &::-webkit-scrollbar {
+                            width: 6px !important;
+                        }
+
+                        &::-webkit-scrollbar-thumb {
+                            border-radius: 10px !important;
+                            background: rgba(0, 0, 0, 0.2) !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .emoji-picker__preview {
+        border-top: none;
+        height: 3.3em;
+    }
+}

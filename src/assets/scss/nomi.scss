@@ -1,0 +1,108 @@
+
+// app global css in SCSS form
+:root {
+  --f7-panel-width: 340px;
+  --f7-panel-shadow: transparent;
+  --f7-navbar-font-size: 14px;
+  --f7-navbar-bg-color: var(--nomi-cerulean-frost);
+  --f7-navbar-text-color: white;
+  --f7-block-text-color: white;
+  --f7-list-item-title-font-weight: 400;
+  --f7-list-item-title-font-size: 10px;
+  --f7-searchbar-bg-color: #3f0f40;
+  --f7-searchbar-placeholder-color: white;
+  --nomi-vivid-orange: #fb5f02;
+  --nomi-st-patricks-blue: #1c2d75;
+  --nomi-chinese-yellow: #faae02;
+  --nomi-ferrari-red: #e12001;
+  --nomi-cerulean-frost: #62a1bf;
+  --nomi-tiara: #c7cdcd;
+  --nomi-bg: #f0f2f5;
+  --f7-card-footer-border-color: transparent;
+  --f7-typography-margin: 5px;
+  --f7-searchbar-placeholder-color: var(--nomi-tiara);
+  --f7-list-item-title-font-size: 15px;
+  --primary: #628ebf;
+  --text: #628ebf;
+  --secondary: #bf9362;
+  --tertiary: #e4d1bd;
+}
+
+.user-name {
+  margin: 10px;
+}
+
+img.panael-avatar {
+  height: 30px;
+  width: 30px;
+  max-height: 30px;
+  border-radius: 5px;
+}
+
+.activity-tag {
+  margin-left: auto;
+  display: inherit;
+  max-height: 19px;
+  font-size: 0.75rem;
+  border-radius: 100px;
+  margin-right: 10px;
+  background: #5596e6 !important;
+  color: #fff !important;
+  vertical-align: middle !important;
+}
+
+.is-right-facing {
+  width: 300px;
+  right: 0px !important;
+  left: unset !important;
+  max-height: unset !important;
+}
+
+.is-right-facing::before {
+  right: 23px !important;
+  left: unset !important;
+}
+
+.is-right-facing::after {
+  display: none;
+}
+
+.red8 {
+  font-weight: bold;
+  color: white;
+  left: unset;
+  width: fit-content;
+}
+
+.nav-icon {
+  cursor: pointer;
+  color: #62a1bf;
+}
+
+.drop-nav-icon{
+  cursor: pointer;
+  color: #babced;
+}
+
+.nav-is-active {
+  cursor: pointer;
+  color: #d89586;  
+}
+
+.org-name {
+  color: #c16a45 !important;
+  font-size: small !important;
+  font-weight:  bold;
+}
+
+body > div.tribute-container > ul > li.highlight {
+  margin-bottom: unset;
+}
+
+.nom {  
+  color: var(--f7--bg-color);
+  background: lightblue;
+  padding-left: 3px;
+  padding-right: 3px;
+  border-radius: 5px;
+}

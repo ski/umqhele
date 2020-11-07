@@ -1,0 +1,101 @@
+.sleeve {
+  flex: 1 1 0;
+  margin: auto;
+}
+.credit-card {
+  margin: 20px;
+  display: flex;
+  flex-shrink: 0;
+  background: #3bf;
+  position: relative;
+  flex-direction: column;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.3);
+  width: 337px;
+  height: 212px;
+  opacity: 0.5;
+}
+.credit-card * {
+  position: relative;
+}
+.credit-card.selected {
+  transform: scale(1.1);
+  z-index: 2;
+  opacity: 1;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 10px 50px 5px rgba(0, 0, 0, 0.25),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.3);
+}
+.credit-card:before {
+  content: '';
+  border-radius: inherit;
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+}
+.card-type,
+.card-company {
+  text-align: right;
+  text-transform: uppercase;
+  margin: 10px;
+  color: rgba(0, 0, 40, 0.5);  
+}
+.card-company {
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.3);
+  font-weight: normal;
+  padding: 10px;
+  
+  color: #051e3e ;
+  letter-spacing: 1px;
+  text-align: center;
+  margin: 15px 0;
+}
+.card-number,
+.card-expire,
+.card-holder {
+  display: flex;
+  margin: 5px;
+  justify-content: center;
+  font-family: monospace;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+.card-number .digit-group,
+.card-expire .digit-group,
+.card-holder .digit-group {
+  margin: 5px;
+}
+.card-expire,
+.card-holder {
+  font-size: 16px;
+  justify-content: flex-start;
+  padding: 0 20px;
+}
+.card-expire .card-text,
+.card-holder .card-text {
+  font-size: 12px;
+  font-family: sans-serif;
+  color: #000;
+  color: rgba(0, 0, 40, 0.5);
+  text-shadow: none;
+  margin: 3px;
+  margin-left: 10px;
+}
+.card-type {
+  margin-top: auto;
+  font-size: 14px;
+}
+
+.card-holder {
+    margin: 0px;
+}

@@ -1,0 +1,232 @@
+/*! _app-profile-minimal.scss | Friendkit | © Css Ninja. 2019-2020 */
+
+/* ==========================================================================
+Minimal Profile styles
+========================================================================== */
+
+/*
+    1. Minimal Profile Layout
+    2. Media Queries
+*/
+
+/* ==========================================================================
+1. Minimal Profile Layout
+========================================================================== */
+
+.minimal-profile-wrapper {
+    .profile-cover {
+        img {
+            display: block;
+            max-height: 300px;
+            width: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .profile-info {
+        display: flex;
+        align-items: stretch;
+        max-width: 1040px;
+        margin: 20px auto;
+
+        .left {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-width: 30%;
+            padding: 0 20px;
+
+            .profile-avatar {
+                position: absolute;
+                top: -80px;
+                left: 0;
+                right: 0;
+                margin: 0 auto;
+                height: 130px;
+                width: 130px;
+
+                img {
+                    position: relative;
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 50%;
+                    border: 4px solid $white;
+                }
+
+                .button {
+                    position: absolute;
+                    bottom: 10px;
+                    right: -1px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 0;
+                    height: 36px;
+                    width: 36px;
+                    border-radius: 50%;
+
+                    svg {
+                        height: 18px;
+                        width: 18px;
+                    }
+                }
+            }
+
+            > .button {
+                span {
+                    display: inline-block;
+                    line-height: 1;
+                }
+
+                svg {
+                    height: 18px;
+                    width: 18px;
+                    margin-right: 6px;
+                    stroke-width: 1.4px;
+                }
+            }
+        }
+
+        .right {
+            flex-grow: 2;
+            padding: 0 0 0 20px;
+
+            .head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                h2 {
+                    font-family: "Roboto", sans-serif;
+                    font-weight: 500;
+                    font-size: 1.4rem;
+                    color: $dark-text;
+                }
+
+                .button {
+                    min-width: 130px;
+                }
+            }
+
+            .stats {
+                padding: 1rem 0;
+
+                span {
+                    font-family: "Roboto", sans-serif;
+                    font-size: .9rem;
+                    color: $light-text;
+                    padding-right: 30px;
+                }
+            }
+
+            .bio {
+                p {
+                    max-width: 480px;
+                    font-family: "Roboto", sans-serif;
+                    font-size: .9rem;
+                    color: $dark-text;
+                }
+            }
+        }
+    }
+
+    .profile-grid {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 40px 0 0 0;
+
+        .column {
+            padding: .5rem;
+
+            .profile-post {
+                margin-bottom: 0;
+                border: none;
+
+                img {
+                    object-fit: cover;
+                }
+            }
+        }
+    }
+}
+
+/* ==========================================================================
+2. Media Queries
+========================================================================== */
+
+@media only screen and (max-width: 767px) {
+    .minimal-profile-wrapper {
+        .profile-info {
+            flex-direction: column;
+            padding: 0 .5rem;
+            margin-bottom: 0;
+
+            .right {
+                padding: 0;
+
+                .head {
+                    flex-direction: column;
+
+                    .actions {
+                        margin: 10px 0;
+
+                        .button {
+                            min-width: 220px;
+                        }
+                    }
+                }
+
+                .stats, .bio {
+                    text-align: center;
+                }
+            }
+
+            .left {
+                min-height: 45px;
+                margin-bottom: 9px;
+
+                > .button {
+                    position: absolute;
+                    top: -221px;
+                    left: 0;
+                    right: 0;
+                    background: none;
+                    color: $white;
+                    border-color: $white;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    .minimal-profile-wrapper {
+        .profile-info {
+            padding: 0 .5rem;
+        }
+
+        .profile-grid {
+            .columns {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+    }
+}
+
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .minimal-profile-wrapper {
+        .profile-info {
+            padding: 0 .5rem;
+        }
+
+        .profile-grid {
+            .columns {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+    }
+}

@@ -1,0 +1,246 @@
+/*! _tables.scss | Friendkit | © Css Ninja. 2019-2020 */
+
+/* ==========================================================================
+Switches and toggles styles
+========================================================================== */
+
+/*
+    1. Flex Table
+*/
+
+/* ==========================================================================
+1. Flex Table
+========================================================================== */
+
+.flex-table {
+
+    .flex-table-header {
+        display: flex;
+        align-items: center;
+        padding-bottom: 4px;
+
+        span {
+            font-family: 'Montserrat', sans-serif;
+            font-size: .7rem;
+            font-weight: 600;
+            color: $muted-grey;
+            text-transform: uppercase;
+            padding-bottom: 10px;
+
+            &.product {
+                width: 40%;
+            }
+
+            &.quantity {
+                width: 15%;
+                text-align: center;
+            }
+
+            &.price {
+                width: 15%;
+                text-align: center;
+            }
+
+            &.discount {
+                width: 15%;
+                text-align: center;
+            }
+
+            &.total {
+                width: 15%;
+                text-align: center;
+            }
+        }
+    }
+
+    .flex-table-item {
+        display: flex;
+        align-items: stretch;
+        width: 100%;
+        background: $white;
+        border-radius: 8px;
+        border: 1px solid darken($fade-grey, 3%);
+        padding: 8px;
+        margin-bottom: 6px;
+
+        .product {
+            display: flex;
+            align-items: center;
+            width: 40%;
+
+            img {
+                display: block;
+                object-fit: contain;
+                width: 50px;
+                height: 50px;
+                min-width: 50px;
+            }
+
+            .product-name {
+                display: block;
+                margin-left: 12px;
+                max-width: 360px;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+                font-size: .8rem;
+                color: $dark-text;
+            }
+        }
+
+        .quantity, .price {
+            span {
+                display: block;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+                font-size: .9rem;
+                color: $muted-grey;
+            }
+        }
+
+        .discount, .total {
+            span {
+                display: block;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+                font-size: .9rem;
+                color: $dark-text;
+            }
+        }
+
+        .quantity {
+            width: 15%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-left: 1px solid darken($fade-grey, 4%);
+        }
+
+        .price {
+            width: 15%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-left: 1px solid darken($fade-grey, 4%);
+
+            span {
+                &:before {
+                    content: '$';
+                }
+            }
+        }
+
+        .discount {
+            width: 15%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-left: 1px solid darken($fade-grey, 4%);
+        }
+
+        .total {
+            width: 15%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-left: 1px solid darken($fade-grey, 4%);
+
+            span {
+                &:before {
+                    content: '$';
+                }
+            }
+        }
+    }
+}
+
+
+@media (max-width: 767px) {
+
+    .flex-table {
+        .flex-table-header {
+            display: none;
+        }
+
+        .flex-table-item {
+            flex-direction: column;
+            justify-content: center;
+            width: 100% !important;
+            padding: 20px;
+            margin-bottom: 16px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            > div {
+                border: none !important;
+            }
+        }
+
+        .product {
+            width: 100% !important;
+            padding-bottom: 10px;
+        }
+
+        .quantity, .price, .discount, .total {
+            position: relative;
+            justify-content: flex-end !important;
+            width: 100% !important;
+            border: none;
+
+            &:before {
+                text-transform: uppercase;
+                font-size: .7rem;
+                font-weight: 500;
+                color: $muted-grey;
+            }
+        }
+
+        .quantity {
+            &:before {
+                content: 'Quantity';
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            &.has-spinner {
+                padding-bottom: 6px;
+
+                &:before {
+                    content: 'Quantity';
+                    position: absolute;
+                    top: 8px;
+                    left: 0;
+                }
+            }
+        }
+
+        .price {
+            &:before {
+                content: 'Price';
+                position: absolute;
+                top: 2px;
+                left: 0;
+            }
+        }
+
+        .discount {
+            &:before {
+                content: 'Discount';
+                position: absolute;
+                top: 2px;
+                left: 0;
+            }
+        }
+
+        .total {
+            &:before {
+                content: 'Total';
+                position: absolute;
+                top: 2px;
+                left: 0;
+            }
+        }
+    }
+}

@@ -1,0 +1,110 @@
+/*! _video.scss | Friendkit | © Css Ninja. 2019-2020 */
+
+/* ==========================================================================
+Video elements styles
+========================================================================== */
+
+/*
+    1. Live video
+    2. Embedded Video
+*/
+
+/* ==========================================================================
+1. Live video
+========================================================================== */
+
+.video-wrapper {
+    .video-wrap {
+        position: relative;
+        width: 100%;
+        margin: 0 auto;
+
+        video {
+            display: block;
+            width: 100%;
+            height: auto;
+            min-height: 630px;
+            border-radius: 0 0 0 6px;
+        }
+
+        .live {
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: opacity-shift 2s infinite;
+            display: block;
+            background: #ff2e1c;
+            border-radius: 3px;
+            color: $white;
+            padding: 8px 16px;
+            margin-top: 20px;
+            margin-left: 20px;
+            font-size: 10px;
+            font-weight: 400;
+            font-family: 'Roboto', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 1052;
+        }
+    }
+}
+
+
+/* ==========================================================================
+2. Embedded Video
+========================================================================== */
+
+.video-block-wrapper {
+    background-color: $sidebar;
+    border-radius: 10px;
+    overflow: hidden;
+
+    .video-block-inner {
+        position: relative;
+        height: 0;
+        max-width: 100%;
+        padding-bottom: 56.25%;
+        margin-bottom: 0;
+        overflow: hidden;
+        cursor: pointer;
+        display: block;
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .video-overlay {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: alpha(opacity = 35);
+            opacity: 0.2;
+        }
+
+        .playbutton {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+
+            .icon-play {
+                svg {
+                    height: 50px;
+                    width: 50px;
+                    stroke: $white;
+                    stroke-width: 1.6px;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,342 @@
+/*! _layout.scss | Friendkit | © Css Ninja. 2019-2020 */
+
+/* ==========================================================================
+Main layout styles
+========================================================================== */
+
+/*
+    1. Body
+    2. Global Overlay
+    3. Container
+    4. View Wrapper
+    5. Columns
+    6. Footer
+    7. Copyright
+    8. Media Queries
+*/
+
+/* ==========================================================================
+1. Body
+========================================================================== */
+
+body {
+    background: lighten(#eaeaea, 4%) !important;
+    height: 100%;
+    width: 100%;
+    min-height: 100vh;
+    font-family: Roboto,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    color: $sidebar;
+
+    &.is-frozen {
+        overflow: hidden !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+
+    &.is-white {
+        background: $white !important;
+    }
+}
+
+/* ==========================================================================
+2. Global Overlay
+========================================================================== */
+
+.app-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: -1;
+    opacity: 0;
+
+    &.is-active {
+        opacity: 1 !important;
+        z-index: 1000 !important;
+    }
+}
+
+/* ==========================================================================
+3. Container
+========================================================================== */
+
+.container {
+    &.is-fluid {
+        margin: 0 !important;
+    }
+}
+
+/* ==========================================================================
+4. View Wrappers
+========================================================================== */
+
+.view-wrapper {
+    padding: 60px 12px;
+    transition: all .3s;
+
+    &.is-side {
+        width: calc(100% - 70px);
+        margin-left: 70px;
+    }
+
+    &.is-full {
+        padding: 60px 0 0 0;
+    }
+
+    .view-wrap {
+        padding: 20px 0;
+
+        &.is-headless {
+            padding-top: 10px;
+        }
+    }
+}
+
+.inbox-wrapper {
+    position: absolute;
+    top: 58px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 58px);
+}
+
+#profile {
+    padding: 80px 0;
+}
+
+.main-container {
+    width: 100%;
+    transition: all .3s;
+
+    &.has-sidebar {
+        width: calc(100% - 300px);
+        margin-left: 300px;
+    }
+}
+
+/* ==========================================================================
+5. Columns
+========================================================================== */
+
+.columns {
+    &.no-mb {
+        margin-bottom: 0 !important;
+    }
+}
+
+.column {
+    &.is-paddingless {
+        padding: 0;
+    }
+
+    &.no-padding-left {
+        padding-left: 0;
+    }
+
+    &.no-padding-right {
+        padding-right: 0;
+    }
+}
+
+.card-row {
+    display: flex;
+    flex-wrap: wrap;
+
+    .card-flex {
+        width: calc(25% - 16px);
+        margin: 8px;
+
+        //padding: 40px;
+        background: $white;
+        border: 1px solid darken($fade-grey, 4%);
+        border-radius: 6px;
+    }
+}
+
+/* ==========================================================================
+6. Footer
+========================================================================== */
+
+.footer-light-medium {
+    padding-bottom: 0 !important;
+    padding-top: 4rem !important;
+    background: lighten($fade-grey, 5%);
+
+    .footer-head {
+        padding-bottom: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid darken($fade-grey, 4%);
+
+        .head-text {
+            h3 {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 1.6rem;
+                color: $dark-text;
+            }
+
+            p {
+                font-size: 1rem;
+                color: $muted-grey;
+            }
+        }
+
+        .head-action {
+            .buttons {
+                .button {
+                    &.action-button {
+                        height: 36px;
+                        min-width: 140px;
+                    }
+
+                    &.chat-button {
+                        background: transparent;
+                        border: none;
+                        outline: none;
+                        box-shadow: none;
+                        color: $primary;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+    }
+
+    .footer-body {
+        padding-top: 3rem;
+
+        .footer-column {
+            padding-top: 20px;
+
+            .column-header {
+                font-family: 'Montserrat', sans-serif;
+                text-transform: uppercase;
+                color: $dark-text;
+                font-size: .9rem;
+                font-weight: 700;
+                margin: 10px 0;
+            }
+
+            .column-item {
+                padding-bottom: 10px;
+
+                a {
+                    font-size: .9rem;
+                    color: $muted-grey;
+
+                    &:hover {
+                        color: $primary;
+                    }
+                }
+            }
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px 0;
+
+            a {
+                color: $muted-grey;
+                margin: 0 5px;
+
+                &:hover {
+                    color: $primary;
+                }
+
+                svg {
+                    height: 18px;
+                    width: 18px;
+                    stroke-width: 1.4px;
+                }
+            }
+        }
+
+        .footer-description {
+            color: $muted-grey;
+            padding: 10px 0;
+        }
+
+        .moto {
+            color: $muted-grey;
+            font-size: .85rem;
+
+            svg {
+                height: 14px;
+                width: 14px;
+                fill: $red;
+                stroke: $red;
+                margin: 0 2px;
+            }
+        }
+
+        .small-footer-logo {
+            height: 30px;
+        }
+    }
+
+    .footer-copyright {
+        color: $muted-grey;
+        padding: 4rem 0 2rem 0;
+        font-size: .9rem;
+
+        a {
+            color: $muted-grey;
+
+            &:hover {
+                color: $primary;
+            }
+        }
+    }
+}
+
+/* ==========================================================================
+8. Media Queries
+========================================================================== */
+
+//Mobile
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
+    .footer {
+        padding-top: 3rem !important;
+        padding-bottom: 3rem !important;
+
+        .columns {
+            .column {
+                &.is-4 {
+                    text-align: center;
+
+                    > div {
+                        max-width: 430px;
+                        margin: 20px auto;
+                    }
+
+                    .moto {
+                        margin: 0;
+                    }
+                }
+
+                &.is-offset-2 {
+                    .columns {
+                        display: flex;
+                        text-align: center;
+
+                        .footer-column {
+                            padding: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .copyright {
+        .inner {
+            justify-content: center;
+        }
+    }
+}

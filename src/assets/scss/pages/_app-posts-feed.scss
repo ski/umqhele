@@ -1,0 +1,846 @@
+/*! _posts-feed.scss | Friendkit | © Css Ninja. 2019-2020 */
+
+/* ==========================================================================
+Posts feed styles
+========================================================================== */
+
+/*
+    1. Posts Feed Style
+    2. Feed Profile
+    3. Feed Slider
+    4. Media Queries
+*/
+
+/* ==========================================================================
+1. Posts Feed Style
+========================================================================== */
+
+.stories-list {
+    padding: 20px 0;
+    max-width: 980px;
+    margin: 0 auto;
+
+    .container-inner {
+        display: flex;
+
+        .story {
+            margin: 8px;
+            width: calc(10% - 16px);
+            display: flex;
+            justify-content: center;
+
+            .story-avatar {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 60px;
+                width: 60px;
+                min-width: 60px;
+                background: $white;
+                border-radius: 50%;
+                border: 1.6px solid $placeholder;
+                transition: all .3s;
+
+                &:hover {
+                    border-color: $primary;
+                }
+
+                .add-overlay {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    height: 50px;
+                    width: 50px;
+                    transform: translate(-50%, -50%);
+                    border-radius: 50%;
+                    background: rgba($accent, 0.6);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    svg {
+                        height: 15px;
+                        width: 15px;
+                        stroke-width: 3px;
+                        stroke: $white;
+                    }
+                }
+
+                img {
+                    display: block;
+                    height: 50px;
+                    width: 50px;
+                    border-radius: 50%;
+                }
+            }
+        }
+    }
+}
+
+.posts-feed-wrapper {
+    padding: 0 0 20px 0;
+
+    &.is-2x {
+        max-width: 1040px;
+        margin: 0 auto;
+    }
+
+    .post-feed-item {
+        border: none;
+        margin-bottom: .75rem;
+
+        .card-image {
+            img {
+                object-fit: cover;
+            }
+        }
+
+        .card-content {
+            padding: 0;
+
+            .media {
+                padding: 10px 0;
+                align-items: center;
+
+                .media-left {
+                    margin-right: .5rem;
+
+                    .post-avatar {
+                        position: relative;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 44px;
+                        width: 44px;
+                        background: $white;
+                        border-radius: 50%;
+                        border: 1.6px solid $placeholder;
+                        transition: all .3s;
+
+                        &:hover {
+                            border-color: $primary;
+                        }
+
+                        &.is-smaller {
+                            height: 36px;
+                            width: 36px;
+
+                            img {
+                                height: 28px;
+                                width: 28px;
+                                min-width: 28px;
+                            }
+                        }
+
+                        .add-overlay {
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            height: 44px;
+                            width: 44px;
+                            transform: translate(-50%, -50%);
+                            border-radius: 50%;
+                            background: rgba($accent, 0.6);
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+
+                            svg {
+                                height: 15px;
+                                width: 15px;
+                                stroke-width: 3px;
+                                stroke: $white;
+                            }
+                        }
+
+                        img {
+                            display: block;
+                            height: 36px;
+                            width: 36px;
+                            min-width: 36px;
+                            border-radius: 50%;
+                        }
+                    }
+                }
+
+                .media-content {
+                    line-height: 1.2;
+
+                    &.is-smaller {
+                        span {
+                            &:first-child {
+                                font-size: .9rem;
+                            }
+
+                            &:nth-child(2) {
+                                font-size: .75rem;
+                            }
+                        }
+                    }
+
+                    span {
+                        display: block;
+                        font-family: 'Roboto', sans-serif;
+
+                        &:first-child {
+                            font-weight: 500;
+                            color: $dark-text;
+                        }
+
+                        &:nth-child(2) {
+                            font-size: .85rem;
+                            color: $light-text;
+                        }
+                    }
+                }
+
+                .media-right {
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+
+                    > span {
+                        font-family: 'Roboto', sans-serif;
+                        font-weight: 500;
+                        font-size: .85rem;
+                        color: $dark-text;
+                        margin-right: 12px;
+                    }
+
+                    .button {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 30px;
+                        width: 30px;
+                        border-radius: 50%;
+                        padding: 0;
+                        margin-left: 2px;
+                        border-color: transparent;
+
+                        &.is-liked {
+                            svg {
+                                stroke: $red;
+                                fill: $red;
+                            }
+                        }
+
+                        &:hover {
+                            border-color: darken($fade-grey, 3%);
+                            box-shadow: $light-box-shadow;
+                        }
+
+                        svg {
+                            height: 14px;
+                            width: 14px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* ==========================================================================
+2. Feed Profile
+========================================================================== */
+
+.feed-profile-wrapper {
+    display: flex;
+    align-items: stretch;
+    padding: 30px 0;
+    max-width: 1280px;
+    margin: 0 auto;
+
+    .profile-wrapper {
+        width: 340px;
+        padding: 0 40px;
+
+        .profile-avatar-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .button {
+                width: 38px;
+                height: 38px;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 50%;
+                border-color: transparent;
+
+                &:first-child {
+                    svg {
+                        position: relative;
+                        left: -1px;
+                    }
+                }
+
+                &:last-child {
+                    svg {
+                        position: relative;
+                        right: -1px;
+                    }
+                }
+
+                &:hover {
+                    border-color: darken($fade-grey, 3%);
+                    box-shadow: $light-box-shadow;
+
+                    svg {
+                        stroke: $dark-text;
+                    }
+                }
+
+                svg {
+                    width: 18px;
+                    height: 18px;
+                    stroke: $light-text;
+                    stroke-width: 3px;
+                }
+            }
+
+            .avatar-wrap {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 74px;
+                height: 74px;
+                min-width: 74px;
+                border: 1.4px solid lighten($placeholder, 4%);
+                border-radius: 50%;
+                margin: 0 auto 6px auto;
+
+                img {
+                    display: block;
+                    width: 58px;
+                    height: 58px;
+                    min-width: 58px;
+                    border-radius: 50%;
+                }
+
+                .badge {
+                    position: absolute;
+                    bottom: 2px;
+                    right: -3px;
+                    height: 24px;
+                    width: 24px;
+                    border-radius: 50%;
+                    border: 2px solid $white-smoke;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background: $green;
+
+                    svg {
+                        height: 10px;
+                        width: 10px;
+                        stroke: $white-smoke;
+                        stroke-width: 4px;
+                    }
+                }
+            }
+        }
+
+        .user-stats {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 20px 0;
+
+            .stat-block {
+                text-align: center;
+
+                span {
+                    display: block;
+
+                    &:first-child {
+                        text-transform: uppercase;
+                        font-weight: 600;
+                        font-size: 1rem;
+                        color: $dark-text;
+                    }
+
+                    &:last-child {
+                        font-size: .7rem;
+                        color: $muted-grey;
+                    }
+                }
+            }
+        }
+
+        .user-bio {
+            padding: 40px 0;
+
+            h4 {
+                font-family: 'Roboto', sans-serif;
+                font-weight: 500;
+                font-size: .9rem;
+                color: $dark-text;
+                margin-bottom: 8px;
+            }
+
+            p {
+                font-family: 'Roboto', sans-serif;
+                font-size: .85rem;
+                color: $light-text;
+                margin-bottom: 8px;
+            }
+
+            a {
+                font-family: 'Roboto', sans-serif;
+                font-weight: 500;
+                font-size: .85rem;
+                color: $accent;
+            }
+        }
+
+        .connections {
+            display: flex;
+            flex-wrap: wrap;
+
+            .connection {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 8px;
+                width: calc(33.3% - 16px);
+
+                .connection-avatar {
+                    position: relative;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 60px;
+                    width: 60px;
+                    min-width: 40px;
+                    background: $white;
+                    border-radius: 50%;
+                    border: 1.4px solid $placeholder;
+                    transition: all .3s;
+
+                    &:hover {
+                        border-color: $primary;
+                    }
+
+                    img {
+                        display: block;
+                        height: 50px;
+                        width: 50px;
+                        border-radius: 50%;
+                    }
+                }
+            }
+        }
+
+        .more-connections {
+            text-align: center;
+            padding: 20px 0;
+
+            a {
+                font-family: 'Roboto', sans-serif;
+                font-weight: 500;
+                font-size: .85rem;
+                color: $accent;
+            }
+        }
+    }
+
+    .posts-wrapper {
+        width: calc(100% - 340px);
+
+        .column {
+            padding: .5rem;
+
+            .profile-post {
+                margin-bottom: 0;
+
+                img {
+                    object-fit: cover;
+                }
+            }
+        }
+    }
+}
+
+/* ==========================================================================
+3. Feed Slider
+========================================================================== */
+
+.feed-slider-wrapper {
+    position: relative;
+    padding: 30px 0;
+    max-width: 1280px;
+    margin: 0 auto;
+
+    .feed-slider-inner {
+        .slick-list {
+            min-height: 500px;
+            margin-top: 0;
+        }
+
+        .slick-custom {
+            position: absolute;
+            top: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: $dark-text;
+            transition: all 0.3s;
+            z-index: 999;
+
+            i {
+                position: relative;
+                font-size: 3.6rem;
+                color: $light-text;
+                transition: color .3s;
+            }
+
+            &:hover {
+                i {
+                    color: $dark-text;
+                }
+            }
+
+            &.is-prev {
+                left: -30px;
+
+                i {
+                    right: 2px;
+                }
+            }
+
+            &.is-next {
+                right: -30px;
+
+                i {
+                    left: 2px;
+                }
+            }
+        }
+
+        .feed-slider-item {
+            border: none;
+            margin-bottom: .75rem;
+            margin: 60px 20px 20px 20px;
+            filter: grayscale(1);
+            opacity: .6;
+            outline: none !important;
+            transition: all .3s;
+
+            &.slick-center {
+                filter: grayscale(0);
+                opacity: 1;
+                transform: scale(1.4);
+                z-index: 9999;
+
+                .card-content, .card-header {
+                    .media, .liked-by {
+                        opacity: 1;
+                        pointer-events: all;
+                    }
+                }
+            }
+
+            .card-image {
+                img {
+                    object-fit: cover;
+                }
+            }
+
+            .card-content, .card-header {
+                padding: 0;
+                box-shadow: none;
+
+                .media {
+                    width: 100%;
+                    padding: 10px 0;
+                    align-items: center;
+                    margin-bottom: 0;
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: all .3s;
+
+                    .media-left {
+                        margin-right: .5rem;
+
+                        .post-avatar {
+                            position: relative;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            height: 36px;
+                            width: 36px;
+                            background: $white;
+                            border-radius: 50%;
+                            border: 1.2px solid $placeholder;
+                            transition: all .3s;
+
+                            &:hover {
+                                border-color: $primary;
+                            }
+
+                            img {
+                                display: block;
+                                height: 28px;
+                                width: 28px;
+                                min-width: 28px;
+                                border-radius: 50%;
+                            }
+                        }
+                    }
+
+                    .media-content {
+                        line-height: 1.2;
+
+                        span {
+                            display: block;
+                            font-family: 'Roboto', sans-serif;
+
+                            &:first-child {
+                                font-weight: 500;
+                                font-size: .75rem;
+                                color: $dark-text;
+                            }
+
+                            &:nth-child(2) {
+                                font-size: .55rem;
+                                color: $light-text;
+                            }
+                        }
+                    }
+
+                    .media-right {
+                        display: flex;
+                        justify-content: flex-end;
+                        align-items: center;
+
+                        > span {
+                            font-family: 'Roboto', sans-serif;
+                            font-weight: 500;
+                            font-size: .65rem;
+                            color: $dark-text;
+                            margin-right: 12px;
+                        }
+
+                        .button {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            height: 24px;
+                            width: 24px;
+                            border-radius: 50%;
+                            padding: 0;
+                            margin-left: 2px;
+                            border-color: transparent;
+
+                            &.is-liked {
+                                svg {
+                                    stroke: $red;
+                                    fill: $red;
+                                }
+                            }
+
+                            &:hover {
+                                border-color: darken($fade-grey, 3%);
+                                box-shadow: $light-box-shadow;
+                            }
+
+                            svg {
+                                height: 10px;
+                                width: 10px;
+                            }
+                        }
+                    }
+                }
+
+                .liked-by {
+                    display: flex;
+                    align-items: center;
+                    padding: 6px 0;
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: all .3s;
+
+                    img {
+                        display: block;
+                        height: 20px;
+                        width: 20px;
+                        border-radius: 50%;
+                    }
+
+                    > span {
+                        display: block;
+                        font-family: 'Roboto', sans-serif;
+                        font-size: .6rem;
+                        margin-left: 8px;
+                        color: $light-text;
+
+                        span {
+                            color: $dark-text;
+                            font-weight: 500;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* ==========================================================================
+4. Media Queries
+========================================================================== */
+
+@media only screen and (max-width: 767px) {
+    .stories-list {
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+
+        .container-inner {
+            overflow-x: auto;
+
+            .story {
+                min-width: 60px;
+            }
+        }
+    }
+
+    .posts-feed-wrapper {
+        .post-feed-item {
+            .card-content {
+                .media {
+                    .media-right {
+                        > span {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .feed-profile-wrapper {
+        flex-direction: column;
+
+        .profile-wrapper, .posts-wrapper {
+            width: 100%;
+        }
+    }
+
+    .feed-slider-wrapper {
+        .feed-slider-inner {
+            .feed-slider-item {
+                .card-header {
+                    .media {
+                        flex-direction: column;
+
+                        .media-left {
+                            margin: 0 0 10px 0;
+                        }
+
+                        .media-content {
+                            text-align: center;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    .feed-slider-wrapper {
+        .feed-slider-inner {
+            .feed-slider-item {
+                .card-header {
+                    .media {
+                        flex-direction: column;
+
+                        .media-left {
+                            margin: 0 0 10px 0;
+                        }
+                        
+                        .media-content {
+                            text-align: center;
+                        }
+                    }
+                }
+            }
+
+            .slick-custom {
+                display: none;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .feed-profile-wrapper {
+        .profile-wrapper {
+            width: 280px;
+            padding: 0 30px;
+        }
+
+        .posts-wrapper {
+            width: calc(100% - 280px);
+        }
+    }
+
+    .feed-slider-wrapper {
+        .feed-slider-inner {
+
+            .feed-slider-item {
+                .card-header {
+                    .media {
+                        .media-right {
+                            > span {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .slick-custom {
+                top: 42%;
+
+                i {
+                    position: relative;
+                    font-size: 3rem;
+                    color: $light-text;
+                    transition: color .3s;
+                }
+
+                &:hover {
+                    i {
+                        color: $dark-text;
+                    }
+                }
+
+                &.is-prev {
+                    left: -10px;
+
+                    i {
+                        right: 2px;
+                    }
+                }
+
+                &.is-next {
+                    right: -10px;
+
+                    i {
+                        left: 2px;
+                    }
+                }
+            }
+        }
+    }
+}
