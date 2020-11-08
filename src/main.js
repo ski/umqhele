@@ -17,14 +17,15 @@ import './assets/scss/fa.css';
 
 import { library, dom } from '@fortawesome/fontawesome-svg-core'
 import {
-    faGlobeAfrica, faPowerOff, faHeart, faGavel
+    faGlobeAfrica, faPowerOff, faHeart, faGavel, faEllipsisH
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
 library.add(
     faGlobeAfrica,
     faPowerOff,
     faHeart,
-    faGavel
+    faGavel,
+    faEllipsisH
 );
 const app = createApp(App);
 app.use(router).use(store).use(wallet, {store});

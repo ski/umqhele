@@ -1,21 +1,18 @@
 <template>
   <div class="view-wrapper">
     <Navigation></Navigation>
-      <div id="main-feed" class="container">
-        <router-view></router-view>
-      </div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Navigation from '../components/Navigation.vue';
+import Navigation from "../components/Navigation.vue";
 export default {
-  name: 'BlankLayout',
-   components: {
+  name: "BlankLayout",
+  components: {
     Navigation,
   },
 };
-
 </script>
 
 <style>
