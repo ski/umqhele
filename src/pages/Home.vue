@@ -1,28 +1,35 @@
 <template>
-    <div id="activity-feed" class="view-wrap true-dom">
-    <div class="columns">
-      <!-- Left side column -->
-      <div class="column is-3"></div>
-
-      <!-- /Middle column -->
-      <div class="column is-6">
-        <Sleeve></Sleeve>
+  <div id="shop-page" class="shop-wrapper">
+      <div class="store-sections">
+        <div class="container">
+          <!--Catalog entries-->
+          <div id="products-tab" class="store-tab-pane is-active">
+            <div class="columns is-multiline">
+              <CatalogEntry></CatalogEntry>
+              <CatalogEntry></CatalogEntry>
+              <CatalogEntry></CatalogEntry>
+              <CatalogEntry></CatalogEntry>
+              <CatalogEntry></CatalogEntry>
+              <CatalogEntry></CatalogEntry>
+              <CatalogEntry></CatalogEntry>
+              <CatalogEntry></CatalogEntry>
+              <CatalogEntry></CatalogEntry>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <!-- Right side column -->
-      <div class="column is-3">
-        
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
-import Sleeve from '../components/Sleeve.vue';
+import Sleeve from "../components/Sleeve.vue";
+import CatalogEntry from "../components/CatalogEntry.vue";
+
 export default {
-  name: 'Home',  
+  name: "Home",
   components: {
     Sleeve,
+    CatalogEntry,
   },
 };
 </script>

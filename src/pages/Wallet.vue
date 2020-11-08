@@ -5,13 +5,13 @@
       <div class="column is-3"></div>
 
       <!-- /Middle column -->
-      <div class="column is-6">
-        <Sleeve></Sleeve>
+      <div class="column is-7">
+        
       </div>
 
       <!-- Right side column -->
-      <div class="column is-3">
-        
+      <div class="column is-2">
+        <Sleeve></Sleeve>
       </div>
     </div>
   </div>

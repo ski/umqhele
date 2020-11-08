@@ -15,14 +15,16 @@ import './assets/scss/core.scss';
 import './assets/scss/card.scss';
 import './assets/scss/fa.css';
 
-import { library } from '@fortawesome/fontawesome-svg-core'
+import { library, dom } from '@fortawesome/fontawesome-svg-core'
 import {
-    faGlobeAfrica, faPowerOff
+    faGlobeAfrica, faPowerOff, faHeart, faGavel
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
 library.add(
     faGlobeAfrica,
-    faPowerOff
+    faPowerOff,
+    faHeart,
+    faGavel
 );
 const app = createApp(App);
 app.use(router).use(store).use(wallet, {store});
@@ -30,3 +32,4 @@ app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('font-awesome-layers', FontAwesomeLayers)
 app.component('font-awesome-layers-text', FontAwesomeLayersText)
 app.mount('#app');
+dom.watch()
