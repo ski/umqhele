@@ -17,7 +17,7 @@ import './assets/scss/fa.css';
 
 import { library, dom } from '@fortawesome/fontawesome-svg-core'
 import {
-    faGlobeAfrica, faPowerOff, faHeart, faGavel, faEllipsisH
+    faGlobeAfrica, faPowerOff, faHeart, faGavel, faEllipsisH, faSignInAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
 library.add(
@@ -25,7 +25,8 @@ library.add(
     faPowerOff,
     faHeart,
     faGavel,
-    faEllipsisH
+    faEllipsisH,
+    faSignInAlt,
 );
 const app = createApp(App);
 app.use(router).use(store).use(wallet, {store});
