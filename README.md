@@ -1,6 +1,6 @@
 # UMQHELE
 
-Umqhele is the user interface layer for the Agoric Hack The Orb project. It uses Vue.js 3 as its framework and Bulma components for its UI styling. In order to run it, first ensure you acn start up Agoric correctly. Then follow the steps below.
+Umqhele is the user interface layer for the Agoric Hack The Orb project. It uses Vue.js 3 as its framework and Bulma components for its UI styling. In order to run it, first ensure you can start up Agoric correctly. Then follow the steps below.
 ```bash
 $ git clone https://github.com/ski/umqhele.git
 $ cd umqhele
