@@ -6,76 +6,117 @@ import '@agoric/install-ses';
 import test from 'ava';
 
 import bundleSource from '@agoric/bundle-source';
-
 import { E } from '@agoric/eventual-send';
-import { makeIssuerKit } from '@agoric/ertp';
-
+import { makeIssuerKit, makeLocalAmountMath } from '@agoric/ertp';
 import { makeFakeVatAdmin } from '@agoric/zoe/src/contractFacet/fakeVatAdmin';
 import { makeZoe } from '@agoric/zoe';
-import { makeLocalAmountMath } from '@agoric/ertp';
-const mintAndSellNFTRoot = '../node_modules/@agoric/zoe/src/contracts/mintAndSellNFT';
-const sellItemsRoot = '../node_modules/@agoric/zoe/src/contracts/sellItems';
 
-test('zoe - mint payments', async (t) => {
+const contractPath = `${__dirname}/../src/contract`;
+
+test('tokenized video', async (t) => {
   const zoe = makeZoe(makeFakeVatAdmin().admin);
 
-  const mintAndSellNFTBundle = await bundleSource(mintAndSellNFTRoot);
-  const mintAndSellNFTInstallation = await E(zoe).install(mintAndSellNFTBundle);
+  // pack, install the contract
+  const bundle = await bundleSource(contractPath);
+  const installation = await E(zoe).install(bundle);
 
-  const sellItemsBundle = await bundleSource(sellItemsRoot);
+  const { creatorFacet: catalogEntrySellerFacet } = await E(zoe).startInstance(
+    installation,
+  );
+
+  // Let's create a fungible token (1) to pay for catalog entries and
+  // (2) to bid on video streams.
+  const {
+    mint: moolaMint,
+    issuer: moolaIssuer,
+    amountMath: { make: moola },
+  } = makeIssuerKit('moola');
+
+  // Also install the sellItems contract from agoric-sdk
+  const sellItemsBundle = await bundleSource(
+    require.resolve('@agoric/zoe/src/contracts/sellItems'),
+  );
   const sellItemsInstallation = await E(zoe).install(sellItemsBundle);
 
-  const { issuer: moolaIssuer, amountMath: moolaAmountMath } = makeIssuerKit(
-    'moola',
-  );
-
-  const { creatorFacet: catalogEntryMaker } = await E(zoe).startInstance(
-    mintAndSellNFTInstallation,
-  );
-
-
-  const itemProperties = {
-    imageHash: 'this is a hash',
-    showTime: 'a date and time',
-    reservePrice: 9,
-    startingBid: 3,
-    auctionEndDate: 'a date and time'
-  }
-  // Some is publishing a auction catalog entry
-  const { sellItemsCreatorSeat, sellItemsInstance } = await E(
-    catalogEntryMaker,
-  ).sellTokens({
-    customValueProperties: {
-      ...itemProperties
+  // TODO: base these on publication requests
+  const initialEntryDescriptions = harden([
+    {
+      title: 'Learn to build smart contracts',
+      showTime: Date.parse('2020-11-30 14:00:00'),
+      auctionEndDate: Date.parse('2020-11-16 14:00:00'),
+      reservePrice: 9,
+      startingBid: 3,
     },
-    count: 1,
-    moneyIssuer: moolaIssuer,
+    { title: 'cute kittens' },
+  ]);
+  const moneyIssuer = moolaIssuer;
+  const pricePerEntry = moola(10);
+
+  // offer to sell some initial entries
+  const {
+    sellItemsCreatorSeat,
+    sellItemsCreatorFacet,
+    sellItemsPublicFacet,
+    sellItemsInstance,
+  } = await E(catalogEntrySellerFacet).sellItems(
+    initialEntryDescriptions,
+    moneyIssuer,
     sellItemsInstallation,
-    pricePerItem: moolaAmountMath.make(1),
+    pricePerEntry,
+  );
+
+  const bobInvitation = E(sellItemsCreatorFacet).makeBuyerInvitation();
+
+  // Bob buys his own baseball card
+
+  const cardIssuer = await E(sellItemsPublicFacet).getItemsIssuer();
+  const cardMath = await makeLocalAmountMath(cardIssuer);
+
+  const cardsForSale = await E(sellItemsPublicFacet).getAvailableItems();
+  t.deepEqual(cardsForSale, cardMath.make(initialEntryDescriptions));
+
+  const terms = await E(zoe).getTerms(sellItemsInstance);
+
+  // make the corresponding amount
+  const bobCardAmount = cardMath.make(
+    harden(initialEntryDescriptions.slice(0, 1)),
+  );
+
+  const bobProposal = harden({
+    give: { Money: terms.pricePerItem },
+    want: { Items: bobCardAmount },
   });
 
-  t.is(
-    await sellItemsCreatorSeat.getOfferResult(),
-    'The offer has been accepted. Once the contract has been completed, please check your payout',
-    `escrowTicketsOutcome is default acceptance message`,
+  const bobPaymentKeywordRecord = harden({
+    Money: moolaMint.mintPayment(moola(10)),
+  });
+
+  const seat = await E(zoe).offer(
+    bobInvitation,
+    bobProposal,
+    bobPaymentKeywordRecord,
+  );
+  const bobCardPayout = seat.getPayout('Items');
+  const bobObtained = await E(cardIssuer).getAmountOf(bobCardPayout);
+
+  t.deepEqual(
+    bobObtained,
+    cardMath.make(harden(initialEntryDescriptions.slice(0, 1))),
+    'Bob bought his own baseball card!',
   );
 
-  // const invitation = E(catalogEntryMaker).makeInvitation();
+  // That's enough selling for now, let's take our inventory back
 
-  // // Bob makes an offer using the invitation
-  // const seat = await E(zoe).offer(invitation);
+  E(sellItemsCreatorSeat).tryExit();
 
-  // const paymentP = E(seat).getPayout('Token');
+  const moneyPayment = await E(sellItemsCreatorSeat).getPayout('Money');
+  const moneyEarned = await E(moolaIssuer).getAmountOf(moneyPayment);
+  t.deepEqual(moneyEarned, moola(10));
 
-  // // Let's get the tokenIssuer from the contract so we can evaluate
-  // // what we get as our payout
-  // const publicFacet = await E(zoe).getPublicFacet(instance);
-  // const tokenIssuer = await E(publicFacet).getTokenIssuer();
-  // const amountMath = await makeLocalAmountMath(tokenIssuer);
-
-  // const tokens1000 = await E(amountMath).make(1000);
-  // const tokenPayoutAmount = await E(tokenIssuer).getAmountOf(paymentP);
-
-  // // Bob got 1000 tokens
-  // t.deepEqual(tokenPayoutAmount, tokens1000);
+  const cardInventory = await E(sellItemsCreatorSeat).getPayout('Items');
+  const inventoryRemaining = await E(cardIssuer).getAmountOf(cardInventory);
+  t.deepEqual(
+    inventoryRemaining,
+    cardMath.make(harden(initialEntryDescriptions.slice(1, 2))),
+  );
 });
