@@ -5,9 +5,7 @@
       <div class="column is-3"></div>
 
       <!-- /Middle column -->
-      <div class="column is-7">
-        
-      </div>
+      <div class="column is-7"></div>
 
       <!-- Right side column -->
       <div class="column is-2">
@@ -21,17 +19,17 @@
 </template>
 
 <script>
-import Purse from '../components/Purse.vue';
-import Sleeve from '../components/Sleeve.vue';
+import Purse from "../components/Purse.vue";
+import Sleeve from "../components/Sleeve.vue";
 export default {
-  name: 'Wallet',
+  name: "Wallet",
   components: {
     Purse,
     Sleeve,
   },
   methods: {
     async toggleConnection() {
-      await this.$store.dispatch('wallet/connect');
+      await this.$store.dispatch("wallet/connect");
       //console.log(this.$store);
       console.log(this.$store.getters["wallet/getPurses"]);
     },

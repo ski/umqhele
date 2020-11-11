@@ -6,6 +6,7 @@
         <div id="products-tab" class="store-tab-pane is-active">
           <div class="columns is-multiline">
             <CatalogEntry @details='showDetails'></CatalogEntry>
+            <VideoEntry></VideoEntry>
           </div>
         </div>
       </div>
@@ -17,6 +18,7 @@
 <script>
 import Sleeve from "../components/Sleeve.vue";
 import CatalogEntry from "../components/CatalogEntry.vue";
+import VideoEntry from "../components/VideoEntry.vue";
 import CatalogEntryDetail from "../components/CatalogEntryDetail.vue";
 
 export default {
@@ -24,6 +26,7 @@ export default {
   components: {
     Sleeve,
     CatalogEntry,
+    VideoEntry,
     CatalogEntryDetail,
   },
   data() {
