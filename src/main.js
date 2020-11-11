@@ -17,9 +17,24 @@ import './assets/scss/fa.css';
 
 import { library, dom } from '@fortawesome/fontawesome-svg-core'
 import {
-  faGlobeAfrica, faPowerOff, faHeart, faGavel, faEllipsisH, faSignInAlt, faPlus
+  faGlobeAfrica, 
+  faPowerOff, 
+  faHeart, 
+  faGavel, 
+  faEllipsisH, 
+  faSignInAlt, 
+  faPlus, 
+  faPencilAlt,
+  faTimes,
+  faVideo,
+  faMoneyBillWaveAlt,
+  faUpload,
+  faCalendar,
+  faChartLine
 } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
+import { FontAwesomeIcon, 
+  FontAwesomeLayers, 
+  FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
 library.add(
   faGlobeAfrica,
   faPowerOff,
@@ -28,6 +43,13 @@ library.add(
   faEllipsisH,
   faSignInAlt,
   faPlus,
+  faPencilAlt,
+  faTimes,
+  faVideo,
+  faMoneyBillWaveAlt,
+  faUpload,
+  faCalendar,
+  faChartLine
 );
 const app = createApp(App);
 app.use(router).use(store).use(wallet, { store });

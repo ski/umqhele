@@ -48,7 +48,8 @@ export default {
     },
 
     newEntry() {
-      this.$emit("newentry");
+      this.$router.push('new')
+      //this.$emit("newentry");
     },
   },
 };

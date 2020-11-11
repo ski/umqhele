@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import BlankLayout from '../layouts/BlankLayout.vue'
 import Home from '../pages/Home.vue';
-
+import NewEntry from '../pages/NewEntry.vue'
 const routes = [
   {
     path: "/",
@@ -11,6 +11,11 @@ const routes = [
         path: "",
         name: 'Home',
         component: Home
+      },
+      {
+        path: "/new",
+        name: 'NewEntry',
+        component: NewEntry
       },
     ]
   },
