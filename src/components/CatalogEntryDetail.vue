@@ -19,7 +19,6 @@
             </div>
             <div id="quickview-price" class="price">27.00</div>
           </div>
-          
 
           <!--Description-->
           <div class="quickview-description content has-slimscroll">
@@ -47,7 +46,7 @@
               <button class="remove">
                 <i data-feather="minus"></i>
               </button>
-              
+
               <button class="add">
                 <i data-feather="plus"></i>
               </button>

@@ -65,7 +65,7 @@ export default {
       if (track.kind === "video") {
         remoteStream = stream;
         this.$refs.remoteVideo.srcObject = stream;
-        this.$refs.remoteVideo.autoplay = true;        
+        this.$refs.remoteVideo.autoplay = true;
       }
     };
   },

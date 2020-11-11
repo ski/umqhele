@@ -1,6 +1,11 @@
 /* global module */
 module.exports = {
-    extends: ['airbnb-base', 'plugin:prettier/recommended', "plugin:vue/vue3-recommended", "prettier/vue", "prettier",],
+    extends: [
+    'airbnb-base', 
+    'plugin:prettier/recommended', 
+    "plugin:vue/vue3-recommended", 
+    "prettier/vue", 
+    "prettier",],
     env: {
         es6: true, // supports new ES6 globals (e.g., new types such as Set)
     },
