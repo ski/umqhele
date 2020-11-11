@@ -1,0 +1,36 @@
+{
+  "name": "umqhele",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@agoric/captp": "^1.5.1",
+    "@agoric/eventual-send": "^0.11.1",
+    "@agoric/notifier": "^0.2.2",
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-brands-svg-icons": "^5.15.1",
+    "@fortawesome/free-regular-svg-icons": "^5.15.1",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/vue-fontawesome": "^3.0.0-2",
+    "bulma": "^0.9.1",
+    "ses": "^0.11.0",
+    "vue": "^3.0.2",
+    "vue-router": "^4.0.0-rc.2",
+    "vuex": "^4.0.0-beta.2"
+  },
+  "devDependencies": {
+    "@vue/compiler-sfc": "^3.0.2",
+    "agoric": "^0.10.0",
+    "eslint": "7.2.0",
+    "eslint-config-airbnb-base": "14.2.1",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-vue": "^7.0.0-beta.4",
+    "prettier": "^2.1.2",
+    "sass": "^1.29.0",
+    "sass-loader": "^10.0.5",
+    "vite": "^1.0.0-rc.8"
+  }
+}

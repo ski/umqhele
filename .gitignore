@@ -1,5 +1,7 @@
 node_modules
-.DS_Store
-.vscode
-dist
-*.local
+defaults.js
+installationConstants.js
+_agstate/yarn-links/
+.idea/
+ui/.cache/
+ui/dist/

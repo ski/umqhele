@@ -1,36 +1,50 @@
 {
-  "name": "umqhele",
-  "version": "0.0.0",
+  "name": "newrepo",
+  "version": "0.0.1",
+  "private": true,
+  "useWorkspaces": true,
+  "main": "index.js",
+  "workspaces": [
+    "api",
+    "contract",
+    "_agstate/agoric-servers",
+    "ui"
+  ],
+  "devDependencies": {
+    "eslint": "^7.11.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-jessie": "^0.0.6",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.21.4",
+    "eslint-plugin-react-hooks": "^4.1.2",
+    "prettier": "^2.1.2"
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build"
+    "preinstall": "node -e \"process.env.AGORIC_INSTALL && process.exit(0); console.warn('please use: agoric install . For details, see https://agoric.com/documentation/'); process.exit(1)\"",
+    "lint": "yarn workspaces run lint-fix",
+    "lint-check": "yarn workspaces run lint-check",
+    "test": "yarn workspaces run test",
+    "build": "yarn workspaces run build"
   },
   "dependencies": {
-    "@agoric/captp": "^1.5.1",
-    "@agoric/eventual-send": "^0.11.1",
-    "@agoric/notifier": "^0.2.2",
-    "@fortawesome/fontawesome-svg-core": "^1.2.32",
-    "@fortawesome/free-brands-svg-icons": "^5.15.1",
-    "@fortawesome/free-regular-svg-icons": "^5.15.1",
-    "@fortawesome/free-solid-svg-icons": "^5.15.1",
-    "@fortawesome/vue-fontawesome": "^3.0.0-2",
-    "bulma": "^0.9.1",
-    "ses": "^0.11.0",
-    "vue": "^3.0.2",
-    "vue-router": "^4.0.0-rc.2",
-    "vuex": "^4.0.0-beta.2"
+    "agoric": "*",
+    "eslint-plugin-eslint-comments": "^3.1.2"
   },
-  "devDependencies": {
-    "@vue/compiler-sfc": "^3.0.2",
-    "agoric": "^0.10.0",
-    "eslint": "7.2.0",
-    "eslint-config-airbnb-base": "14.2.1",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-plugin-import": "2.22.1",
-    "eslint-plugin-vue": "^7.0.0-beta.4",
-    "prettier": "^2.1.2",
-    "sass": "^1.29.0",
-    "sass-loader": "^10.0.5",
-    "vite": "^1.0.0-rc.8"
+  "prettier": {
+    "trailingComma": "all",
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": [
+          "*.js",
+          "*.cjs",
+          "*.mjs"
+        ]
+      }
+    ]
   }
 }
