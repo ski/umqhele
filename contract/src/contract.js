@@ -10,58 +10,44 @@ import { E } from '@agoric/eventual-send';
  * @type {ContractStartFn}
  */
 const start = async (zcf) => {
+  // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));
+  const {
+    issuers: { Money: moneyIssuer },
+    pricePerEntry,
+  } = zcf.getTerms();
+
+  const money = zcf.getAmountMath(moneyIssuer.getBrand());
   // Create the internal catalog entry mint
-  const { issuer, mint, amountMath: entryMath } = makeIssuerKit(
+  const { issuer, mint, amountMath: entryMath, brand } = makeIssuerKit(
     'catalog entries',
     MathKind.SET,
   );
 
-  const zoeService = zcf.getZoeService();
+  const zoe = zcf.getZoeService();
 
-  const sellItems = async (
-    newCardNames,
-    moneyIssuer,
-    sellItemsInstallation,
-    pricePerCard,
-  ) => {
-    const newCardsForSaleAmount = entryMath.make(harden(newCardNames));
-    const allCardsForSalePayment = mint.mintPayment(newCardsForSaleAmount);
-    // Note that the proposal `want` is empty because we don't know
-    // how many cards will be sold, so we don't know how much money we
-    // will make in total.
-    // https://github.com/Agoric/agoric-sdk/issues/855
-    const proposal = harden({
-      give: { Items: newCardsForSaleAmount },
-    });
-    const paymentKeywordRecord = harden({ Items: allCardsForSalePayment });
+  const houseInvitation = zcf.makeInvitation((_seat) => {
+    throw new Error('unexpected offer to house');
+  }, 'house');
 
-    const issuerKeywordRecord = harden({
-      Items: issuer,
-      Money: moneyIssuer,
-    });
+  const listingHandler = (seat) => {
+    const detail = seat.getAmountAllocated('Lot', brand);
+    const HouseListingOffer = {
+      want: { Fee: money.make(pricePerEntry) },
+      give: { Lot: detail },
+    };
 
-    const sellItemsTerms = harden({
-      pricePerItem: pricePerCard,
-    });
-    const { creatorInvitation, creatorFacet, instance, publicFacet } = await E(
-      zoeService,
-    ).startInstance(sellItemsInstallation, issuerKeywordRecord, sellItemsTerms);
-    const sellItemsCreatorSeat = await E(zoeService).offer(
-      creatorInvitation,
-      proposal,
-      paymentKeywordRecord,
-    );
-    return harden({
-      sellItemsCreatorSeat,
-      sellItemsCreatorFacet: creatorFacet,
-      sellItemsInstance: instance,
-      sellItemsPublicFacet: publicFacet,
-    });
+    const token = mint.mintPayment(detail);
+    zoe.offer(houseInvitation, HouseListingOffer, { Lot: token });
   };
 
-  const creatorFacet = harden({ sellItems, getIssuer: () => issuer });
+  const makeListingInvitation = () =>
+    zcf.makeInvitation(listingHandler, 'listing');
 
-  return harden({ creatorFacet });
+  const publicFacet = harden({
+    makeListingInvitation,
+    getIssuer: () => issuer,
+  });
+  return harden({ publicFacet });
 };
 
 harden(start);

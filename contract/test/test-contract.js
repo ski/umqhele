@@ -16,13 +16,9 @@ const contractPath = `${__dirname}/../src/contract`;
 test('tokenized video', async (t) => {
   const zoe = makeZoe(makeFakeVatAdmin().admin);
 
-  // pack, install the contract
+  // bundle, install the contract
   const bundle = await bundleSource(contractPath);
   const installation = await E(zoe).install(bundle);
-
-  const { creatorFacet: catalogEntrySellerFacet } = await E(zoe).startInstance(
-    installation,
-  );
 
   // Let's create a fungible token (1) to pay for catalog entries and
   // (2) to bid on video streams.
@@ -31,6 +27,83 @@ test('tokenized video', async (t) => {
     issuer: moolaIssuer,
     amountMath: { make: moola },
   } = makeIssuerKit('moola');
+
+  const {
+    creatorFacet: catalogEntrySellerFacet,
+    publicFacet: videoService,
+  } = await E(zoe).startInstance(
+    installation,
+    { Money: moolaIssuer },
+    { pricePerEntry: 2 },
+  );
+
+  /** @type { Issuer } */
+  const listingIssuer = videoService.getIssuer();
+  const listing = await makeLocalAmountMath(listingIssuer);
+
+  const show1 = listing.make(
+    harden([
+      {
+        title: 'Learn to build smart contracts',
+        showTime: Date.parse('2020-11-30 14:00:00'),
+        // these don't go in the amountmath, do they?
+        auctionEndDate: Date.parse('2020-11-16 14:00:00'),
+        reservePrice: 9,
+        startingBid: 3,
+      },
+    ]),
+  );
+
+  const AliceListingFee = moolaMint.mintPayment(moola(2));
+  const AliceListingOffer = harden({
+    want: { Lot: show1 },
+    give: { Fee: moola(2) }, // cheap to list
+  });
+
+  const invitation1 = videoService.makeListingInvitation();
+
+  const something = await zoe.offer(
+    invitation1,
+    AliceListingOffer,
+    harden({ Fee: AliceListingFee }),
+  );
+  t.is(something, 'something', 'swimming around!');
+
+  // yay! offers match. rights are exchanged.
+  // house has 2 moola
+  // Alice has a listing token.
+
+  // issue: we're bothering Alice a 2nd time during the "publish" step.
+  // to approve this offer.
+  const AliceAuctionSellOffer = {
+    want: moola.make(9), // reserve price
+    give: show1,
+  };
+  // show1 NFT is escrowed.
+
+  const EveOffer = {
+    give: moola.make(20),
+    want: show1,
+  };
+
+  // auction concludes...
+  // losing bids exit with refunds.
+  // Eve's offer remains escrowed, as does Alice's.
+
+  // Eve won the auction; if she exits early,
+  // that's against "the rules" and she loses reputation or whatever.
+  // (see governance TBD)
+
+  // show happens
+  // show end time timer fires.
+  // (or: Eve says "I'm satisfied".)
+  // rights are exchanged
+  // Alice gets 9 moola
+  // Eve gets an "I was there when!" NFT.
+});
+
+async function XXX() {
+  // ////////////////// throw away the rest???
 
   // Also install the sellItems contract from agoric-sdk
   const sellItemsBundle = await bundleSource(
@@ -43,6 +116,7 @@ test('tokenized video', async (t) => {
     {
       title: 'Learn to build smart contracts',
       showTime: Date.parse('2020-11-30 14:00:00'),
+      // these don't go in the amountmath, do they?
       auctionEndDate: Date.parse('2020-11-16 14:00:00'),
       reservePrice: 9,
       startingBid: 3,
@@ -119,4 +193,4 @@ test('tokenized video', async (t) => {
     inventoryRemaining,
     cardMath.make(harden(initialEntryDescriptions.slice(1, 2))),
   );
-});
+}
