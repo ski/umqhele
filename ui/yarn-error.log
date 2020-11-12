@@ -1,0 +1,139 @@
+Arguments: 
+  /usr/bin/node /usr/share/yarn/bin/yarn.js install
+
+PATH: 
+  /home/ski/.cargo/bin:/home/ski/bin:/home/ski/bin:/home/ski/.local/bin:/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Python38/Scripts/:/mnt/c/Python38/:/mnt/c/Program Files/Java/jdk-10.0.2/bin:/mnt/c/Program Files/PuTTY/:/mnt/c/flutter/bin:/mnt/c/ffmpeg/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64:/mnt/c/Program Files/Microsoft SQL Server/130/Tools/Binn/:/mnt/c/flutter/bin/cache/dart-sdk/bin:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/c/Program Files/CMake/bin:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/PowerShell/7-preview/preview:/mnt/c/Program Files/PowerShell/7/:/mnt/c/Program Files/nodejs/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/tools/bin/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/ProgramData/DockerDesktop/version-bin:/mnt/c/Go/bin:/mnt/c/Users/suhai/.cargo/bin:/mnt/c/Users/suhai/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/suhai/go/bin:/mnt/c/tools/dart-sdk/bin:/mnt/c/Users/suhai/AppData/Roaming/Pub/Cache/bin:/mnt/c/Users/suhai/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files (x86)/GnuWin32/bin:/mnt/c/Users/suhai/AppData/Roami:/mnt/c/Users/suhai/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/suhai/AppData/Roaming/npm:/mnt/c/Users/suhai/go/bin:/snap/bin:/usr/local/go/bin:/home/ski/go/bin
+
+Yarn version: 
+  1.22.5
+
+Node version: 
+  12.18.4
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/ski/umqhele/package.json: Unexpected token ] in JSON at position 193
+      at JSON.parse (<anonymous>)
+      at /usr/share/yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/share/yarn/lib/cli.js:310:30)
+      at /usr/share/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "umqhele",
+    "version": "0.0.0",
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+      "lint-check": "eslint '**/*.{js,jsx}'",
+      "lint-fix": "eslint --fix '**/*.{js,jsx}'"
+    },
+    "browserslist": {
+      "production": [
+        ">0.2%",
+        "not dead",
+        "not op_mini all"
+      ],
+      "development": [
+        "last 1 chrome version",
+        "last 1 firefox version",
+        "last 1 safari version"
+      ]
+    },
+    "eslintConfig": {
+      "extends": [
+        "airbnb-base",
+        "plugin:prettier/recommended"
+      ],
+      "env": {
+        "es6": true
+      },
+      "globals": {
+        "harden": "readonly"
+      },
+      "rules": {
+        "implicit-arrow-linebreak": "off",
+        "function-paren-newline": "off",
+        "arrow-parens": "off",
+        "strict": "off",
+        "no-console": "off",
+        "no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_"
+          }
+        ],
+        "no-return-assign": "off",
+        "no-param-reassign": "off",
+        "no-restricted-syntax": [
+          "off",
+          "ForOfStatement"
+        ],
+        "no-unused-expressions": "off",
+        "no-loop-func": "off",
+        "no-inner-declarations": "off",
+        "import/prefer-default-export": "off",
+        "import/no-extraneous-dependencies": "off"
+      }
+    },
+    "eslintIgnore": [
+      "dist/"
+    ],
+    "dependencies": {
+      "@agoric/captp": "*",
+      "@agoric/eventual-send": "*",
+      "@agoric/notifier": "*",
+      "@fortawesome/fontawesome-svg-core": "^1.2.32",
+      "@fortawesome/free-brands-svg-icons": "^5.15.1",
+      "@fortawesome/free-regular-svg-icons": "^5.15.1",
+      "@fortawesome/free-solid-svg-icons": "^5.15.1",
+      "@fortawesome/vue-fontawesome": "^3.0.0-2",
+      "bulma": "^0.9.1",
+      "ses": "^0.11.0",
+      "vue": "^3.0.2",
+      "vue-router": "^4.0.0-rc.2",
+      "vuex": "^4.0.0-beta.2"
+    },
+    "devDependencies": {
+      "@vue/compiler-sfc": "^3.0.2",
+      "agoric": "*",
+      "eslint": "^7.11.0",
+      "eslint-config-airbnb": "^18.2.0",
+      "eslint-plugin-eslint-comments": "^3.2.0",
+      "eslint-plugin-jsx-a11y": "^6.3.1",
+      "eslint-plugin-prettier": "^3.1.4",
+      "eslint-plugin-react": "^7.21.4",
+      "eslint-plugin-react-hooks": "^4.1.2",
+      "eslint-config-airbnb-base": "14.2.1",
+      "eslint-config-prettier": "^6.15.0",
+      "eslint-plugin-import": "2.22.1",
+      "eslint-plugin-vue": "^7.0.0-beta.4",
+      "prettier": "^2.1.2",
+      "sass": "^1.29.0",
+      "sass-loader": "^10.0.5",
+      "vite": "^1.0.0-rc.8"
+    },
+    "prettier": {
+      "trailingComma": "all",
+      "singleQuote": true,
+      "overrides": [
+        {
+          "files": [
+            "*.js",
+            "*.cjs",
+            "*.mjs"
+          ]
+        }
+      ]
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

@@ -34,7 +34,7 @@ test('zoe - mint payments', async (t) => {
   );
 
 
-  const itemProperties = {
+  let itemProperties = {
     imageHash: 'this is a hash',
     showTime: 'a date and time',
     reservePrice: 9,
@@ -42,6 +42,7 @@ test('zoe - mint payments', async (t) => {
     auctionEndDate: 'a date and time'
   }
   // Some is publishing a auction catalog entry
+ 
   const { sellItemsCreatorSeat, sellItemsInstance } = await E(
     catalogEntryMaker,
   ).sellTokens({
@@ -60,22 +61,67 @@ test('zoe - mint payments', async (t) => {
     `escrowTicketsOutcome is default acceptance message`,
   );
 
-  // const invitation = E(catalogEntryMaker).makeInvitation();
 
-  // // Bob makes an offer using the invitation
-  // const seat = await E(zoe).offer(invitation);
+  const ticketIssuerP = E(catalogEntryMaker).getIssuer();
+  const ticketBrand = await E(ticketIssuerP).getBrand();
+  const ticketSalesPublicFacet = await E(zoe).getPublicFacet(sellItemsInstance);
+  const ticketsForSale = await E(ticketSalesPublicFacet).getAvailableItems();
+  t.deepEqual(
+    ticketsForSale,
+    {
+      brand: ticketBrand,
+      value: [
+        {
+          imageHash: 'this is a hash',
+          showTime: 'a date and time',
+          reservePrice: 9,
+          startingBid: 3,
+          number: 1,
+          auctionEndDate: 'a date and time'
+        }
+      ],
+    },
+    `the catalog item is now open for bids`,
+  );
 
-  // const paymentP = E(seat).getPayout('Token');
+  itemProperties = {
+    imageHash: 'this is a hash e',
+    showTime: 'a date and time s',
+    reservePrice: 3,
+    startingBid: 1,
+    auctionEndDate: 'as a date and time'
+  }
 
-  // // Let's get the tokenIssuer from the contract so we can evaluate
-  // // what we get as our payout
-  // const publicFacet = await E(zoe).getPublicFacet(instance);
-  // const tokenIssuer = await E(publicFacet).getTokenIssuer();
-  // const amountMath = await makeLocalAmountMath(tokenIssuer);
+  const { sellItemsInstance: sellItemsInstance2 } = await E(
+    catalogEntryMaker,
+  ).sellTokens({
+    customValueProperties: {
+      ...itemProperties
+    },
+    count: 1,
+    moneyIssuer: moolaIssuer,
+    sellItemsInstallation,
+    pricePerItem: moolaAmountMath.make(20),
+  });
+  const sellItemsPublicFacet2 = await E(zoe).getPublicFacet(sellItemsInstance2);
+  const ticketsForSale2 = await E(sellItemsPublicFacet2).getAvailableItems();
 
-  // const tokens1000 = await E(amountMath).make(1000);
-  // const tokenPayoutAmount = await E(tokenIssuer).getAmountOf(paymentP);
+  t.deepEqual(
+    ticketsForSale2,
+    {
+      brand: ticketBrand,
+      value: [
+        {
+          imageHash: 'this is a hash e',
+          showTime: 'a date and time s',
+          reservePrice: 3,
+          number: 1,
+          startingBid: 1,
+          auctionEndDate: 'as a date and time'
+              }
+      ],
+    },
+    `we can reuse the mint to add more catalog entries and open them for bidding`,
+  );
 
-  // // Bob got 1000 tokens
-  // t.deepEqual(tokenPayoutAmount, tokens1000);
 });

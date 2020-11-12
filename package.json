@@ -1,5 +1,5 @@
 {
-  "name": "newrepo",
+  "name": "umqhele",
   "version": "0.0.1",
   "private": true,
   "useWorkspaces": true,
@@ -7,8 +7,7 @@
   "workspaces": [
     "api",
     "contract",
-    "_agstate/agoric-servers",
-    "ui"
+    "_agstate/agoric-servers"    
   ],
   "devDependencies": {
     "eslint": "^7.11.0",
