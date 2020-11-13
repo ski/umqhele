@@ -10,6 +10,7 @@ import { E } from '@agoric/eventual-send';
 import { makeIssuerKit, makeLocalAmountMath } from '@agoric/ertp';
 import { makeFakeVatAdmin } from '@agoric/zoe/src/contractFacet/fakeVatAdmin';
 import { makeZoe } from '@agoric/zoe';
+import { defaultAcceptanceMsg } from '@agoric/zoe/src/contractSupport';
 
 const contractPath = `${__dirname}/../src/contract`;
 
@@ -28,14 +29,13 @@ test('tokenized video', async (t) => {
     amountMath: { make: moola },
   } = makeIssuerKit('moola');
 
-  const {
-    creatorFacet: catalogEntrySellerFacet,
-    publicFacet: videoService,
-  } = await E(zoe).startInstance(
-    installation,
-    { Money: moolaIssuer },
-    { pricePerEntry: 2 },
-  );
+  const { creatorInvitation, publicFacet: videoService } = await E(
+    zoe,
+  ).startInstance(installation, { Money: moolaIssuer }, { pricePerItem: 2 });
+
+  // Bob opens the catalog and establishes his
+  // seat for trading listings for money.
+  const sellerSeat = zoe.offer(creatorInvitation, harden({}));
 
   /** @type { Issuer } */
   const listingIssuer = videoService.getIssuer();
@@ -54,24 +54,37 @@ test('tokenized video', async (t) => {
     ]),
   );
 
-  const AliceListingFee = moolaMint.mintPayment(moola(2));
+  const fee = moolaMint.mintPayment(moola(2));
   const AliceListingOffer = harden({
-    want: { Lot: show1 },
-    give: { Fee: moola(2) }, // cheap to list
+    want: { Items: show1 },
+    give: { Money: moola(2) }, // cheap to list
   });
 
   const invitation1 = videoService.makeListingInvitation();
 
-  const seat1 = await zoe.offer(
+  const seat1 = zoe.offer(
     invitation1,
     AliceListingOffer,
-    harden({ Fee: AliceListingFee }),
+    harden({ Money: fee }),
   );
-  t.is(await seat1.hasExited(), false, 'listing seat has not exited');
 
   // yay! offers match. rights are exchanged.
   // house has 2 moola
+  const bobStuff = await E(sellerSeat).getCurrentAllocation();
+  t.is(bobStuff.Money.value, 2);
   // Alice has a listing token.
+  t.is(await E(seat1).hasExited(), true, 'listing seat has exited');
+  const gains = E(seat1).getPayout('Items');
+  const actual = await listingIssuer.getAmountOf(gains);
+  t.deepEqual(actual.value, [
+    {
+      auctionEndDate: 1605556800000,
+      reservePrice: 9,
+      showTime: 1606766400000,
+      startingBid: 3,
+      title: 'Learn to build smart contracts',
+    },
+  ]);
 
   // issue: we're bothering Alice a 2nd time during the "publish" step.
   // to approve this offer.

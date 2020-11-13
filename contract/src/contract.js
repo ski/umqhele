@@ -2,7 +2,9 @@
 import '@agoric/zoe/exported';
 
 import { makeIssuerKit, MathKind } from '@agoric/ertp';
-import { E } from '@agoric/eventual-send';
+import { trade, defaultAcceptanceMsg } from '@agoric/zoe/src/contractSupport';
+import { makeStore } from '@agoric/store';
+import { assert, details } from '@agoric/assert';
 
 /**
  * Tokenized Video Stream contract
@@ -10,45 +12,64 @@ import { E } from '@agoric/eventual-send';
  * @type {ContractStartFn}
  */
 const start = async (zcf) => {
-  // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));
   const {
     issuers: { Money: moneyIssuer },
-    pricePerEntry,
+    pricePerItem,
   } = zcf.getTerms();
-
   const money = zcf.getAmountMath(moneyIssuer.getBrand());
+
+  // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));
+  const zcfMint = await zcf.makeZCFMint('Items', MathKind.SET);
   // Create the internal catalog entry mint
-  const { issuer, mint, amountMath: entryMath, brand } = makeIssuerKit(
-    'catalog entries',
-    MathKind.SET,
-  );
-  zcf.saveIssuer(issuer, 'LotAsset1');
+  const { issuer, amountMath: itemsMath } = zcfMint.getIssuerRecord();
 
-  const zoe = zcf.getZoeService();
+  // ISSUE / TODO: how does this relate to webrtc key?
+  const catalog = makeStore('startTitle');
 
-  const houseInvitation = zcf.makeInvitation((_seat) => {
-    throw new Error('unexpected offer to house');
-  }, 'house');
+  // In order to trade money for a listing, we need a seller seat.
+  let sellerSeat;
+  const open = (seat) => {
+    sellerSeat = seat;
+    return defaultAcceptanceMsg;
+  };
 
-  const listingHandler = (seat) => {
-    const detail = seat.getAmountAllocated('Lot', brand);
-    const HouseListingOffer = harden({
-      want: { Fee: money.make(pricePerEntry) },
-      give: { Lot: detail },
-    });
+  const buyListing = (buyerSeat) => {
+    assert(sellerSeat, details`not yet open for business`);
+    const wanted = buyerSeat.getProposal().want.Items.value;
+    const wantedAmount = itemsMath.make(wanted);
+    zcfMint.mintGains({ Items: wantedAmount }, sellerSeat);
 
-    const token = mint.mintPayment(detail);
-    zoe.offer(houseInvitation, HouseListingOffer, { Lot: token });
+    const fee = money.make(pricePerItem);
+
+    const [{ title, showTime }] = wanted;
+    const key = JSON.stringify([new Date(showTime).toISOString(), title]);
+    console.log('buyListing', { key });
+
+    assert(!catalog.has(key), details`time / title taken`);
+    assert(sellerSeat, details`catalog not yet open`);
+    trade(
+      zcf,
+      { seat: sellerSeat, gains: { Money: fee } },
+      { seat: buyerSeat, gains: { Items: wantedAmount } },
+    );
+    console.log('trade returned');
+    buyerSeat.exit();
+    catalog.init(key, wanted);
+    return key;
   };
 
   const makeListingInvitation = () =>
-    zcf.makeInvitation(listingHandler, 'listing');
+    zcf.makeInvitation(buyListing, 'buy listing');
 
-  const publicFacet = harden({
-    makeListingInvitation,
-    getIssuer: () => issuer,
+  const creatorInvitation = zcf.makeInvitation(open, 'seller');
+  return harden({
+    creatorInvitation,
+    publicFacet: {
+      makeListingInvitation,
+      getIssuer: () => issuer,
+      pricePerItem: () => money.make(pricePerItem),
+    },
   });
-  return harden({ publicFacet });
 };
 
 harden(start);
