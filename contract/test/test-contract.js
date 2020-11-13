@@ -111,21 +111,22 @@ test('tokenized video', async (t) => {
   });
   const aliceSellInvitation = await videoService.makeAuctionSellerInvitation();
   console.log({ aliceSellInvitation });
-  const { seat: aliceSellSeat, makeBidInvitationObj } = zoe.offer(
+  const aliceSellSeat = zoe.offer(
     aliceSellInvitation,
     aliceAuctionSellOffer,
     harden({ Asset: gains }),
   );
   // show1 NFT is escrowed.
+  const makeBidInvitationObj = await E(aliceSellSeat).getOfferResult();
 
   const evePurse = moolaIssuer.makeEmptyPurse();
   evePurse.deposit(moolaMint.mintPayment(moola(50)));
   const eveBidPmt = evePurse.withdraw(moola(20));
 
-  const eveOffer = {
+  const eveOffer = harden({
     give: { Bid: moola(20) },
     want: { Asset: show1 },
-  };
+  });
   // ISSUE: how does this makeBidInvitationObj get from Alice to Eve? Bob should have it.
   const eveInvitation = E(makeBidInvitationObj).makeBidInvitation();
   zoe.offer(eveInvitation, eveOffer, harden({ Bid: eveBidPmt }));
