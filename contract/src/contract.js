@@ -1,10 +1,11 @@
 // @ts-check
 import '@agoric/zoe/exported';
 
-import { makeIssuerKit, MathKind } from '@agoric/ertp';
+import { MathKind } from '@agoric/ertp';
 import { trade, defaultAcceptanceMsg } from '@agoric/zoe/src/contractSupport';
 import { makeStore } from '@agoric/store';
 import { assert, details } from '@agoric/assert';
+import { E } from '@agoric/eventual-send';
 
 /**
  * Tokenized Video Stream contract
@@ -28,9 +29,13 @@ const start = async (zcf) => {
 
   // In order to trade money for a listing, we need a seller seat.
   let sellerSeat;
+  let auctionInstallation;
   const open = (seat) => {
     sellerSeat = seat;
     return defaultAcceptanceMsg;
+  };
+  const setAuctionContract = (installation) => {
+    auctionInstallation = installation;
   };
 
   const buyListing = (buyerSeat) => {
@@ -52,7 +57,6 @@ const start = async (zcf) => {
       { seat: sellerSeat, gains: { Money: fee } },
       { seat: buyerSeat, gains: { Items: wantedAmount } },
     );
-    console.log('trade returned');
     buyerSeat.exit();
     catalog.init(key, wanted);
     return key;
@@ -61,11 +65,26 @@ const start = async (zcf) => {
   const makeListingInvitation = () =>
     zcf.makeInvitation(buyListing, 'buy listing');
 
+  const zoe = zcf.getZoeService();
+  const makeAuctionSellerInvitation = async () => {
+    const { creatorInvitation } = await E(zoe).startInstance(
+      auctionInstallation,
+      harden({
+        Asset: issuer,
+        Ask: moneyIssuer,
+      }),
+      harden({ timeAuthority: 'TODO: timer', closesAfter: 1 }),
+    );
+    return creatorInvitation;
+  };
+
   const creatorInvitation = zcf.makeInvitation(open, 'seller');
   return harden({
+    creatorFacet: { setAuctionContract },
     creatorInvitation,
     publicFacet: {
       makeListingInvitation,
+      makeAuctionSellerInvitation,
       getIssuer: () => issuer,
       pricePerItem: () => money.make(pricePerItem),
     },

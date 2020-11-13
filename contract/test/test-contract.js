@@ -21,6 +21,14 @@ test('tokenized video', async (t) => {
   const bundle = await bundleSource(contractPath);
   const installation = await E(zoe).install(bundle);
 
+  // bundle, install the auction contract
+  // ISSUE / TODO: let caller supply the installation?
+  const auctionInstallation = await E(zoe).install(
+    await bundleSource(
+      require.resolve('@agoric/zoe/src/contracts/auction/secondPriceAuction'),
+    ),
+  );
+
   // Let's create a fungible token (1) to pay for catalog entries and
   // (2) to bid on video streams.
   const {
@@ -29,13 +37,20 @@ test('tokenized video', async (t) => {
     amountMath: { make: moola },
   } = makeIssuerKit('moola');
 
-  const { creatorInvitation, publicFacet: videoService } = await E(
-    zoe,
-  ).startInstance(installation, { Money: moolaIssuer }, { pricePerItem: 2 });
+  const {
+    creatorFacet,
+    creatorInvitation,
+    publicFacet: videoService,
+  } = await E(zoe).startInstance(
+    installation,
+    { Money: moolaIssuer },
+    { pricePerItem: 2 },
+  );
 
   // Bob opens the catalog and establishes his
   // seat for trading listings for money.
-  const sellerSeat = zoe.offer(creatorInvitation, harden({}));
+  creatorFacet.setAuctionContract(auctionInstallation);
+  const sellerSeat = zoe.offer(creatorInvitation);
 
   /** @type { Issuer } */
   const listingIssuer = videoService.getIssuer();
@@ -69,9 +84,6 @@ test('tokenized video', async (t) => {
   );
 
   // yay! offers match. rights are exchanged.
-  // house has 2 moola
-  const bobStuff = await E(sellerSeat).getCurrentAllocation();
-  t.is(bobStuff.Money.value, 2);
   // Alice has a listing token.
   t.is(await E(seat1).hasExited(), true, 'listing seat has exited');
   const gains = E(seat1).getPayout('Items');
@@ -85,19 +97,38 @@ test('tokenized video', async (t) => {
       title: 'Learn to build smart contracts',
     },
   ]);
+  // house has 2 moola
+  const bobStuff = await E(sellerSeat).getCurrentAllocation();
+  t.is(bobStuff.Money.value, 2);
 
   // issue: we're bothering Alice a 2nd time during the "publish" step.
   // to approve this offer.
-  const AliceAuctionSellOffer = {
-    want: { ReservePrice: moola(9) }, // reserve price
-    give: { Detail: show1 },
-  };
+  const aliceAuctionSellOffer = harden({
+    want: { Ask: moola(9) }, // reserve price
+    give: { Asset: show1 },
+    // hm. https://github.com/Agoric/agoric-sdk/blob/master/packages/zoe/test/unitTests/contracts/test-secondPriceAuction.js#L49
+    exit: { waived: null },
+  });
+  const aliceSellInvitation = await videoService.makeAuctionSellerInvitation();
+  console.log({ aliceSellInvitation });
+  const { seat: aliceSellSeat, makeBidInvitationObj } = zoe.offer(
+    aliceSellInvitation,
+    aliceAuctionSellOffer,
+    harden({ Asset: gains }),
+  );
   // show1 NFT is escrowed.
 
-  const EveOffer = {
+  const evePurse = moolaIssuer.makeEmptyPurse();
+  evePurse.deposit(moolaMint.mintPayment(moola(50)));
+  const eveBidPmt = evePurse.withdraw(moola(20));
+
+  const eveOffer = {
     give: { Bid: moola(20) },
-    want: { Detail: show1 },
+    want: { Asset: show1 },
   };
+  // ISSUE: how does this makeBidInvitationObj get from Alice to Eve? Bob should have it.
+  const eveInvitation = E(makeBidInvitationObj).makeBidInvitation();
+  zoe.offer(eveInvitation, eveOffer, harden({ Bid: eveBidPmt }));
 
   // auction concludes...
   // losing bids exit with refunds.
@@ -114,96 +145,3 @@ test('tokenized video', async (t) => {
   // Alice gets 9 moola
   // Eve gets an "I was there when!" NFT.
 });
-
-async function XXX() {
-  // ////////////////// throw away the rest???
-
-  // Also install the sellItems contract from agoric-sdk
-  const sellItemsBundle = await bundleSource(
-    require.resolve('@agoric/zoe/src/contracts/sellItems'),
-  );
-  const sellItemsInstallation = await E(zoe).install(sellItemsBundle);
-
-  // TODO: base these on publication requests
-  const initialEntryDescriptions = harden([
-    {
-      title: 'Learn to build smart contracts',
-      showTime: Date.parse('2020-11-30 14:00:00'),
-      // these don't go in the amountmath, do they?
-      auctionEndDate: Date.parse('2020-11-16 14:00:00'),
-      reservePrice: 9,
-      startingBid: 3,
-    },
-    { title: 'cute kittens' },
-  ]);
-  const moneyIssuer = moolaIssuer;
-  const pricePerEntry = moola(10);
-
-  // offer to sell some initial entries
-  const {
-    sellItemsCreatorSeat,
-    sellItemsCreatorFacet,
-    sellItemsPublicFacet,
-    sellItemsInstance,
-  } = await E(catalogEntrySellerFacet).sellItems(
-    initialEntryDescriptions,
-    moneyIssuer,
-    sellItemsInstallation,
-    pricePerEntry,
-  );
-
-  const bobInvitation = E(sellItemsCreatorFacet).makeBuyerInvitation();
-
-  // Bob buys his own baseball card
-
-  const cardIssuer = await E(sellItemsPublicFacet).getItemsIssuer();
-  const cardMath = await makeLocalAmountMath(cardIssuer);
-
-  const cardsForSale = await E(sellItemsPublicFacet).getAvailableItems();
-  t.deepEqual(cardsForSale, cardMath.make(initialEntryDescriptions));
-
-  const terms = await E(zoe).getTerms(sellItemsInstance);
-
-  // make the corresponding amount
-  const bobCardAmount = cardMath.make(
-    harden(initialEntryDescriptions.slice(0, 1)),
-  );
-
-  const bobProposal = harden({
-    give: { Money: terms.pricePerItem },
-    want: { Items: bobCardAmount },
-  });
-
-  const bobPaymentKeywordRecord = harden({
-    Money: moolaMint.mintPayment(moola(10)),
-  });
-
-  const seat = await E(zoe).offer(
-    bobInvitation,
-    bobProposal,
-    bobPaymentKeywordRecord,
-  );
-  const bobCardPayout = seat.getPayout('Items');
-  const bobObtained = await E(cardIssuer).getAmountOf(bobCardPayout);
-
-  t.deepEqual(
-    bobObtained,
-    cardMath.make(harden(initialEntryDescriptions.slice(0, 1))),
-    'Bob bought his own baseball card!',
-  );
-
-  // That's enough selling for now, let's take our inventory back
-
-  E(sellItemsCreatorSeat).tryExit();
-
-  const moneyPayment = await E(sellItemsCreatorSeat).getPayout('Money');
-  const moneyEarned = await E(moolaIssuer).getAmountOf(moneyPayment);
-  t.deepEqual(moneyEarned, moola(10));
-
-  const cardInventory = await E(sellItemsCreatorSeat).getPayout('Items');
-  const inventoryRemaining = await E(cardIssuer).getAmountOf(cardInventory);
-  t.deepEqual(
-    inventoryRemaining,
-    cardMath.make(harden(initialEntryDescriptions.slice(1, 2))),
-  );
-}
