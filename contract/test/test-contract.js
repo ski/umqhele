@@ -62,12 +62,12 @@ test('tokenized video', async (t) => {
 
   const invitation1 = videoService.makeListingInvitation();
 
-  const something = await zoe.offer(
+  const seat1 = await zoe.offer(
     invitation1,
     AliceListingOffer,
     harden({ Fee: AliceListingFee }),
   );
-  t.is(something, 'something', 'swimming around!');
+  t.is(await seat1.hasExited(), false, 'listing seat has not exited');
 
   // yay! offers match. rights are exchanged.
   // house has 2 moola
@@ -76,14 +76,14 @@ test('tokenized video', async (t) => {
   // issue: we're bothering Alice a 2nd time during the "publish" step.
   // to approve this offer.
   const AliceAuctionSellOffer = {
-    want: moola.make(9), // reserve price
-    give: show1,
+    want: { ReservePrice: moola(9) }, // reserve price
+    give: { Detail: show1 },
   };
   // show1 NFT is escrowed.
 
   const EveOffer = {
-    give: moola.make(20),
-    want: show1,
+    give: { Bid: moola(20) },
+    want: { Detail: show1 },
   };
 
   // auction concludes...

@@ -22,6 +22,7 @@ const start = async (zcf) => {
     'catalog entries',
     MathKind.SET,
   );
+  zcf.saveIssuer(issuer, 'LotAsset1');
 
   const zoe = zcf.getZoeService();
 
@@ -31,10 +32,10 @@ const start = async (zcf) => {
 
   const listingHandler = (seat) => {
     const detail = seat.getAmountAllocated('Lot', brand);
-    const HouseListingOffer = {
+    const HouseListingOffer = harden({
       want: { Fee: money.make(pricePerEntry) },
       give: { Lot: detail },
-    };
+    });
 
     const token = mint.mintPayment(detail);
     zoe.offer(houseInvitation, HouseListingOffer, { Lot: token });
