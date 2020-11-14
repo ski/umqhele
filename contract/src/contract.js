@@ -13,17 +13,16 @@ import { E } from '@agoric/eventual-send';
  * @type {ContractStartFn}
  */
 const start = async (zcf) => {
-
-  //Terms are 
+  // Terms are
   const {
     issuers: { Ask: moolaIssuer },
     listingPrice,
-    auctionInstallation //pricePerItem,        
+    auctionInstallation, // pricePerItem,
   } = zcf.getTerms();
-  const money = zcf.getAmountMath(moolaIssuer.getBrand()); //TODO: rename money to moolaAmountMath
+  const money = zcf.getAmountMath(moolaIssuer.getBrand()); // TODO: rename money to moolaAmountMath
 
-  // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));  
-  const listinMint = await zcf.makeZCFMint('Items', MathKind.SET); //ListingItem or LotItem?
+  // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));
+  const listinMint = await zcf.makeZCFMint('Items', MathKind.SET); // ListingItem or LotItem?
   // Create the internal catalog entry mint
   const { issuer, amountMath: itemsMath } = listinMint.getIssuerRecord();
 
@@ -40,21 +39,8 @@ const start = async (zcf) => {
     sellerSeat = seat;
     return defaultAcceptanceMsg;
   };
-  const setAuctionContract = (installation) => {
-    auctionInstallation = installation;
-  };
 
   const buyListing = (buyerSeat) => {
-    assert(sellerSeat, details`not yet open for business`);
-    const wanted = buyerSeat.getProposal().want.Items.value;
-    const wantedAmount = itemsMath.make(wanted);
-    zcfMint.mintGains({ Items: wantedAmount }, sellerSeat);
-
-    const fee = money.make(pricePerItem);
-
-
-  const buyListing = (buyerSeat) => {
-
     assert(sellerSeat, details`not yet open for business`);
     const wanted = buyerSeat.getProposal().want.Items.value;
     const wantedAmount = itemsMath.make(wanted);
@@ -85,17 +71,14 @@ const start = async (zcf) => {
   const getBidInvitation = (startTitle) =>
     runningAuctions.get(startTitle).makeBidInvitation();
 
-  //this is the house invitation.
+  // this is the house invitation.
   const makeListingInvitation = () =>
     zcf.makeInvitation(buyListing, 'buy listing');
 
   const zoe = zcf.getZoeService();
 
   const makeAuctionSellerInvitation = async (terms) => {
-    const {
-      timeAuthority,
-      closesAfter
-    } = terms;
+    const { timeAuthority, closesAfter } = terms;
     const { creatorInvitation } = await E(zoe).startInstance(
       auctionInstallation,
       harden({
@@ -103,14 +86,14 @@ const start = async (zcf) => {
         Ask: moolaIssuer,
       }),
       harden({
-        timeAuthority: timeAuthority,
-        closesAfter: closesAfter
+        timeAuthority,
+        closesAfter,
       }),
     );
     return creatorInvitation;
   };
 
-  //the seller is the house here selling a spot in the house to display the listing.
+  // the seller is the house here selling a spot in the house to display the listing.
 
   const createSellerInvitation = () => zcf.makeInvitation(open, 'seller');
 
