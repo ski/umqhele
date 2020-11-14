@@ -1,59 +1,119 @@
 // @ts-check
 import '@agoric/zoe/exported';
 
+import { MathKind } from '@agoric/ertp';
+import { trade, defaultAcceptanceMsg } from '@agoric/zoe/src/contractSupport';
+import { makeStore } from '@agoric/store';
+import { assert, details } from '@agoric/assert';
+import { E } from '@agoric/eventual-send';
+
 /**
- * This is a very simple contract that creates a new issuer and mints payments
- * from it, in order to give an example of how that can be done.  This contract
- * sends new tokens to anyone who has an invitation.
- *
- * The expectation is that most contracts that want to do something similar
- * would use the ability to mint new payments internally rather than sharing
- * that ability widely as this one does.
- *
- * To pay others in tokens, the creator of the instance can make
- * invitations for them, which when used to make an offer, will payout
- * the specified amount of tokens.
+ * Tokenized Video Stream contract
  *
  * @type {ContractStartFn}
  */
 const start = async (zcf) => {
-  // Create the internal token mint for a fungible digital asset. Note
-  // that 'Tokens' is both the keyword and the allegedName.
-  const zcfMint = await zcf.makeZCFMint('Tokens');
-  // AWAIT
 
-  // Now that ZCF has saved the issuer, brand, and local amountMath, they
-  // can be accessed synchronously.
-  const { amountMath, issuer } = zcfMint.getIssuerRecord();
+  //Terms are 
+  const {
+    issuers: { Ask: moolaIssuer },
+    listingPrice,
+    auctionInstallation //pricePerItem,        
+  } = zcf.getTerms();
+  const money = zcf.getAmountMath(moolaIssuer.getBrand()); //TODO: rename money to moolaAmountMath
 
-  const mintPayment = (seat) => {
-    const amount = amountMath.make(1000);
-    // Synchronously mint and allocate amount to seat.
-    zcfMint.mintGains({ Token: amount }, seat);
-    // Exit the seat so that the user gets a payout.
-    seat.exit();
-    // Since the user is getting the payout through Zoe, we can
-    // return anything here. Let's return some helpful instructions.
-    return 'Offer completed. You should receive a payment from Zoe';
+  // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));  
+  const listinMint = await zcf.makeZCFMint('Items', MathKind.SET); //ListingItem or LotItem?
+  // Create the internal catalog entry mint
+  const { issuer, amountMath: itemsMath } = listinMint.getIssuerRecord();
+
+  // ISSUE / TODO: how does this relate to webrtc key?
+  const catalog = makeStore('startTitle');
+
+  // In order to trade money for a listing, we need a seller seat.
+  // should this seat  be a singleton ?
+  let sellerSeat;
+  const open = (seat) => {
+    if (sellerSeat) {
+      sellerSeat.exit();
+    }
+    sellerSeat = seat;
+    return defaultAcceptanceMsg;
   };
 
-  const creatorFacet = {
-    // The creator of the instance can send invitations to anyone
-    // they wish to.
-    makeInvitation: () => zcf.makeInvitation(mintPayment, 'mint a payment'),
-    getTokenIssuer: () => issuer,
+
+  const buyListing = (buyerSeat) => {
+
+    assert(sellerSeat, details`not yet open for business`);
+    const wanted = buyerSeat.getProposal().want.Items.value;
+    const wantedAmount = itemsMath.make(wanted);
+    listinMint.mintGains({ Items: wantedAmount }, sellerSeat);
+
+    const fee = money.make(listingPrice);
+
+    const [{ title, showTime }] = wanted;
+    const key = JSON.stringify([new Date(showTime).toISOString(), title]);
+
+    assert(!catalog.has(key), details`time / title taken`);
+    assert(sellerSeat, details`catalog not yet open`);
+    trade(
+      zcf,
+      { seat: sellerSeat, gains: { Money: fee } },
+      { seat: buyerSeat, gains: { Items: wantedAmount } },
+    );
+    buyerSeat.exit();
+    catalog.init(key, wanted);
+    return key;
   };
 
-  const publicFacet = {
-    // Make the token issuer public. Note that only the mint can
-    // make new digital assets. The issuer is ok to make public.
-    getTokenIssuer: () => issuer,
+  const runningAuctions = makeStore('startTitle');
+
+  const addInvitationMaker = (startTitle, invitationMaker) =>
+    runningAuctions.init(startTitle, invitationMaker);
+
+  const getBidInvitation = (startTitle) =>
+    runningAuctions.get(startTitle).makeBidInvitation();
+
+  //this is the house invitation.
+  const makeListingInvitation = () =>
+    zcf.makeInvitation(buyListing, 'buy listing');
+
+  const zoe = zcf.getZoeService();
+
+  const makeAuctionSellerInvitation = async (terms) => {
+    const {
+      timeAuthority,
+      closesAfter
+    } = terms;
+    const { creatorInvitation } = await E(zoe).startInstance(
+      auctionInstallation,
+      harden({
+        Asset: issuer,
+        Ask: moolaIssuer,
+      }),
+      harden({
+        timeAuthority: timeAuthority,
+        closesAfter: closesAfter
+      }),
+    );
+    return creatorInvitation;
   };
 
-  // Return the creatorFacet to the creator, so they can make
-  // invitations for others to get payments of tokens. Publish the
-  // publicFacet.
-  return harden({ creatorFacet, publicFacet });
+  //the seller is the house here selling a spot in the house to display the listing.
+
+  const createSellerInvitation = () => zcf.makeInvitation(open, 'seller');
+
+  return harden({
+    creatorFacet: { createSellerInvitation },
+    publicFacet: {
+      makeListingInvitation,
+      makeAuctionSellerInvitation,
+      getIssuer: () => issuer,
+      pricePerItem: () => money.make(listingPrice),
+      addInvitationMaker,
+      getBidInvitation,
+    },
+  });
 };
 
 harden(start);
