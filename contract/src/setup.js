@@ -1,5 +1,4 @@
-
-import { makeIssuerKit, MathKind, makeLocalAmountMath } from '@agoric/ertp';
+import { makeIssuerKit, MathKind } from '@agoric/ertp';
 import { makeFakeVatAdmin } from '@agoric/zoe/src/contractFacet/fakeVatAdmin';
 import { makeZoe } from '@agoric/zoe/src/zoeService/zoe';
 
@@ -26,7 +25,7 @@ const setupMixed = () => {
   const moolaMint = mints.get('moola');
   const makeItems = allBundles.items.amountMath.make;
   const makeMoola = allBundles.moola.amountMath.make;
-  
+
   const zoe = makeZoe(makeFakeVatAdmin().admin);
   return {
     zoe,
@@ -37,9 +36,9 @@ const setupMixed = () => {
     makeItems,
     makeMoola,
     amountMaths,
-    brands,    
-  }
-}
+    brands,
+  };
+};
 
 harden(setupMixed);
 export { setupMixed };
