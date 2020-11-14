@@ -11,52 +11,62 @@ import { makeIssuerKit, makeLocalAmountMath } from '@agoric/ertp';
 import { makeFakeVatAdmin } from '@agoric/zoe/src/contractFacet/fakeVatAdmin';
 import { makeZoe } from '@agoric/zoe';
 import { defaultAcceptanceMsg } from '@agoric/zoe/src/contractSupport';
+import { setupMixed } from '../src/setup';
+import buildManualTimer from '../src/manualTimer';
 
 const contractPath = `${__dirname}/../src/contract`;
 
 test('tokenized video', async (t) => {
-  const zoe = makeZoe(makeFakeVatAdmin().admin);
+
+  const setup = setupMixed();
+  const {
+    itemsIssuer,
+    moolaIssuer,
+    itemsMint,
+    moolaMint,
+    makeItems,
+    makeMoola,
+    zoe,
+    amountMaths, //map of items and moola maths.
+    brands,
+    makeListing
+  } = setupMixed();
 
   // bundle, install the contract
-  const bundle = await bundleSource(contractPath);
-  const installation = await E(zoe).install(bundle);
-
+  const auctionHouseBundle = await bundleSource(contractPath);
+  const auctionHouseinstallation = await E(zoe).install(auctionHouseBundle);
   // bundle, install the auction contract
   // ISSUE / TODO: let caller supply the installation?
-  const auctionInstallation = await E(zoe).install(
+  const secondPriceAuctionInstallation = await E(zoe).install(
     await bundleSource(
       require.resolve('@agoric/zoe/src/contracts/auction/secondPriceAuction'),
     ),
   );
 
-  // Let's create a fungible token (1) to pay for catalog entries and
-  // (2) to bid on video streams.
-  const {
-    mint: moolaMint,
-    issuer: moolaIssuer,
-    amountMath: { make: moola },
-  } = makeIssuerKit('moola');
+  const listingIssuerKeywordRecord = harden({ Ask: moolaIssuer, });
+
+  const listingTerms = harden({ listingPrice: 2, 
+    auctionInstallation: secondPriceAuctionInstallation });
 
   const {
-    creatorFacet,
-    creatorInvitation,
+    creatorFacet,    
     publicFacet: videoService,
   } = await E(zoe).startInstance(
-    installation,
-    { Money: moolaIssuer },
-    { pricePerItem: 2 },
+    auctionHouseinstallation,
+    listingIssuerKeywordRecord,
+    listingTerms,
   );
 
-  // Bob opens the catalog and establishes his
-  // seat for trading listings for money.
-  creatorFacet.setAuctionContract(auctionInstallation);
-  const sellerSeat = zoe.offer(creatorInvitation);
+  //the seller is the house. 
+  let houseSeat = await zoe.offer(creatorFacet.createSellerInvitation());  
 
-  /** @type { Issuer } */
+  const InvitationObj = await E(houseSeat).getOfferResult();
+
+  //whats happening here?
   const listingIssuer = videoService.getIssuer();
-  const listing = await makeLocalAmountMath(listingIssuer);
+  const listingMaker = await makeLocalAmountMath(listingIssuer);
 
-  const show1 = listing.make(
+  const show2 = listingMaker.make(
     harden([
       {
         title: 'Learn to build smart contracts',
@@ -69,80 +79,95 @@ test('tokenized video', async (t) => {
     ]),
   );
 
-  const fee = moolaMint.mintPayment(moola(2));
   const AliceListingOffer = harden({
-    want: { Items: show1 },
-    give: { Money: moola(2) }, // cheap to list
+    want: { Items: show2 },
+    give: { Money: makeMoola(2) }, // cheap to list
   });
 
-  const invitation1 = videoService.makeListingInvitation();
 
-  const seat1 = zoe.offer(
-    invitation1,
+  const listingPayment = moolaMint.mintPayment(makeMoola(2));
+  //the handler for this invite is buyListing
+  const buyListingInvitation = videoService.makeListingInvitation();
+
+  const aliceListerSeat = await zoe.offer(
+    buyListingInvitation,
     AliceListingOffer,
-    harden({ Money: fee }),
+    harden({ Money: listingPayment }),
+  );  
+
+  //we are creating a new invitation here so that bob can collect payout.
+  const houseSeat2 = await zoe.offer(creatorFacet.createSellerInvitation());  
+
+  const aliceItemsPayout = aliceListerSeat.getPayout('Items');  
+  t.deepEqual(
+    await listingIssuer.getAmountOf(aliceItemsPayout),
+    show2,
+    `alice gets nothing of what she put in`,
   );
+  const housePayout = houseSeat.getPayout('Money');
 
-  // yay! offers match. rights are exchanged.
-  // Alice has a listing token.
-  t.is(await E(seat1).hasExited(), true, 'listing seat has exited');
-  const gains = E(seat1).getPayout('Items');
-  const actual = await listingIssuer.getAmountOf(gains);
-  t.deepEqual(actual.value, [
-    {
-      auctionEndDate: 1605556800000,
-      reservePrice: 9,
-      showTime: 1606766400000,
-      startingBid: 3,
-      title: 'Learn to build smart contracts',
-    },
-  ]);
-  // house has 2 moola
-  const bobStuff = await E(sellerSeat).getCurrentAllocation();
-  t.is(bobStuff.Money.value, 2);
+  t.deepEqual(await moolaIssuer.getAmountOf(housePayout),
+    makeMoola(2), 'house is paid')
 
-  // issue: we're bothering Alice a 2nd time during the "publish" step.
-  // to approve this offer.
+  //now the tough part, as if
+
   const aliceAuctionSellOffer = harden({
-    want: { Ask: moola(9) }, // reserve price
-    give: { Asset: show1 },
+    want: { Ask: makeMoola(9) }, // reserve price
+    give: { Asset: show2 },
     // hm. https://github.com/Agoric/agoric-sdk/blob/master/packages/zoe/test/unitTests/contracts/test-secondPriceAuction.js#L49
     exit: { waived: null },
   });
-  const aliceSellInvitation = await videoService.makeAuctionSellerInvitation();
-  console.log({ aliceSellInvitation });
+
+  const timer = buildManualTimer(console.log);
+  const terms = { timeAuthority: timer, closesAfter: 2 };
+
+  const aliceSellInvitation = await videoService.makeAuctionSellerInvitation(terms);
   const aliceSellSeat = zoe.offer(
     aliceSellInvitation,
     aliceAuctionSellOffer,
-    harden({ Asset: gains }),
+    harden({ Asset: aliceItemsPayout }),
   );
-  // show1 NFT is escrowed.
+  
   const makeBidInvitationObj = await E(aliceSellSeat).getOfferResult();
+  const [{ title, showTime }] = show2.value;
+  const key = JSON.stringify([new Date(showTime).toISOString(), title]);
+  //alice caches the invitation maker.
+  videoService.addInvitationMaker(key,makeBidInvitationObj);
+  
+  const eveBidInvitation = videoService.getBidInvitation(key);
+  
+  const eveBidOffer = harden({
+    want : {Asset :show2 },
+    give : {Bid : makeMoola(20)}
+  })
 
-  const evePurse = moolaIssuer.makeEmptyPurse();
-  evePurse.deposit(moolaMint.mintPayment(moola(50)));
-  const eveBidPmt = evePurse.withdraw(moola(20));
+  const eveBidPayment = moolaMint.mintPayment(makeMoola(20));
 
-  const eveOffer = harden({
-    give: { Bid: moola(20) },
-    want: { Asset: show1 },
-  });
-  // ISSUE: how does this makeBidInvitationObj get from Alice to Eve? Bob should have it.
-  const eveInvitation = E(makeBidInvitationObj).makeBidInvitation();
-  zoe.offer(eveInvitation, eveOffer, harden({ Bid: eveBidPmt }));
+  const eveBidSeat = await zoe.offer(
+    eveBidInvitation,
+    eveBidOffer,
+    harden({ Bid: eveBidPayment }),
+  )
 
-  // auction concludes...
-  // losing bids exit with refunds.
-  // Eve's offer remains escrowed, as does Alice's.
+  //time passes.
+  timer.tick();
+  timer.tick();
+  
+  //await E(eveBidSeat).tryExit();
 
-  // Eve won the auction; if she exits early,
-  // that's against "the rules" and she loses reputation or whatever.
-  // (see governance TBD)
+  const eveItemsPayout = await E(eveBidSeat).getPayout('Asset');
+  t.deepEqual(
+    await listingIssuer.getAmountOf(eveItemsPayout),
+    show2,
+    `eve gets nothing of what she put in`,
+  );
 
-  // show happens
-  // show end time timer fires.
-  // (or: Eve says "I'm satisfied".)
-  // rights are exchanged
-  // Alice gets 9 moola
-  // Eve gets an "I was there when!" NFT.
+  let aliceMoolaPayout = await E(aliceSellSeat).getPayout('Ask');
+  t.deepEqual(
+    await moolaIssuer.getAmountOf(aliceMoolaPayout),
+    makeMoola(20),
+    `alice didn't get any mool`,
+  );
+  t.truthy(1 === 1, 'it aint true?!');
+  if (true) return;
 });

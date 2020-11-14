@@ -13,24 +13,30 @@ import { E } from '@agoric/eventual-send';
  * @type {ContractStartFn}
  */
 const start = async (zcf) => {
-  const {
-    issuers: { Money: moneyIssuer },
-    pricePerItem,
-  } = zcf.getTerms();
-  const money = zcf.getAmountMath(moneyIssuer.getBrand());
 
-  // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));
-  const zcfMint = await zcf.makeZCFMint('Items', MathKind.SET);
+  //Terms are 
+  const {
+    issuers: { Ask: moolaIssuer },
+    listingPrice,
+    auctionInstallation //pricePerItem,        
+  } = zcf.getTerms();
+  const money = zcf.getAmountMath(moolaIssuer.getBrand()); //TODO: rename money to moolaAmountMath
+
+  // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));  
+  const listinMint = await zcf.makeZCFMint('Items', MathKind.SET); //ListingItem or LotItem?
   // Create the internal catalog entry mint
-  const { issuer, amountMath: itemsMath } = zcfMint.getIssuerRecord();
+  const { issuer, amountMath: itemsMath } = listinMint.getIssuerRecord();
 
   // ISSUE / TODO: how does this relate to webrtc key?
   const catalog = makeStore('startTitle');
 
   // In order to trade money for a listing, we need a seller seat.
+  // should this seat  be a singleton ?
   let sellerSeat;
-  let auctionInstallation;
   const open = (seat) => {
+    if (sellerSeat) {
+      sellerSeat.exit();
+    }
     sellerSeat = seat;
     return defaultAcceptanceMsg;
   };
@@ -46,9 +52,18 @@ const start = async (zcf) => {
 
     const fee = money.make(pricePerItem);
 
+
+  const buyListing = (buyerSeat) => {
+
+    assert(sellerSeat, details`not yet open for business`);
+    const wanted = buyerSeat.getProposal().want.Items.value;
+    const wantedAmount = itemsMath.make(wanted);
+    listinMint.mintGains({ Items: wantedAmount }, sellerSeat);
+
+    const fee = money.make(listingPrice);
+
     const [{ title, showTime }] = wanted;
     const key = JSON.stringify([new Date(showTime).toISOString(), title]);
-    console.log('buyListing', { key });
 
     assert(!catalog.has(key), details`time / title taken`);
     assert(sellerSeat, details`catalog not yet open`);
@@ -62,31 +77,52 @@ const start = async (zcf) => {
     return key;
   };
 
+  const runningAuctions = makeStore('startTitle');
+
+  const addInvitationMaker = (startTitle, invitationMaker) =>
+    runningAuctions.init(startTitle, invitationMaker);
+
+  const getBidInvitation = (startTitle) =>
+    runningAuctions.get(startTitle).makeBidInvitation();
+
+  //this is the house invitation.
   const makeListingInvitation = () =>
     zcf.makeInvitation(buyListing, 'buy listing');
 
   const zoe = zcf.getZoeService();
-  const makeAuctionSellerInvitation = async () => {
+
+  const makeAuctionSellerInvitation = async (terms) => {
+    const {
+      timeAuthority,
+      closesAfter
+    } = terms;
     const { creatorInvitation } = await E(zoe).startInstance(
       auctionInstallation,
       harden({
         Asset: issuer,
-        Ask: moneyIssuer,
+        Ask: moolaIssuer,
       }),
-      harden({ timeAuthority: 'TODO: timer', closesAfter: 1 }),
+      harden({
+        timeAuthority: timeAuthority,
+        closesAfter: closesAfter
+      }),
     );
     return creatorInvitation;
   };
 
-  const creatorInvitation = zcf.makeInvitation(open, 'seller');
+  //the seller is the house here selling a spot in the house to display the listing.
+
+  const createSellerInvitation = () => zcf.makeInvitation(open, 'seller');
+
   return harden({
-    creatorFacet: { setAuctionContract },
-    creatorInvitation,
+    creatorFacet: { createSellerInvitation },
     publicFacet: {
       makeListingInvitation,
       makeAuctionSellerInvitation,
       getIssuer: () => issuer,
-      pricePerItem: () => money.make(pricePerItem),
+      pricePerItem: () => money.make(listingPrice),
+      addInvitationMaker,
+      getBidInvitation,
     },
   });
 };
