@@ -59,6 +59,12 @@ export default async function deployContract(
   const bundle = await bundleSource(pathResolve(`./src/contract.js`));
   const installation = await E(zoe).install(bundle);
 
+  const secondPriceAuctionInstallation = await E(zoe).install(
+    await bundleSource(
+      require.resolve('@agoric/zoe/src/contracts/auction/secondPriceAuction'),
+    ),
+  );
+
   // Let's share this installation with other people, so that
   // they can run our contract code by making a contract
   // instance (see the api deploy script in this repo to see an
@@ -68,16 +74,23 @@ export default async function deployContract(
   // To share the installation, we're going to put it in the
   // board. The board is a shared, on-chain object that maps
   // strings to objects.
-  const CONTRACT_NAME = 'fungibleFaucet';
+  const CONTRACT_NAME = 'tokenizedVideo';
   const INSTALLATION_BOARD_ID = await E(board).getId(installation);
+  const AUCTION_INSTALLATION_BOARD_ID = await E(board).getId(
+    secondPriceAuctionInstallation,
+  );
   console.log('- SUCCESS! contract code installed on Zoe');
   console.log(`-- Contract Name: ${CONTRACT_NAME}`);
   console.log(`-- Installation Board Id: ${INSTALLATION_BOARD_ID}`);
+  console.log(
+    `-- Auction Installation Board Id: ${AUCTION_INSTALLATION_BOARD_ID}`,
+  );
 
   // Save the constants somewhere where the UI and api can find it.
   const dappConstants = {
     CONTRACT_NAME,
     INSTALLATION_BOARD_ID,
+    AUCTION_INSTALLATION_BOARD_ID,
   };
   const defaultsFolder = pathResolve(`../ui/public/conf`);
   const defaultsFile = pathResolve(
