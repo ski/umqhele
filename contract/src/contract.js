@@ -15,14 +15,14 @@ import { E } from '@agoric/eventual-send';
 const start = async (zcf) => {
   // Terms are
   const {
-    issuers: { Ask: moolaIssuer },
+    issuers: { Money: moneyIssuer },
     listingPrice,
     auctionInstallation, // pricePerItem,
   } = zcf.getTerms();
-  const money = zcf.getAmountMath(moolaIssuer.getBrand()); // TODO: rename money to moolaAmountMath
+  const money = zcf.getAmountMath(moneyIssuer.getBrand());
 
   // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));
-  const listinMint = await zcf.makeZCFMint('Items', MathKind.SET); // ListingItem or LotItem?
+  const listinMint = await zcf.makeZCFMint('Items', MathKind.SET);
   // Create the internal catalog entry mint
   const { issuer, amountMath: itemsMath } = listinMint.getIssuerRecord();
 
@@ -83,7 +83,7 @@ const start = async (zcf) => {
       auctionInstallation,
       harden({
         Asset: issuer,
-        Ask: moolaIssuer,
+        Ask: moneyIssuer,
       }),
       harden({
         timeAuthority,
