@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 import '@agoric/zoe/exported';
 
 import { MathKind } from '@agoric/ertp';
@@ -15,11 +15,12 @@ import { E } from '@agoric/eventual-send';
 const start = async (zcf) => {
   // Terms are
   const {
-    issuers: { Money: moneyIssuer },
+    issuers: { Money: moolaIssuer },
     listingPrice,
-    auctionInstallation, // pricePerItem,
+    auctionInstallation,
   } = zcf.getTerms();
-  const money = zcf.getAmountMath(moneyIssuer.getBrand());
+  const moneyIssuer  = await E(moolaIssuer).getBrand();
+  const money = zcf.getAmountMath(moneyIssuer);
 
   // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));
   const listinMint = await zcf.makeZCFMint('Items', MathKind.SET);

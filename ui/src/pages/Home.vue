@@ -10,8 +10,8 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </div>    
+  </div>  
   <CatalogEntryDetail v-show="isModalVisible" @close="closeModal" />
 </template>
 
