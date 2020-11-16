@@ -11,6 +11,7 @@ export default {
     let zoeInvitationDepositFacetId;
     let apiSend;
     let tokenPursePetname = ['OneVideoAuctions', 'Token'];
+    let moolaPursePetname = 'Fun budget';
 
     const {
       INVITE_BRAND_BOARD_ID,
@@ -26,7 +27,6 @@ export default {
     const walletRecv = (obj) => {
       switch (obj.type) {
         case 'walletDepositFacetIdResponse': {
-          console.log('walletDepositFacetIdResponse', obj);
           zoeInvitationDepositFacetId = obj.data;
           break;
         }
@@ -42,6 +42,7 @@ export default {
         case 'walletUpdatePurses': {
           // We find the first purse that can accept our token.
           const purses = JSON.parse(obj.data);
+
           const tokenPurse = purses.find(
             // Does the purse's brand match our token brand?
             ({ brandBoardId }) => brandBoardId === TOKEN_BRAND_BOARD_ID,
@@ -115,18 +116,22 @@ export default {
    * @param {{ type: string; data: any; }} obj
    */
     const apiRecv = (obj) => {
+      console.log('apiRecv', obj);
       switch (obj.type) {
-        case 'fungibleFaucet/sendInvitationResponse': {
+        case 'videoTokenizer/sendInvitationResponse': {
           // Once the invitation has been sent to the user, we update the
           // offer to include the invitationBoardId. Then we make a
           // request to the user's wallet to send the proposed offer for
-          // acceptance/rejection.
-          const { offer } = obj.data;
+          // acceptance/rejection.          
+          const { updatedOffer } = obj.data;
           // eslint-disable-next-line no-use-before-define
           walletSend({
+            // type: 'walletGetDepositFacetId',
+            // brandBoardId: INVITE_BRAND_BOARD_ID,
             type: 'walletAddOffer',
-            data: offer,
+            data: updatedOffer,
           });
+          
           break;
         }
         case 'CTP_DISCONNECT': {
@@ -143,31 +148,39 @@ export default {
       apiSend = rawApiSend;
       const offer = {
         // JSONable ID for this offer.  This is scoped to the origin.
-        id: Date.now().toLocaleString(),
+        id: Date.now(),
 
         proposalTemplate: {
           want: {
             Items: {
-              title: 'Learn to build smart contracts',
-              showTime: Date.parse('2020-11-30 14:00:00'),
-              // these don't go in the amountmath, do they?
-              auctionEndDate: Date.parse('2020-11-16 14:00:00'),
-              reservePrice: 9,
-              startingBid: 3,
+              pursePetname: tokenPursePetname,
+              value: {
+                title: 'Learn to build smart contracts',
+                showTime: Date.parse('2020-11-30 14:00:00'),
+                // these don't go in the amountmath, do they?
+                auctionEndDate: Date.parse('2020-11-16 14:00:00'),
+                reservePrice: 9,
+                startingBid: 3,
+              }
+            },
+            give: {
+              Money: {
+                pursePetname: moolaPursePetname,
+                value: 2,
+              },
             },
           },
         },
-
         // Tell the wallet that we're handling the offer result.
         dappContext: true,
       };
-      
 
+      console.log('zoeInvitationDepositFacetId', zoeInvitationDepositFacetId)
       apiSend({
         type: 'videoTokenizer/sendInvitation',
         id: Date.now().toLocaleString(),
         data: {
-          depositFacetId: zoeInvitationDepositFacetId,
+          depositFacetId: '604346717',
           offer,
         },
       });

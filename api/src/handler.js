@@ -13,11 +13,12 @@ const spawnHandler = (
           case 'videoTokenizer/sendInvitation': {
             const { depositFacetId, offer } = obj.data;
             const depositFacet = E(board).getValue(depositFacetId);
+            console.log("depositFacet");
             const invitation = await E(creatorFacet).createSellerInvitation();
             const invitationAmount = await E(invitationIssuer).getAmountOf(
               invitation,
             );
-            console.log(invitationAmount);
+            
             const {
               value: [{ handle }],
             } = invitationAmount;
