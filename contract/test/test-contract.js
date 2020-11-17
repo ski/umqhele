@@ -32,8 +32,11 @@ test('tokenized video', async (t) => {
         require.resolve('@agoric/zoe/src/contracts/auction/secondPriceAuction'),
       ),
     ]);
+
+    const moola2 = await makeMoola(2);
+
     const terms = harden({
-      listingPrice: 2,
+      listingPrice: moola2,
       auctionInstallation: secondPriceAuctionInstallation,
     });
     const { creatorFacet, publicFacet: videoService } = await E(
@@ -50,7 +53,7 @@ test('tokenized video', async (t) => {
     // the seller is the house.
     const houseSeat = await zoe.offer(creatorFacet.createSellerInvitation());
 
-    await listing.promise;
+    await listing.promise
 
     // we are creating a new invitation here so that bob can collect payout.
     const houseSeat2 = await zoe.offer(creatorFacet.createSellerInvitation());
@@ -180,5 +183,6 @@ test('tokenized video', async (t) => {
     p.deposit(moolaMint.mintPayment(makeMoola(n)));
     return p;
   };
+  //, , 
   return Promise.all([house(), alice(fund(2)), eve(fund(20)), clock()]);
 });

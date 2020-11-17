@@ -19,17 +19,20 @@ const start = async (zcf) => {
     listingPrice,
     auctionInstallation,
   } = zcf.getTerms();
-  const moneyIssuer  = await E(moolaIssuer).getBrand();
-  const money = zcf.getAmountMath(moneyIssuer);
 
+  //the mool brand
+  const moneyBrand = await E(moolaIssuer).getBrand();  
+  //the moola amount math
+  const money = zcf.getAmountMath(moneyBrand);
+  
   // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));
   const listinMint = await zcf.makeZCFMint('Items', MathKind.SET);
   // Create the internal catalog entry mint
   const { issuer, amountMath: itemsMath } = listinMint.getIssuerRecord();
-
+  
   // ISSUE / TODO: how does this relate to webrtc key?
   const catalog = makeStore('startTitle');
-
+  
   // In order to trade money for a listing, we need a seller seat.
   // should this seat  be a singleton ?
   let sellerSeat;
@@ -47,8 +50,6 @@ const start = async (zcf) => {
     const wantedAmount = itemsMath.make(wanted);
     listinMint.mintGains({ Items: wantedAmount }, sellerSeat);
 
-    const fee = money.make(listingPrice);
-
     const [{ title, showTime }] = wanted;
     const key = JSON.stringify([new Date(showTime).toISOString(), title]);
 
@@ -56,7 +57,7 @@ const start = async (zcf) => {
     assert(sellerSeat, details`catalog not yet open`);
     trade(
       zcf,
-      { seat: sellerSeat, gains: { Money: fee } },
+      { seat: sellerSeat, gains: { Money: listingPrice } },
       { seat: buyerSeat, gains: { Items: wantedAmount } },
     );
     buyerSeat.exit();
@@ -79,18 +80,19 @@ const start = async (zcf) => {
   const zoe = zcf.getZoeService();
 
   const makeAuctionSellerInvitation = async (terms) => {
+    
     const { timeAuthority, closesAfter } = terms;
     const { creatorInvitation } = await E(zoe).startInstance(
       auctionInstallation,
       harden({
         Asset: issuer,
-        Ask: moneyIssuer,
+        Ask: moolaIssuer,
       }),
       harden({
         timeAuthority,
         closesAfter,
       }),
-    );
+    );    
     return creatorInvitation;
   };
 
@@ -104,7 +106,7 @@ const start = async (zcf) => {
       makeListingInvitation,
       makeAuctionSellerInvitation,
       getIssuer: () => issuer,
-      pricePerItem: () => money.make(listingPrice),
+      pricePerItem: () => listingPrice,
       addInvitationMaker,
       getBidInvitation,
     },
