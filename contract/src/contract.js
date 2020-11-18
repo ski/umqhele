@@ -20,15 +20,17 @@ const start = async (zcf) => {
     auctionInstallation,
   } = zcf.getTerms();
 
+  const { zcfSeat: houseSeat } = zcf.makeEmptySeatKit();
+
   //the mool brand
   const moneyBrand = await E(moolaIssuer).getBrand();  
   //the moola amount math
   const money = zcf.getAmountMath(moneyBrand);
   
   // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));
-  const listinMint = await zcf.makeZCFMint('Items', MathKind.SET);
+  const listingMint = await zcf.makeZCFMint('Items', MathKind.SET);
   // Create the internal catalog entry mint
-  const { issuer, amountMath: itemsMath } = listinMint.getIssuerRecord();
+  const { issuer, amountMath: itemsMath } = listingMint.getIssuerRecord();
   
   // ISSUE / TODO: how does this relate to webrtc key?
   const catalog = makeStore('startTitle');
@@ -48,13 +50,15 @@ const start = async (zcf) => {
     assert(sellerSeat, details`not yet open for business`);
     const wanted = buyerSeat.getProposal().want.Items.value;
     const wantedAmount = itemsMath.make(wanted);
-    listinMint.mintGains({ Items: wantedAmount }, sellerSeat);
+    listingMint.mintGains({ Items: wantedAmount }, sellerSeat);
 
     const [{ title, showTime }] = wanted;
     const key = JSON.stringify([new Date(showTime).toISOString(), title]);
 
     assert(!catalog.has(key), details`time / title taken`);
     assert(sellerSeat, details`catalog not yet open`);
+    console.log(JSON.stringify(listingPrice));
+    console.log(JSON.stringify(wantedAmount));
     trade(
       zcf,
       { seat: sellerSeat, gains: { Money: listingPrice } },
@@ -97,7 +101,6 @@ const start = async (zcf) => {
   };
 
   // the seller is the house here selling a spot in the house to display the listing.
-
   const createSellerInvitation = () => zcf.makeInvitation(open, 'seller');
 
   return harden({
