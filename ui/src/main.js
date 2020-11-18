@@ -6,8 +6,8 @@ import '@agoric/eventual-send/shim';
 import { createApp } from 'vue'
 import router from './router'
 import store from './store'
-import wallet from './plugins/wallet';
-import videohouse from './plugins/video-tokenizer';
+//import wallet from './plugins/wallet';
+//import videohouse from './plugins/video-tokenizer';
 
 import App from './App.vue'
 import './index.css'
@@ -55,8 +55,9 @@ library.add(
   faChartLine
 );
 const app = createApp(App);
-app.use(router).use(store).use(wallet, { store });
-app.use(videohouse, { store });
+app.use(router).use(store)
+//.use(wallet, { store });
+//app.use(videohouse, { store });
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('font-awesome-layers', FontAwesomeLayers)
 app.component('font-awesome-layers-text', FontAwesomeLayersText)

@@ -18,7 +18,7 @@
         <div class="navbar-end">
           <div class="navbar-item is-icon drop-trigger has-caret">
             <font-awesome-layers
-              @click.prevent="newEntry"
+              @click="newEntry"
               class="fa-2x pv3 ph2 ma0 link grow nav-is-active"
             >
               <font-awesome-icon :icon="['fa', 'plus']" />
@@ -47,9 +47,9 @@ export default {
       await this.$store.dispatch("wallet/connect");
     },
 
-    newEntry() {
-      this.$router.push('new')
-      //this.$emit("newentry");
+    async newEntry() {
+      await this.$store.dispatch("wallet/makeSellerOffer");
+      //this.$router.push('new')      
     },
   },
 };

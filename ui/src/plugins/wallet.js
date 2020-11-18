@@ -1,64 +1,112 @@
-import { E } from '@agoric/eventual-send';
-import { updateFromNotifier } from '@agoric/notifier';
-import { makeCapTPConnection } from '../lib/capt';
+// @ts-check
+import 'regenerator-runtime/runtime';
+import dappConstants from '../lib/constants';
+import { connect } from './connect';
+
 
 export default {
-  install: async (app, options) => {
-    const store = options.store;
-    options.store.dispatch({ type: 'core/log', message: 'wallet initialising' });
-    function cmp(a, b) {
-      return a < b ? -1 : a === b ? 0 : 1;
-    }
 
-    function kv(keyObj, val) {
-      const key = Object.values(keyObj)[0];
-      const text = Array.isArray(key) ? key.join('.') : key;
-      return { ...val, ...keyObj, id: text, text, value: val };;
-    }
+  connect: async (commit) => {
+    console.log('connecting');
+    const {
+      INVITE_BRAND_BOARD_ID,
+      INSTANCE_BOARD_ID,
+      INSTALLATION_BOARD_ID,
+      issuerBoardIds: { Auction: AUCTION_ISSUER_BOARD_ID, Money: MONEY_BRAND_BOARD_ID, },
+      brandBoardIds: { Auction: AUCTION_BRAND_BOARD_ID, Money: MONEY_ISSUER_BOARD_ID },
+    } = dappConstants;
+   
+    /**
+   * @param {{ type: string; data: any; walletURL: string }} obj
+   */
+    const walletRecv = (obj) => {
+      switch (obj.type) {
+        case 'walletDepositFacetIdResponse': {
+          //send data to vuex
+          commit('setZoeInvitationDepositFacetId', obj.data);
+          break;
+        }
+        case 'walletNeedDappApproval': {
+          console.log('wallet needs approvals');
+          break;
+        }
+        case 'walletURL': {
+          // TODO: handle appropriately
+          break;
+        }
+        case 'walletUpdatePurses': {
+          // We find the first purse that can accept our token.
+          const purses = JSON.parse(obj.data);
 
-    const { connected, makeStableForwarder } = makeCapTPConnection();
+          const tokenPurse = purses.find(
+            // Does the purse's brand match our token brand?
+            ({ brandBoardId }) => brandBoardId === AUCTION_BRAND_BOARD_ID,
+          );
+          if (tokenPurse && tokenPurse.pursePetname) {
+            // If we got a petname for that purse, use it in the offers we create.   
+            //send data to vuex         
+            commit('setTokenPursePetname', tokenPurse.pursePetname);
+          }
+          break;
+        }
+        case 'walletSuggestIssuerResponse': {
+          break;
+        }
+        case 'walletSuggestInstallationResponse': {
+          break;
+        }
+        case 'walletSuggestInstanceResponse': {
+          break;
+        }
+        case 'walletOfferAdded': {
+          console.log('walletOfferAdded');
+          break;
+        }
+        case 'walletOfferHandled': {
+          console.log('walletOfferHandled');
+          break;
+        }
+        case 'walletOfferResult': {
+          console.log('walletOfferResult');
+          break;
+        }
+        default: {
+          throw Error(`unexpected walletRecv obj.type ${obj.type}`);
+        }
+      }
+    };
 
-    const walletP = makeStableForwarder(bootP => E.G(bootP).wallet);
-    const boardP = makeStableForwarder(bootP => E.G(bootP).board);
-    const scrathc = makeStableForwarder(bootP => E.G(bootP).scratch);
+    const walletSend = await connect(
+      'wallet',
+      walletRecv,
+      '?suggestedDappPetname=OneVideoAuctions',      
+    ).then((walletSend) => {
+      walletSend({ type: 'walletGetPurses' });
+      walletSend({
+        type: 'walletGetDepositFacetId',
+        brandBoardId: INVITE_BRAND_BOARD_ID,
+      });
+      walletSend({
+        type: 'walletSuggestInstallation',
+        petname: 'Installation',
+        boardId: INSTALLATION_BOARD_ID,
+      });
+      walletSend({
+        type: 'walletSuggestInstance',
+        petname: 'Instance',
+        boardId: INSTANCE_BOARD_ID,
+      });
+      walletSend({
+        type: 'walletSuggestIssuer',
+        petname: 'Token',
+        boardId: AUCTION_ISSUER_BOARD_ID,
+      });
+      return walletSend;
+    });
+    commit('setWalletSend', walletSend);
+  },
 
-    store.commit('wallet/setConnection', connected);
-
-    //connected.connect(); //it should get a callback to  onOpen in capt
-
-    const contact = await E(walletP).getSelfContact();
-    const js = { contactPetname: 'Self', ...kv('Self', contact) }
-
-    // updateFromNotifier({
-    //     updateState(state) {
-    //         console.log('getInboxJSONNotifier', state);
-    //     },
-    // }, E(walletP).getInboxJSONNotifier());
-
-    updateFromNotifier({
-      updateState(state) {
-        store.commit('wallet/setPurses', state);
-        console.log('getPursesNotifier', state);
-      },
-    }, E(walletP).getPursesNotifier());
-
-    // updateFromNotifier({
-    //     updateState(state) {
-    //         console.log('getDappsNotifier', state);
-    //     },
-    // }, E(walletP).getDappsNotifier());
-
-    // updateFromNotifier({
-    //     updateState(state) {
-    //         console.log('getContactsNotifier', state);
-    //     },
-    // }, E(walletP).getContactsNotifier());
-
-    updateFromNotifier({
-      updateState(state) {
-        store.commit('wallet/setIssuers', state);
-      },
-    }, E(walletP).getIssuersNotifier());
-
+  disconnect: async () => {
+    console.log('disconnecting');
   }
 }

@@ -12,8 +12,27 @@ const mutations = {
     },
 
     setPurses(state, data){
-        console.log(data[2]);
         state.purses = data;
+    },
+
+    setZoeInvitationDepositFacetId(state, data){
+      state.zoeInvitationDepositFacetId = data;
+    },
+
+    setWalletSend(state, data) {
+      state.walletSend = data;
+    },
+
+    setApiSend(state, data) {
+      state.apiSend = data;
+    },
+
+    setTokenPursePetname(state, data){
+      state.tokenPursePetname = data;
+    },
+
+    setSendInvitationResponse(state, data){
+      state.sendInvitationResponse = data;
     }
 }
 

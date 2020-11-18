@@ -5,8 +5,8 @@ import fs from 'fs';
 import { E } from '@agoric/eventual-send';
 import '@agoric/zoe/exported';
 import { makeIssuerKit } from '@agoric/ertp';
+import { makeLocalAmountMath } from '@agoric/ertp';
 import installationConstants from '../ui/public/conf/installationConstants';
-
 
 // deploy.js runs in an ephemeral Node.js outside of swingset. The
 // spawner runs within ag-solo, so is persistent.  Once the deploy.js
@@ -46,13 +46,17 @@ export default async function deployApi(
     board,
   } = home;
 
-  const { INSTALLATION_BOARD_ID, CONTRACT_NAME, AUCTION_INSTALLATION_BOARD_ID } = installationConstants;
+  const { INSTALLATION_BOARD_ID,  AUCTION_INSTALLATION_BOARD_ID, CONTRACT_NAME } = installationConstants;
   const auctionHouseInstallation = await E(board).getValue(INSTALLATION_BOARD_ID);
   const secondPriceAuctionInstallation = await E(board).getValue(AUCTION_INSTALLATION_BOARD_ID);
 
-
+  let moneyIssuer = await E(scratch).get('faucetTokenIssuer');
+  const moneyBrand = await E(moneyIssuer).getBrand();
+  const moneyMath = await makeLocalAmountMath(moneyIssuer);
+  const pricePerListing = moneyMath.make(2);
+  
   const terms = harden({
-    listingPrice: 2,
+    listingPrice: pricePerListing,
     auctionInstallation: secondPriceAuctionInstallation,
   });
   //should  this be here? What if its not moola?
@@ -69,25 +73,28 @@ export default async function deployApi(
   const invitationIssuerP = E(zoe).getInvitationIssuer();
   const invitationBrandP = E(invitationIssuerP).getBrand();
 
-  const tokenIssuer = await E(videoService).getIssuer();
-  const tokenBrand = await E(tokenIssuer).getBrand();
+  const auctionIssuer = await E(videoService).getIssuer();
+  const auctionBrand = await E(auctionIssuer).getBrand();
   const invitationIssuer = await invitationIssuerP;
 
   const [
     INSTANCE_BOARD_ID,
-    TOKEN_BRAND_BOARD_ID,
-    TOKEN_ISSUER_BOARD_ID,
+    AUCTION_BRAND_BOARD_ID,
+    AUCTION_ISSUER_BOARD_ID,
+    MONEY_BRAND_BOARD_ID,
+    MONEY_ISSUER_BOARD_ID,
   ] = await Promise.all([
     E(board).getId(instance),
-    E(board).getId(tokenBrand),
-    E(board).getId(tokenIssuer),
+    E(board).getId(auctionBrand),
+    E(board).getId(auctionIssuer),
+    E(board).getId(moneyBrand),
+    E(board).getId(moneyIssuer),
   ]);
 
   console.log(`-- Contract Name: ${CONTRACT_NAME}`);
   console.log(`-- INSTANCE_BOARD_ID: ${INSTANCE_BOARD_ID}`);
-  console.log(`-- TOKEN_ISSUER_BOARD_ID: ${TOKEN_ISSUER_BOARD_ID}`);
-  console.log(`-- TOKEN_BRAND_BOARD_ID: ${TOKEN_BRAND_BOARD_ID}`);
-
+  console.log(`-- AUCTION_ISSUER_BOARD_ID: ${AUCTION_ISSUER_BOARD_ID}`);
+  console.log(`-- AUCTION_BRAND_BOARD_ID: ${AUCTION_ISSUER_BOARD_ID}`);
 
   const installURLHandler = async () => {
     const bundle = await bundleSource(pathResolve('./src/handler.js'));
@@ -98,6 +105,7 @@ export default async function deployApi(
       board,
       http,
       invitationIssuer,
+      zoe,
     });
 
     // Have our ag-solo wait on ws://localhost:8000/api/card-store for
@@ -117,9 +125,13 @@ export default async function deployApi(
     INVITE_BRAND_BOARD_ID,
     // BRIDGE_URL: 'agoric-lookup:https://local.agoric.com?append=/bridge',
     brandBoardIds: {
-      Token: TOKEN_BRAND_BOARD_ID,
+      Auction: AUCTION_BRAND_BOARD_ID,
+      Money: MONEY_BRAND_BOARD_ID,
     },
-    issuerBoardIds: { Token: TOKEN_ISSUER_BOARD_ID },
+    issuerBoardIds: { 
+      Auction: AUCTION_ISSUER_BOARD_ID,
+      Money: MONEY_ISSUER_BOARD_ID
+    },
     BRIDGE_URL: 'http://127.0.0.1:8000',
     API_URL,
   };
