@@ -15,7 +15,7 @@ export default {
       issuerBoardIds: { Auction: AUCTION_ISSUER_BOARD_ID, Money: MONEY_BRAND_BOARD_ID, },
       brandBoardIds: { Auction: AUCTION_BRAND_BOARD_ID, Money: MONEY_ISSUER_BOARD_ID },
     } = dappConstants;
-   
+
     /**
    * @param {{ type: string; data: any; walletURL: string }} obj
    */
@@ -70,6 +70,10 @@ export default {
           console.log('walletOfferResult');
           break;
         }
+        case 'walletHaveDappApproval': {
+          console.log('walletHaveDappApproval');
+          break;
+        }
         default: {
           throw Error(`unexpected walletRecv obj.type ${obj.type}`);
         }
@@ -79,7 +83,7 @@ export default {
     const walletSend = await connect(
       'wallet',
       walletRecv,
-      '?suggestedDappPetname=OneVideoAuctions',      
+      '?suggestedDappPetname=OneVideoAuctions',
     ).then((walletSend) => {
       walletSend({ type: 'walletGetPurses' });
       walletSend({

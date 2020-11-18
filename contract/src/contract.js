@@ -57,8 +57,7 @@ const start = async (zcf) => {
 
     assert(!catalog.has(key), details`time / title taken`);
     assert(sellerSeat, details`catalog not yet open`);
-    console.log(JSON.stringify(listingPrice));
-    console.log(JSON.stringify(wantedAmount));
+
     trade(
       zcf,
       { seat: sellerSeat, gains: { Money: listingPrice } },

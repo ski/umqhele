@@ -73,8 +73,9 @@ export default async function deployApi(
   const invitationIssuerP = E(zoe).getInvitationIssuer();
   const invitationBrandP = E(invitationIssuerP).getBrand();
 
-  const auctionIssuer = await E(videoService).getIssuer();
-  const auctionBrand = await E(auctionIssuer).getBrand();
+  const auctionIssuerP = await E(videoService).getIssuer();
+  const auctionBrand = await E(auctionIssuerP).getBrand();
+  const auctionIssuer = await auctionIssuerP;
   const invitationIssuer = await invitationIssuerP;
 
   const [
@@ -105,8 +106,12 @@ export default async function deployApi(
       board,
       http,
       invitationIssuer,
+      auctionIssuer,
       zoe,
     });
+
+    // const sellerInvitation = await E(creatorFacet).createSellerInvitation();
+    // const houseSeat = await E(zoe).offer(sellerInvitation);
 
     // Have our ag-solo wait on ws://localhost:8000/api/card-store for
     // websocket connections.

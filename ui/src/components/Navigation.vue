@@ -26,6 +26,14 @@
           </div>
           <div class="navbar-item is-icon drop-trigger has-caret">
             <font-awesome-layers
+              @click="init"
+              class="fa-2x pv3 ph2 ma0 link grow nav-is-active"
+            >
+              <font-awesome-icon :icon="['fa', 'chart-line']" />
+            </font-awesome-layers>
+          </div>
+          <div class="navbar-item is-icon drop-trigger has-caret">
+            <font-awesome-layers
               @click.prevent="connect"
               class="fa-2x pv3 ph2 ma0 link grow nav-is-active"
             >
@@ -47,8 +55,12 @@ export default {
       await this.$store.dispatch("wallet/connect");
     },
 
+    async init() {
+      await this.$store.dispatch("wallet/init");
+    },
+
     async newEntry() {
-      await this.$store.dispatch("wallet/makeSellerOffer");
+      await this.$store.dispatch("wallet/makeSellerOffer");      
       //this.$router.push('new')      
     },
   },
