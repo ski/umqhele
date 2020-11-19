@@ -1,6 +1,6 @@
 import wallet from '../../plugins/wallet';
 import api from '../../plugins/api';
-const moolaPursePetname = ['FungibleFaucet', 'Token'];
+const moolaPursePetname = 'Fun budget';
 const tokenPursePetname = ['OneVideoAuctions', 'Token']
 
 const actions = {

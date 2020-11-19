@@ -44,13 +44,14 @@ export default async function deployApi(
     http,
     uploads: scratch,
     board,
+    wallet,
   } = home;
 
   const { INSTALLATION_BOARD_ID,  AUCTION_INSTALLATION_BOARD_ID, CONTRACT_NAME } = installationConstants;
   const auctionHouseInstallation = await E(board).getValue(INSTALLATION_BOARD_ID);
   const secondPriceAuctionInstallation = await E(board).getValue(AUCTION_INSTALLATION_BOARD_ID);
 
-  let moneyIssuer = await E(scratch).get('faucetTokenIssuer');
+  let moneyIssuer = await E(wallet).getIssuer('moola');
   const moneyBrand = await E(moneyIssuer).getBrand();
   const moneyMath = await makeLocalAmountMath(moneyIssuer);
   const pricePerListing = moneyMath.make(2);
@@ -59,12 +60,10 @@ export default async function deployApi(
     listingPrice: pricePerListing,
     auctionInstallation: secondPriceAuctionInstallation,
   });
-  //should  this be here? What if its not moola?
-  const { issuer: moolaIssuer } = makeIssuerKit('moola');
   const { creatorFacet, instance, publicFacet: videoService } =
     await E(zoe).startInstance(
       auctionHouseInstallation,
-      harden({ Money: moolaIssuer }),
+      harden({ Money: moneyIssuer }),
       terms,
     );
 
