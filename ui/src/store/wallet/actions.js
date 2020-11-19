@@ -43,7 +43,7 @@ const actions = {
             pursePetname: tokenPursePetname,
             value: [{
               title: 'Learn to build smart contracts',
-              showTime: Date.parse('2020-11-30 14:00:00'),
+              showTime: new Date().toISOString(),
               auctionEndDate: Date.parse('2020-11-16 14:00:00'),
               reservePrice: 9,
               startingBid: 3,

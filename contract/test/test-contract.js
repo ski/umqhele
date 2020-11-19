@@ -137,14 +137,14 @@ test('tokenized video', async (t) => {
     t.deepEqual(
       await moolaIssuer.getAmountOf(aliceMoolaPayout),
       makeMoola(20),
-      `alice didn't get any mool`,
+      `alice didn't get any moola`,
     );
   };
 
   const eve = async (purse) => {
     const videoService = await webSite.promise;
     const { show, key } = await listing.promise;
-
+        
     const eveBidInvitation = videoService.getBidInvitation(key);
 
     const eveBidOffer = harden({

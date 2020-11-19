@@ -99,6 +99,9 @@ const start = async (zcf) => {
     return creatorInvitation;
   };
 
+  const getListing = () => {
+    return runningAuctions.keys();
+  }
   // the seller is the house here selling a spot in the house to display the listing.
   const createSellerInvitation = () => zcf.makeInvitation(open, 'seller');
 
@@ -107,6 +110,7 @@ const start = async (zcf) => {
     publicFacet: {
       makeListingInvitation,
       makeAuctionSellerInvitation,
+      getListing,
       getIssuer: () => issuer,
       pricePerItem: () => listingPrice,
       addInvitationMaker,
