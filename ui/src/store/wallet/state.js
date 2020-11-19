@@ -4,7 +4,7 @@ export default function () {
     zoeInvitationDepositFacetId: '',
     walletSend: {},
     apiSend: {},
-    moolaPursePetname: ['FungibleFaucet', 'Token'],
+    moolaPursePetname: 'Fun budget',
     tokenPursePetname: ['OneVideoAuctions', 'Token'],
     sendInvitationResponse: {}, //this is the sell item invitation response.
   };
