@@ -16,6 +16,11 @@ export default {
           break;
         }
 
+        case 'videoTokenizer/listingsResponse' : {
+          const { listing } = obj.data;
+          console.log(listing);
+          break;
+        }
         case 'videoTokenizer/createListingResponse': {
           const { updatedOffer } = obj.data;
           console.log('createListingResponse ', obj);

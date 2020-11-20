@@ -10,6 +10,15 @@ const spawnHandler = (
     harden({
       async onMessage(obj) {
         switch (obj.type) {
+          
+          case 'videoTokenizer/listings': {
+            const listing = await E(videoService).getListing();
+            send({
+              type: 'videoTokenizer/listingsResponse',
+              data: { listing },
+            });
+            return true;
+          }
 
           case 'videoTokenizer/createListing': {
             const { depositFacetId, offer } = obj.data;

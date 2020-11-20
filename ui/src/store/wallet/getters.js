@@ -23,12 +23,16 @@ const getters = {
     return state.apiSend;
   },
 
-  getTokenPursePetname(state){
+  getTokenPursePetname(state) {
     return state.tokenPursePetname;
   },
 
-  getSendInvitationResponse(state){
+  getSendInvitationResponse(state) {
     return state.sendInvitationResponse;
+  },
+
+  getListingPurse(state) {
+    return state.listingPurse;
   }
 }
 

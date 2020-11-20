@@ -33,6 +33,10 @@ const mutations = {
 
     setSendInvitationResponse(state, data){
       state.sendInvitationResponse = data;
+    },
+
+    setListingPurse(state, data) {
+      state.listingPurse = data;
     }
 }
 

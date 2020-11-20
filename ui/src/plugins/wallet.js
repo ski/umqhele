@@ -37,14 +37,17 @@ export default {
         case 'walletUpdatePurses': {
           // We find the first purse that can accept our token.
           const purses = JSON.parse(obj.data);
-
+          
           const tokenPurse = purses.find(
             // Does the purse's brand match our token brand?
             ({ brandBoardId }) => brandBoardId === AUCTION_BRAND_BOARD_ID,
+            
           );
           if (tokenPurse && tokenPurse.pursePetname) {
             // If we got a petname for that purse, use it in the offers we create.   
-            //send data to vuex         
+            //send data to vuex    
+            console.log(tokenPurse);    
+            commit('setListingPurse', tokenPurse); 
             commit('setTokenPursePetname', tokenPurse.pursePetname);
           }
           break;

@@ -7,21 +7,33 @@
           <div class="field">
             <label class="label">Title</label>
             <div class="control">
-              <input class="input" type="text" placeholder="Give your stream a title" />
+              <input
+                class="input"
+                type="text"               
+                v-model="title"
+              />
             </div>
           </div>
 
           <div class="field">
             <label class="label">Plug</label>
             <div class="control">
-              <textarea class="textarea" placeholder="Plug your stream"></textarea>
+              <textarea
+                class="textarea"
+                placeholder="Plug your stream"
+              ></textarea>
             </div>
           </div>
 
           <div class="field">
             <label class="label">Email</label>
             <div class="control has-icons-left has-icons-right">
-              <input class="input is-danger" type="email" placeholder="Email input" value="hello@" />
+              <input
+                class="input is-danger"
+                type="email"
+                placeholder="Email input"
+                value="hello@"
+              />
               <span class="icon is-small is-left">
                 <i class="fas fa-envelope"></i>
               </span>
@@ -83,10 +95,20 @@
 
 <script>
 export default {
-  name: "App",
+  name: 'NewCatalogEntry',
+  data(){
+    return {
+      title: 'hello world'
+    }
+  },
+  computed: {
+    itemTitle() {
+      return chance.sentence({ words: 4 }) ;
+    },
+  },
   methods: {
     close() {
-      this.$emit("close");
+      this.$emit('close');
     },
   },
 };

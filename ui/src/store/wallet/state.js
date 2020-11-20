@@ -6,6 +6,7 @@ export default function () {
     apiSend: {},
     moolaPursePetname: 'Fun budget',
     tokenPursePetname: ['OneVideoAuctions', 'Token'],
+    listingPurse: [],
     sendInvitationResponse: {}, //this is the sell item invitation response.
   };
 }

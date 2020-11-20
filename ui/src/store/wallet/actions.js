@@ -29,11 +29,18 @@ const actions = {
         offer,
       },
     }
-    await state.apiSend(apiSendRequest );
+    await state.apiSend(apiSendRequest);
   },
 
-  async makeSellerOffer({ commit, state }) {
-
+  async getListing({ commit, state }) {
+    const apiListingRequest = {
+      type: 'videoTokenizer/listings',
+      id: Date.now().toLocaleString(),     
+    }
+    await state.apiSend(apiListingRequest);
+  },
+  
+  async makeSellerOffer({ commit, state}, entry ) {        
     const offer = {
       id: Date.now(),
 
@@ -41,13 +48,7 @@ const actions = {
         want: {
           Items: {
             pursePetname: tokenPursePetname,
-            value: [{
-              title: 'Learn to build smart contracts',
-              showTime: new Date().toISOString(),
-              auctionEndDate: Date.parse('2020-11-16 14:00:00'),
-              reservePrice: 9,
-              startingBid: 3,
-            }]
+            value: [entry]
           },
         },
         give: {

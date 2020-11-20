@@ -5,14 +5,15 @@
         <!--Catalog entries-->
         <div id="products-tab" class="store-tab-pane is-active">
           <div class="columns is-multiline">
-            <CatalogEntry @details='showDetails'></CatalogEntry>
-            <VideoEntry></VideoEntry>
+
+            <!-- <CatalogEntry v-for="item in listing" :key='item.showTime' @details='showDetails'></CatalogEntry> -->
+            <VideoEntry v-for="item in listing" :key='item.showTime'></VideoEntry>
+            <!-- <CatalogEntry @details='showDetails'></CatalogEntry> -->
           </div>
         </div>
       </div>
     </div>    
   </div>  
-  <CatalogEntryDetail v-show="isModalVisible" @close="closeModal" />
 </template>
 
 <script>
@@ -33,6 +34,14 @@ export default {
     return {
       isModalVisible: false,
     };
+  },
+  computed: {   
+    listing() {
+      const purse = this.$store.getters['wallet/getListingPurse'];
+      if(purse.currentAmount)
+        return purse.currentAmount.value;
+      return [];
+    }
   },
   methods: {
     showDetails() {

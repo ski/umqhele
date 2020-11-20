@@ -49,6 +49,7 @@
                             class="textarea"
                             rows="3"
                             placeholder="Write about the stream you are trading."
+                            v-model="description"
                           ></textarea>
                         </div>
                       </div>
@@ -56,9 +57,13 @@
                       <div id="options-summary" class="options-summary"></div>
 
                       <div class="is-suboption">
-                        <input class="input" placeholder="Entry Title" />
+                        <input
+                          class="input"
+                          placeholder="Entry Title"
+                          v-model="title"
+                        />
                       </div>
-                    </div>                  
+                    </div>
 
                     <div class="hidden-options">
                       <div class="target-channels">
@@ -88,7 +93,7 @@
                           <div class="channel-name">Showing On</div>
                           <div class="dropdown is-spaced is-modern is-right">
                             <div>
-                              <input class="input" />
+                              <input class="input" v-model="showTime" />
                             </div>
                           </div>
                         </div>
@@ -96,13 +101,15 @@
                         <div class="channel">
                           <div class="channel-icon">
                             <font-awesome-layers class="fa-1x">
-                              <font-awesome-icon :icon="['fa', 'money-bill-wave-alt']" />
+                              <font-awesome-icon
+                                :icon="['fa', 'money-bill-wave-alt']"
+                              />
                             </font-awesome-layers>
                           </div>
-                          <div class="channel-name">Reserve Price</div>
+                          <div class="channel-name">Reserve ꟿ Price</div>
                           <div class="dropdown is-spaced is-modern is-right">
                             <div>
-                              <input class="input" />
+                              <input class="input" v-model="reservePrice" />
                             </div>
                           </div>
                         </div>
@@ -110,13 +117,15 @@
                         <div class="channel">
                           <div class="channel-icon">
                             <font-awesome-layers class="fa-1x">
-                              <font-awesome-icon :icon="['fa', 'money-bill-wave-alt']" />
+                              <font-awesome-icon
+                                :icon="['fa', 'money-bill-wave-alt']"
+                              />
                             </font-awesome-layers>
                           </div>
-                          <div class="channel-name">Starting Bid</div>
+                          <div class="channel-name">Starting ꟿ Bid</div>
                           <div class="dropdown is-spaced is-modern is-right">
                             <div>
-                              <input class="input" />
+                              <input class="input" v-model="minBid" />
                             </div>
                           </div>
                         </div>
@@ -127,10 +136,10 @@
                               <font-awesome-icon :icon="['fa', 'calendar']" />
                             </font-awesome-layers>
                           </div>
-                          <div class="channel-name">Auction End Date</div>
+                          <div class="channel-name">Auction Duration</div>
                           <div class="dropdown is-spaced is-modern is-right">
                             <div>
-                              <input class="input" />
+                              <input class="input" v-model="duration" />
                             </div>
                           </div>
                         </div>
@@ -141,7 +150,10 @@
                       <button
                         type="button"
                         class="button is-solid primary-button is-fullwidth"
-                      >Publish</button>
+                        @click="save"
+                      >
+                        Save Auction
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -157,8 +169,38 @@
 </template>
 
 <script>
+import Chance from 'chance';
+import moment from 'moment';
+
 export default {
-  name: "NewEntry",
+  name: 'NewEntry',
+  data() {
+    return {
+      title: chance.sentence({ words: 4 }),
+      description: chance.sentence({ words: 30 }),
+      showTime: moment(chance.date({ year: 2020, month: 11 })).format(
+        'MM/DD/YYYY hh:mm',
+      ),
+      minBid: chance.integer({ min: 2, max: 15 }),
+      reservePrice: chance.integer({ min: 2, max: 20 }),
+      duration: chance.integer({ min: 1, max: 5 }),
+    };
+  },
+
+  methods: {
+    async save() {
+      const entry = {
+        title: this.title,
+        description: this.description,
+        showTime: this.showTime,
+        duration: this.duration,
+        reservePrice: this.reservePrice,
+        startingBid: this.minBid,
+      };
+      await this.$store.dispatch("wallet/makeSellerOffer", entry); 
+      this.$router.push('/');
+    },
+  },
 };
 </script>
 

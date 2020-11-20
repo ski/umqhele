@@ -60,8 +60,8 @@ export default {
     },
 
     async newEntry() {
-      await this.$store.dispatch("wallet/makeSellerOffer");      
-      //this.$router.push('new')      
+      //await this.$store.dispatch("wallet/makeSellerOffer");      
+      this.$router.push('new')      
     },
   },
 };
