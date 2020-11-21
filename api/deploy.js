@@ -4,7 +4,6 @@
 import fs from 'fs';
 import { E } from '@agoric/eventual-send';
 import '@agoric/zoe/exported';
-import { makeIssuerKit } from '@agoric/ertp';
 import { makeLocalAmountMath } from '@agoric/ertp';
 import installationConstants from '../ui/public/conf/installationConstants';
 
@@ -28,7 +27,8 @@ import installationConstants from '../ui/public/conf/installationConstants';
 const API_PORT = process.env.API_PORT || '8000';
 
 /**
- * @typedef {{ zoe: ZoeService, board: Board, spawner, wallet, uploads, http }} Home
+ * @typedef {{ zoe: ZoeService, board: Board, spawner, wallet,
+ * uploads, http, chainTimerService }} Home
  * @param {Promise<Home>} homePromise
  * A promise for the references available from REPL home
  * @param {DeployPowers} powers
@@ -38,34 +38,37 @@ export default async function deployApi(
   { bundleSource, pathResolve },
 ) {
   const home = await homePromise;
+  const { spawner, zoe, http, board, wallet, chainTimerService } = home;
+
   const {
-    spawner,
-    zoe,
-    http,
-    uploads: scratch,
-    board,
-    wallet,
-  } = home;
+    INSTALLATION_BOARD_ID,
+    AUCTION_INSTALLATION_BOARD_ID,
+    CONTRACT_NAME,
+  } = installationConstants;
+  const auctionHouseInstallation = await E(board).getValue(
+    INSTALLATION_BOARD_ID,
+  );
+  const secondPriceAuctionInstallation = await E(board).getValue(
+    AUCTION_INSTALLATION_BOARD_ID,
+  );
 
-  const { INSTALLATION_BOARD_ID,  AUCTION_INSTALLATION_BOARD_ID, CONTRACT_NAME } = installationConstants;
-  const auctionHouseInstallation = await E(board).getValue(INSTALLATION_BOARD_ID);
-  const secondPriceAuctionInstallation = await E(board).getValue(AUCTION_INSTALLATION_BOARD_ID);
-
-  let moneyIssuer = await E(wallet).getIssuer('moola');
+  const moneyIssuer = await E(wallet).getIssuer('moola');
   const moneyBrand = await E(moneyIssuer).getBrand();
   const moneyMath = await makeLocalAmountMath(moneyIssuer);
   const pricePerListing = moneyMath.make(2);
-  
+  const moneyPurse = await E(wallet).getPurse('Fun budget');
+
   const terms = harden({
     listingPrice: pricePerListing,
     auctionInstallation: secondPriceAuctionInstallation,
   });
-  const { creatorFacet, instance, publicFacet: videoService } =
-    await E(zoe).startInstance(
-      auctionHouseInstallation,
-      harden({ Money: moneyIssuer }),
-      terms,
-    );
+  const { creatorFacet, instance, publicFacet: videoService } = await E(
+    zoe,
+  ).startInstance(
+    auctionHouseInstallation,
+    harden({ AuctionProceeds: moneyIssuer, ListingFee: moneyIssuer }),
+    terms,
+  );
 
   console.log('- SUCCESS! contract instance is running on Zoe');
   console.log('Retrieving Board IDs for issuers and brands');
@@ -101,6 +104,8 @@ export default async function deployApi(
     const handlerInstall = E(spawner).install(bundle);
     const handler = E(handlerInstall).spawn({
       creatorFacet,
+      moneyPurse,
+      timeAuthority,
       videoService,
       board,
       http,
@@ -108,9 +113,6 @@ export default async function deployApi(
       auctionIssuer,
       zoe,
     });
-
-    // const sellerInvitation = await E(creatorFacet).createSellerInvitation();
-    // const houseSeat = await E(zoe).offer(sellerInvitation);
 
     // Have our ag-solo wait on ws://localhost:8000/api/card-store for
     // websocket connections.
@@ -130,11 +132,13 @@ export default async function deployApi(
     // BRIDGE_URL: 'agoric-lookup:https://local.agoric.com?append=/bridge',
     brandBoardIds: {
       Auction: AUCTION_BRAND_BOARD_ID,
-      Money: MONEY_BRAND_BOARD_ID,
+      AuctionProceeds: MONEY_BRAND_BOARD_ID,
+      ListingFee: MONEY_BRAND_BOARD_ID,
     },
-    issuerBoardIds: { 
+    issuerBoardIds: {
       Auction: AUCTION_ISSUER_BOARD_ID,
-      Money: MONEY_ISSUER_BOARD_ID
+      AuctionProceeds: MONEY_ISSUER_BOARD_ID,
+      ListingFee: MONEY_ISSUER_BOARD_ID,
     },
     BRIDGE_URL: 'http://127.0.0.1:8000',
     API_URL,
