@@ -33,4 +33,3 @@ You now have the option to 'Publish' the NFT token the the Dapp's auction catalo
 
 #### Todo
 The auction flow and the actual online video event remains to be completed.
-The actual auction flow and the online video event remains to be completed
