@@ -1,4 +1,3 @@
-
 // eslint-disable-next-line import/no-extraneous-dependencies
 import '@agoric/install-ses';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -39,26 +38,34 @@ test('tokenized video', async (t) => {
       listingPrice: moola2,
       auctionInstallation: secondPriceAuctionInstallation,
     });
+
     const { creatorFacet, publicFacet: videoService } = await E(
       zoe,
     ).startInstance(
       auctionHouseInstallation,
-      harden({ Money: moolaIssuer }),
+      harden({ ListingFee: moolaIssuer, AuctionProceeds: moolaIssuer }),
       terms,
     );
 
     // share the public facet
     webSite.resolve(videoService);
 
-    // the seller is the house.
-    const houseSeat = await zoe.offer(creatorFacet.createSellerInvitation());
+    // This notifier updates with the current amount allocated to the
+    // house seat.
+    const feesAccumulatedNotifier = await E(
+      creatorFacet,
+    ).getFeesAccumulatedNotifier();
 
-    await listing.promise
+    const update = await feesAccumulatedNotifier.getUpdateSince();
+    const amountAllocatedToHouse = update.value;
 
     // we are creating a new invitation here so that bob can collect payout.
-    const houseSeat2 = await zoe.offer(creatorFacet.createSellerInvitation());
+    const houseSeat = await E(zoe).offer(
+      E(creatorFacet).makeWithdrawFeesInvitation(),
+      harden({ want: amountAllocatedToHouse }), // want everything allocated to house
+    );
 
-    const housePayout = houseSeat.getPayout('Money');
+    const housePayout = E(houseSeat).getPayout('ListingFee');
 
     t.deepEqual(
       await moolaIssuer.getAmountOf(housePayout),
@@ -72,6 +79,8 @@ test('tokenized video', async (t) => {
     const listingIssuer = videoService.getIssuer();
     const listingMaker = await makeLocalAmountMath(listingIssuer);
 
+    const reservePrice = 9;
+
     const show2 = listingMaker.make(
       harden([
         {
@@ -79,72 +88,52 @@ test('tokenized video', async (t) => {
           showTime: Date.parse('2020-11-30 14:00:00'),
           // these don't go in the amountmath, do they?
           auctionEndDate: Date.parse('2020-11-16 14:00:00'),
-          reservePrice: 9,
+          reservePrice,
           startingBid: 3,
         },
       ]),
     );
-    const [{ title, showTime }] = show2.value;
-    const key = JSON.stringify([new Date(showTime).toISOString(), title]);
 
     const AliceListingOffer = harden({
-      want: { Items: show2 },
-      give: { Money: videoService.pricePerItem() },
+      want: { AuctionProceeds: makeMoola(reservePrice) },
+      give: { ListingFee: videoService.pricePerItem() },
     });
 
     const listingPayment = purse.withdraw(makeMoola(2));
-    // the handler for this invite is buyListing
-    const buyListingInvitation = videoService.makeListingInvitation();
+
+    const timeAuthority = timer;
+    const closesAfter = 2;
+    const buyListingInvitation = videoService.makeListingInvitation(
+      show2,
+      timeAuthority,
+      closesAfter,
+    );
 
     const aliceListerSeat = await zoe.offer(
       buyListingInvitation,
       AliceListingOffer,
-      harden({ Money: listingPayment }),
+      harden({ ListingFee: listingPayment }),
     );
 
-    const aliceItemsPayout = aliceListerSeat.getPayout('Items');
-    t.deepEqual(
-      await listingIssuer.getAmountOf(aliceItemsPayout),
-      show2,
-      `alice gets nothing of what she put in`,
-    );
-
-    const aliceAuctionSellOffer = harden({
-      want: { Ask: makeMoola(9) }, // reserve price
-      give: { Asset: show2 },
-      // hm. https://github.com/Agoric/agoric-sdk/blob/master/packages/zoe/test/unitTests/contracts/test-secondPriceAuction.js#L49
-      exit: { waived: null },
-    });
-
-    const terms = { timeAuthority: timer, closesAfter: 2 };
-    const aliceSellInvitation = await videoService.makeAuctionSellerInvitation(
-      terms,
-    );
-
-    const aliceSellSeat = zoe.offer(
-      aliceSellInvitation,
-      aliceAuctionSellOffer,
-      harden({ Asset: aliceItemsPayout }),
-    );
-    const makeBidInvitationObj = await E(aliceSellSeat).getOfferResult();
-    // alice caches the invitation maker.
-    videoService.addInvitationMaker(key, makeBidInvitationObj);
+    const key = await E(aliceListerSeat).getOfferResult();
 
     // share the listing
     listing.resolve({ show: show2, key });
 
-    const aliceMoolaPayout = await E(aliceSellSeat).getPayout('Ask');
+    const aliceAuctionProceedsPayoutP = E(aliceListerSeat).getPayout(
+      'AuctionProceeds',
+    );
     t.deepEqual(
-      await moolaIssuer.getAmountOf(aliceMoolaPayout),
+      await moolaIssuer.getAmountOf(aliceAuctionProceedsPayoutP),
       makeMoola(20),
-      `alice didn't get any moola`,
+      `alice gets the auction sale money`,
     );
   };
 
   const eve = async (purse) => {
     const videoService = await webSite.promise;
     const { show, key } = await listing.promise;
-        
+
     const eveBidInvitation = videoService.getBidInvitation(key);
 
     const eveBidOffer = harden({
@@ -183,6 +172,6 @@ test('tokenized video', async (t) => {
     p.deposit(moolaMint.mintPayment(makeMoola(n)));
     return p;
   };
-  //, , 
-  return Promise.all([house(), alice(fund(2)), eve(fund(20)), clock()]);
+
+  await Promise.all([house(), alice(fund(2)), eve(fund(20)), clock()]);
 });
