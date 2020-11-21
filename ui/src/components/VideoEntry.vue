@@ -24,26 +24,26 @@
       <div class="card-headings">
         <div class="user-block">
           <div class="user-infos">
-            <h3>{{title}}</h3>
+            <h3>{{entry.title}}</h3>
             <div class="field is-grouped is-grouped-multiline">
               <div class="control">
                 <div class="tags has-addons">
                   <span class="tag is-dark">Minimum Bid</span>
-                  <span class="tag is-info">{{ minbid }} ꟿ</span>
+                  <span class="tag is-info">{{ entry.startingBid }} ꟿ</span>
                 </div>
               </div>
 
               <div class="control">
                 <div class="tags has-addons">
                   <span class="tag is-dark">Reserve Price</span>
-                  <span class="tag is-success">{{ reservePrice }} ꟿ</span>
+                  <span class="tag is-success">{{ entry.reservePrice }} ꟿ</span>
                 </div>
               </div>
 
               <div class="control">
                 <div class="tags has-addons">
                   <span class="tag is-dark">Show Time</span>
-                  <span class="tag is-danger">{{ showtime }}</span>
+                  <span class="tag is-danger">{{ entry.showTime }}</span>
                 </div>
               </div>
             </div>            
@@ -53,18 +53,18 @@
       <div class="product-info">
         <div class="post-text">
           <p>
-           {{description}}
+           {{entry.description}}
           </p>
         </div>
       </div>
       <div class="product-actions">
         <div class="left"></div>
-        <div class="right">
+        <div @click="publish" class="right">
           <a class="button is-solid accent-button raised link grow">
             <font-awesome-layers class="fa-2x">
               <font-awesome-icon :icon="['fa', 'sign-in-alt']" />
             </font-awesome-layers>
-            <span>Post</span>
+            <span>Publish</span>
           </a>
         </div>
       </div>
@@ -76,35 +76,19 @@ import Chance from 'chance';
 import moment from 'moment';
 export default {
   name: 'VideoEntry',
+  props: {
+    entry: Object
+  },
   data() {
     return {
       chance,
+      published: false,
+
     };
   },
-  methods: {
-    showModal() {
-      this.$emit('details');
-    },
-  },
-
-  computed: {
-    title(){
-      return chance.sentence({ words: 4 });
-    },
-    showtime() {
-      return moment(chance.date({ year: 2020, month: 11 })).format(
-        'MM/DD/YYYY hh:mm',
-      );
-    },
-    minbid() {
-      return chance.integer({ min: 2, max: 15 });
-    },
-    reservePrice() {
-      return chance.integer({ min: 2, max: 20 });
-    },
-
-    description(){
-      return chance.sentence({ words: 20 });
+  methods: {   
+    async publish(){
+      await this.$store.dispatch("wallet/publishAuction", this.entry); 
     }
   },
 

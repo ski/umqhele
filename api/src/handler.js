@@ -3,14 +3,14 @@ import { E } from '@agoric/eventual-send';
 import { makeWebSocketHandler } from './lib-http';
 import buildManualTimer from '../../contract/test/manualTimer';
 const spawnHandler = (
-  { creatorFacet, videoService, board, http, invitationIssuer, auctionIssuer,zoe },
+  { creatorFacet, videoService, board, http, invitationIssuer, auctionIssuer, zoe },
   _invitationMaker,
 ) =>
   makeWebSocketHandler(http, (send, _meta) =>
     harden({
       async onMessage(obj) {
         switch (obj.type) {
-          
+
           case 'videoTokenizer/listings': {
             const listing = await E(videoService).getListing();
             send({
@@ -40,24 +40,34 @@ const spawnHandler = (
             return true;
           }
 
+          case 'videoTokenizer/publishAuction': {
+            const { depositFacetId, offer } = obj.data;
+            const depositFacet = await E(board).getValue(depositFacetId);
+            
+            const timer = buildManualTimer(console.log);
+            const terms = { timeAuthority: timer, closesAfter: 2 };
+
+            const sellerInvitationP =  await E(videoService).makeAuctionSellerInvitation(terms);
+            const invitationAmount = await E(invitationIssuer).getAmountOf(sellerInvitationP);
+            
+            const {
+              value: [{ handle }],
+            } = invitationAmount;
+
+            const invitationHandleBoardId = await E(board).getId(handle);
+            let updatedOffer = { ...offer, invitationHandleBoardId };
+            const auction = await E(depositFacet).receive(sellerInvitationP);
+            updatedOffer = { ...updatedOffer, auction };
+            send({
+              type: 'videoTokenizer/publishAuctionResponse',
+              data: { updatedOffer },
+            });
+            return true;
+          }
+
           case 'videoTokenizer/setup': {
             const sellerInvitation = await E(creatorFacet).createSellerInvitation();
-            const houseSeat = await E(zoe).offer(sellerInvitation);
-
-            // const { depositFacetId, offer } = obj.data;
-            // const depositFacet = E(board).getValue(depositFacetId);
-            // //not sure if this is the right thing to do
-            
-            // const invitationAmount = await E(invitationIssuer).getAmountOf(
-            //   sellerInvitation,
-            // );
-
-            // const {
-            //   value: [{ handle }],
-            // } = invitationAmount;
-            // const invitationHandleBoardId = await E(board).getId(handle);
-            // const updatedOffer = { ...offer, invitationHandleBoardId };
-            // await E(depositFacet).receive(sellerInvitation);
+            const houseSeat = await E(zoe).offer(sellerInvitation);         
             send({
               type: 'videoTokenizer/setupResponse',
               data: { houseSeat },
@@ -67,11 +77,8 @@ const spawnHandler = (
 
           default:
             console.log(JSON.stringify(obj));
-            return undefined;
+            return false;
         }
-      },
-      async onError(obj) {
-        console.log(JSON.stringify(obj));
       }
     }),
   );

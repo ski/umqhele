@@ -127,6 +127,8 @@ test('tokenized video', async (t) => {
       harden({ Asset: aliceItemsPayout }),
     );
     const makeBidInvitationObj = await E(aliceSellSeat).getOfferResult();
+    
+    console.log(aliceSellInvitation);
     // alice caches the invitation maker.
     videoService.addInvitationMaker(key, makeBidInvitationObj);
 

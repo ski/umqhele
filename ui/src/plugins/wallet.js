@@ -45,8 +45,7 @@ export default {
           );
           if (tokenPurse && tokenPurse.pursePetname) {
             // If we got a petname for that purse, use it in the offers we create.   
-            //send data to vuex    
-            console.log(tokenPurse);    
+            //send data to vuex                
             commit('setListingPurse', tokenPurse); 
             commit('setTokenPursePetname', tokenPurse.pursePetname);
           }
@@ -62,26 +61,32 @@ export default {
           break;
         }
         case 'walletOfferAdded': {
-          console.log('walletOfferAdded');
+          console.log('walletOfferAdded >',obj);
           break;
         }
         case 'walletOfferHandled': {
-          console.log('walletOfferHandled');
+          console.log('walletOfferHandled >', obj);
           break;
         }
         case 'walletOfferResult': {
-          console.log('walletOfferResult');
+          console.log('walletOfferResult >', obj);
           break;
         }
         case 'walletHaveDappApproval': {
           console.log('walletHaveDappApproval');
           break;
         }
+        case 'walletOfferDescriptions' : {
+          console.log('walletOfferDescriptions', obj);
+        }
         default: {
           throw Error(`unexpected walletRecv obj.type ${obj.type}`);
         }
       }
     };
+
+    // http://localhost:3000#1605891345654
+    // http://localhost:3000#1605891345654
 
     const walletSend = await connect(
       'wallet',

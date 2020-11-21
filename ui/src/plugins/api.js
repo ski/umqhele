@@ -21,13 +21,25 @@ export default {
           console.log(listing);
           break;
         }
+
         case 'videoTokenizer/createListingResponse': {
           const { updatedOffer } = obj.data;
-          console.log('createListingResponse ', obj);
+          console.log(updatedOffer);
           walletSend({
             type: 'walletAddOffer',
             data: updatedOffer,
           });
+          break;
+        }
+
+        case 'videoTokenizer/publishAuctionResponse' : {
+          console.log('publishAuctionResponse ', obj);
+          const { updatedOffer } = obj.data; 
+          console.log('invitation id', updatedOffer.invitationHandleBoardId);
+          walletSend({
+            type: 'walletAddOffer',
+            data: updatedOffer,
+          });                  
           break;
         }
 
@@ -48,3 +60,7 @@ export default {
     });
   }
 }
+
+//{id: 1605894315797, proposalTemplate: {…}, dappContext: true, invitationHandleBoardId: "1107051844"} //addlisting
+//data: {id: 1605894357819, proposalTemplate: {…}, dappContext: true, invitationHandleBoardId: "177231517"} //publish listing
+177231517

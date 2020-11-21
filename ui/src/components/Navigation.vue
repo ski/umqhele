@@ -24,14 +24,14 @@
               <font-awesome-icon :icon="['fa', 'plus']" />
             </font-awesome-layers>
           </div>
-          <div class="navbar-item is-icon drop-trigger has-caret">
+          <!-- <div class="navbar-item is-icon drop-trigger has-caret">
             <font-awesome-layers
               @click="init"
               class="fa-2x pv3 ph2 ma0 link grow nav-is-active"
             >
               <font-awesome-icon :icon="['fa', 'chart-line']" />
             </font-awesome-layers>
-          </div>
+          </div> -->
           <div class="navbar-item is-icon drop-trigger has-caret">
             <font-awesome-layers
               @click.prevent="connect"
@@ -56,12 +56,11 @@ export default {
     },
 
     async init() {
-      await this.$store.dispatch("wallet/init");
+      await this.$store.dispatch("wallet/test");
     },
 
-    async newEntry() {
-      //await this.$store.dispatch("wallet/makeSellerOffer");      
-      this.$router.push('new')      
+    async newEntry() {      
+      this.$router.push('new'); 
     },
   },
 };

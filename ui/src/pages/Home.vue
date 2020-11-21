@@ -7,7 +7,7 @@
           <div class="columns is-multiline">
 
             <!-- <CatalogEntry v-for="item in listing" :key='item.showTime' @details='showDetails'></CatalogEntry> -->
-            <VideoEntry v-for="item in listing" :key='item.showTime'></VideoEntry>
+            <VideoEntry v-for="item in listing" :key='item.showTime' :entry="item"></VideoEntry>
             <!-- <CatalogEntry @details='showDetails'></CatalogEntry> -->
           </div>
         </div>
