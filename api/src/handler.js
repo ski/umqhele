@@ -1,12 +1,35 @@
 // @ts-check
 import { E } from '@agoric/eventual-send';
 import { makeWebSocketHandler } from './lib-http';
-import buildManualTimer from '../../contract/test/manualTimer';
-const spawnHandler = (
-  { creatorFacet, videoService, board, http, invitationIssuer, auctionIssuer,zoe },
+const spawnHandler = async (
+  { creatorFacet, moneyPurse, itemMath, timeAuthority, videoService, board, http, invitationIssuer, zoe },
   _invitationMaker,
-) =>
-  makeWebSocketHandler(http, (send, _meta) =>
+) => {
+
+  // withdraw fees from the contract and deposit them in the dapp wallet
+  const notifier = await E(creatorFacet).getFeesAccumulatedNotifier();
+
+  const collectFees = update => {
+    const amountAllocatedToHouse = update.value;
+
+    // we are creating a new invitation here so we can collect the
+    // payout to the dapp wallet
+    const houseSeatP = E(zoe).offer(
+      E(creatorFacet).makeWithdrawFeesInvitation(),
+      harden({ want: amountAllocatedToHouse }), // want everything allocated to house
+    );
+
+    const listingFeesPaymentP = E(houseSeatP).getPayout('ListingFee');
+
+    listingFeesPaymentP.then(payment => moneyPurse.deposit(payment));
+
+    notifier.getUpdateSince(update.count).then(collectFees);
+  };
+  
+  // Start collecting fees
+  notifier.getUpdateSince().then(collectFees);
+
+  const handler = makeWebSocketHandler(http, (send, _meta) =>
     harden({
       async onMessage(obj) {
         switch (obj.type) {
@@ -21,9 +44,14 @@ const spawnHandler = (
           }
 
           case 'videoTokenizer/createListing': {
-            const { depositFacetId, offer } = obj.data;
+            const { depositFacetId, offer, entry, closesAfter } = obj.data;
             const depositFacet = await E(board).getValue(depositFacetId);
-            const listingInvitationP = await E(videoService).makeListingInvitation();
+            const itemToAuction = itemMath.make(harden([entry]));
+            const listingInvitationP = await E(videoService).makeListingInvitation(
+              itemToAuction,
+              timeAuthority,
+              closesAfter
+            );
             const invitationAmount = await E(invitationIssuer).getAmountOf(listingInvitationP);
 
             const {
@@ -41,26 +69,9 @@ const spawnHandler = (
           }
 
           case 'videoTokenizer/setup': {
-            const sellerInvitation = await E(creatorFacet).createSellerInvitation();
-            const houseSeat = await E(zoe).offer(sellerInvitation);
-
-            // const { depositFacetId, offer } = obj.data;
-            // const depositFacet = E(board).getValue(depositFacetId);
-            // //not sure if this is the right thing to do
-            
-            // const invitationAmount = await E(invitationIssuer).getAmountOf(
-            //   sellerInvitation,
-            // );
-
-            // const {
-            //   value: [{ handle }],
-            // } = invitationAmount;
-            // const invitationHandleBoardId = await E(board).getId(handle);
-            // const updatedOffer = { ...offer, invitationHandleBoardId };
-            // await E(depositFacet).receive(sellerInvitation);
             send({
               type: 'videoTokenizer/setupResponse',
-              data: { houseSeat },
+              data: { 'setup has already occurred' },
             });
             return true;
           }
@@ -75,5 +86,7 @@ const spawnHandler = (
       }
     }),
   );
+  return handler;
+};
 
 export default harden(spawnHandler);
