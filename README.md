@@ -1,7 +1,5 @@
 # UMQHELE
-Umqhele is the user interface layer for the Agoric Hack The Orb project. It allows you to auction live video streams for Moola. Once you have Moolas
-from the Agoric faucet dapp, you can create auctions as well as bid on them. This dapp demonstrates Agoric contract composition, offer safety and object
-capabilities.
+Umqhele is an application that allows your to auction and trade NTF tokens that grant access to live video streams. It allows you to auction live video streams for Moola. You can create auctions as well as bid on them. This dapp demonstrates Agoric contract composition, offer safety and object capabilities.
 
 #### Installing Prerequisites
 Ensure agoric is installed and working before running Umqhele. You can find details of how to setup Agoric here [gs]: https://agoric.com/documentation/getting-started/start-a-project.html .
