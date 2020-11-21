@@ -1,15 +1,25 @@
 // @ts-check
 import { E } from '@agoric/eventual-send';
 import { makeWebSocketHandler } from './lib-http';
+
 const spawnHandler = async (
-  { creatorFacet, moneyPurse, itemMath, timeAuthority, videoService, board, http, invitationIssuer, zoe },
+  {
+    creatorFacet,
+    moneyPurse,
+    itemMath,
+    timeAuthority,
+    videoService,
+    board,
+    http,
+    invitationIssuer,
+    zoe,
+  },
   _invitationMaker,
 ) => {
-
   // withdraw fees from the contract and deposit them in the dapp wallet
   const notifier = await E(creatorFacet).getFeesAccumulatedNotifier();
 
-  const collectFees = update => {
+  const collectFees = (update) => {
     const amountAllocatedToHouse = update.value;
 
     // we are creating a new invitation here so we can collect the
@@ -21,19 +31,18 @@ const spawnHandler = async (
 
     const listingFeesPaymentP = E(houseSeatP).getPayout('ListingFee');
 
-    listingFeesPaymentP.then(payment => moneyPurse.deposit(payment));
+    listingFeesPaymentP.then((payment) => moneyPurse.deposit(payment));
 
-    notifier.getUpdateSince(update.count).then(collectFees);
+    E(notifier).getUpdateSince(update.count).then(collectFees);
   };
-  
+
   // Start collecting fees
-  notifier.getUpdateSince().then(collectFees);
+  E(notifier).getUpdateSince().then(collectFees);
 
   const handler = makeWebSocketHandler(http, (send, _meta) =>
     harden({
       async onMessage(obj) {
         switch (obj.type) {
-
           case 'videoTokenizer/listings': {
             const listing = await E(videoService).getListing();
             send({
@@ -47,12 +56,12 @@ const spawnHandler = async (
             const { depositFacetId, offer, entry, closesAfter } = obj.data;
             const depositFacet = await E(board).getValue(depositFacetId);
             const itemToAuction = itemMath.make(harden([entry]));
-            const listingInvitationP = await E(videoService).makeListingInvitation(
-              itemToAuction,
-              timeAuthority,
-              closesAfter
+            const listingInvitationP = await E(
+              videoService,
+            ).makeListingInvitation(itemToAuction, timeAuthority, closesAfter);
+            const invitationAmount = await E(invitationIssuer).getAmountOf(
+              listingInvitationP,
             );
-            const invitationAmount = await E(invitationIssuer).getAmountOf(listingInvitationP);
 
             const {
               value: [{ handle }],
@@ -71,7 +80,7 @@ const spawnHandler = async (
           case 'videoTokenizer/setup': {
             send({
               type: 'videoTokenizer/setupResponse',
-              data: { 'setup has already occurred' },
+              data: { message: 'setup has already occurred' },
             });
             return true;
           }
@@ -80,7 +89,7 @@ const spawnHandler = async (
             console.log(JSON.stringify(obj));
             return false;
         }
-      }
+      },
     }),
   );
   return handler;

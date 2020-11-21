@@ -99,6 +99,8 @@ export default async function deployApi(
   console.log(`-- AUCTION_ISSUER_BOARD_ID: ${AUCTION_ISSUER_BOARD_ID}`);
   console.log(`-- AUCTION_BRAND_BOARD_ID: ${AUCTION_ISSUER_BOARD_ID}`);
 
+  const timeAuthority = chainTimerService;
+
   const installURLHandler = async () => {
     const bundle = await bundleSource(pathResolve('./src/handler.js'));
     const handlerInstall = E(spawner).install(bundle);
