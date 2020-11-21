@@ -1,11 +1,17 @@
-// @ts-nocheck
 import '@agoric/zoe/exported';
 
 import { MathKind } from '@agoric/ertp';
-import { trade, defaultAcceptanceMsg } from '@agoric/zoe/src/contractSupport';
+import {
+  trade,
+  assertProposalShape,
+  withdrawFromSeat,
+  depositToSeat,
+  assertIssuerKeywords,
+} from '@agoric/zoe/src/contractSupport';
 import { makeStore } from '@agoric/store';
 import { assert, details } from '@agoric/assert';
 import { E } from '@agoric/eventual-send';
+import { makeNotifierKit } from '@agoric/notifier';
 
 /**
  * Tokenized Video Stream contract
@@ -15,104 +21,184 @@ import { E } from '@agoric/eventual-send';
 const start = async (zcf) => {
   // Terms are
   const {
-    issuers: { Money: moolaIssuer },
+    issuers: { AuctionProceeds: auctionProceedsIssuer },
+    maths: { ListingFee: listingFeeMath },
+    brands: { ListingFee: listingFeeBrand },
     listingPrice,
     auctionInstallation,
   } = zcf.getTerms();
 
+  // The houseSeat keeps the listing fees until they are withdrawn
   const { zcfSeat: houseSeat } = zcf.makeEmptySeatKit();
 
-  //the mool brand
-  const moneyBrand = await E(moolaIssuer).getBrand();  
-  //the moola amount math
-  const money = zcf.getAmountMath(moneyBrand);
-  
-  // ISSUE: how to import this??? assertIssuerKeywords(zcf, harden(['Money']));
+  // A notifier for the house so that they are notified when fees have
+  // accumulated.
+  const {
+    notifier: feesAccumulatedNotifier,
+    updater: feesAccumulatedUpdater,
+  } = makeNotifierKit();
+
+  assertIssuerKeywords(zcf, harden(['ListingFee', 'AuctionProceeds']));
   const listingMint = await zcf.makeZCFMint('Items', MathKind.SET);
   // Create the internal catalog entry mint
-  const { issuer, amountMath: itemsMath } = listingMint.getIssuerRecord();
-  
+  const { issuer } = listingMint.getIssuerRecord();
+
   // ISSUE / TODO: how does this relate to webrtc key?
   const catalog = makeStore('startTitle');
-  
-  // In order to trade money for a listing, we need a seller seat.
-  // should this seat  be a singleton ?
-  let sellerSeat;
-  const open = (seat) => {
-    if (sellerSeat) {
-      sellerSeat.exit();
-    }
-    sellerSeat = seat;
-    return defaultAcceptanceMsg;
-  };
 
-  const buyListing = (buyerSeat) => {
-    assert(sellerSeat, details`not yet open for business`);
-    const wanted = buyerSeat.getProposal().want.Items.value;
-    const wantedAmount = itemsMath.make(wanted);
-    listingMint.mintGains({ Items: wantedAmount }, sellerSeat);
-
-    const [{ title, showTime }] = wanted;
-    const key = JSON.stringify([new Date(showTime).toISOString(), title]);
-
-    assert(!catalog.has(key), details`time / title taken`);
-    assert(sellerSeat, details`catalog not yet open`);
-
-    trade(
-      zcf,
-      { seat: sellerSeat, gains: { Money: listingPrice } },
-      { seat: buyerSeat, gains: { Items: wantedAmount } },
-    );
-    buyerSeat.exit();
-    catalog.init(key, wanted);
-    return key;
+  const withdrawFees = (seat) => {
+    assertProposalShape(seat, { give: {} });
+    const { want } = seat.getProposal();
+    trade(zcf, { seat: houseSeat, gains: {} }, { seat, gains: want });
+    seat.exit();
+    return 'Fees removed';
   };
 
   const runningAuctions = makeStore('startTitle');
 
-  const addInvitationMaker = (startTitle, invitationMaker) =>
-    runningAuctions.init(startTitle, invitationMaker);
+  /**
+   * @typedef {Record<Keyword,Keyword>} KeywordKeywordRecord
+   */
+
+  /**
+   * @callback MapKeywords
+   * @param {AmountKeywordRecord | PaymentPKeywordRecord | undefined } keywordRecord
+   * @param {KeywordKeywordRecord} keywordMapping
+   */
+
+  /** @type {MapKeywords} */
+  const mapKeywords = (keywordRecord = {}, keywordMapping) => {
+    return Object.fromEntries(
+      Object.entries(keywordRecord).map(([keyword, value]) => {
+        if (keywordMapping[keyword] === undefined) {
+          return [keyword, value];
+        }
+        return [keywordMapping[keyword], value];
+      }),
+    );
+  };
+
+  // The user must pass in a timeAuthority and closesAfter deadline
+  // for the auction. The reserve price is taken from the user's proposal
+  const makeListingInvitation = (itemToAuction, timeAuthority, closesAfter) => {
+    /** @type {OfferHandler} */
+    const listItem = async (listingSeat) => {
+      // Check that the money provided is greater
+      // than the listingPrice.
+      const providedMoney = listingSeat.getAmountAllocated(
+        'ListingFee',
+        listingFeeBrand,
+      );
+      assert(
+        listingFeeMath.isGTE(providedMoney, listingPrice),
+        details`More money (${listingPrice}) is required to list these items`,
+      );
+
+      // Currently only a single item is supported
+      const [{ title, showTime }] = itemToAuction.value;
+      const startTitle = JSON.stringify([
+        new Date(showTime).toISOString(),
+        title,
+      ]);
+
+      assert(!catalog.has(startTitle), details`time / title taken`);
+
+      // Mint the item to be put up for auction
+      listingMint.mintGains({ Asset: itemToAuction }, houseSeat);
+
+      catalog.init(startTitle, itemToAuction.value);
+
+      // Put the item up for auction
+      const itemPaymentRecord = await withdrawFromSeat(
+        zcf,
+        houseSeat,
+        harden({ Asset: itemToAuction }),
+      );
+
+      const zoe = zcf.getZoeService();
+
+      const { creatorInvitation: auctionCreatorInvitation } = await E(
+        zoe,
+      ).startInstance(
+        auctionInstallation,
+        harden({
+          Asset: issuer,
+          Ask: auctionProceedsIssuer,
+        }),
+        harden({
+          timeAuthority,
+          closesAfter,
+        }),
+      );
+
+      const reservePrice = listingSeat.getProposal().want.AuctionProceeds;
+
+      const auctionProposal = harden({
+        want: { Ask: reservePrice },
+        give: { Asset: itemToAuction },
+        exit: { waived: null },
+      });
+
+      const auctionCreatorUserSeat = zoe.offer(
+        auctionCreatorInvitation,
+        auctionProposal,
+        itemPaymentRecord,
+      );
+      const makeBidInvitationObj = await E(
+        auctionCreatorUserSeat,
+      ).getOfferResult();
+
+      // Give the auction winnings to the user through the listingSeat
+      E(auctionCreatorUserSeat)
+        .getPayouts()
+        .then(async (payouts) => {
+          const amounts = await E(
+            auctionCreatorUserSeat,
+          ).getCurrentAllocation();
+          const keywords = {
+            Ask: 'AuctionProceeds', // deposit the "Ask" from the auction under the "AuctionProceeds" keyword
+            Asset: 'Items', // in case of an error, deposit the returned asset under "Items"
+          };
+          const amountsMapped = mapKeywords(amounts, keywords);
+          const payoutsMapped = mapKeywords(payouts, keywords);
+          await depositToSeat(zcf, listingSeat, amountsMapped, payoutsMapped);
+
+          // Take the listing price money from the user
+          trade(
+            zcf,
+            { seat: houseSeat, gains: { ListingFee: listingPrice } },
+            { seat: listingSeat, gains: {} },
+          );
+
+          const currentFeesAccumulated = houseSeat.getCurrentAllocation();
+          feesAccumulatedUpdater.updateState(currentFeesAccumulated);
+          listingSeat.exit();
+        });
+
+      runningAuctions.init(startTitle, makeBidInvitationObj);
+      return startTitle;
+    };
+    return zcf.makeInvitation(listItem, 'list item');
+  };
 
   const getBidInvitation = (startTitle) =>
     runningAuctions.get(startTitle).makeBidInvitation();
 
-  // this is the house invitation.
-  const makeListingInvitation = () =>
-    zcf.makeInvitation(buyListing, 'buy listing');
-
-  const zoe = zcf.getZoeService();
-
-  const makeAuctionSellerInvitation = async (terms) => {
-    
-    const { timeAuthority, closesAfter } = terms;
-    const { creatorInvitation } = await E(zoe).startInstance(
-      auctionInstallation,
-      harden({
-        Asset: issuer,
-        Ask: moolaIssuer,
-      }),
-      harden({
-        timeAuthority,
-        closesAfter,
-      }),
-    );    
-    return creatorInvitation;
-  };
-
   const getListing = () => runningAuctions.keys();
-  
+
   // the seller is the house here selling a spot in the house to display the listing.
-  const createSellerInvitation = () => zcf.makeInvitation(open, 'seller');
+  const makeWithdrawFeesInvitation = () =>
+    zcf.makeInvitation(withdrawFees, 'withdrawFees');
+
+  const getFeesAccumulatedNotifier = () => feesAccumulatedNotifier;
 
   return harden({
-    creatorFacet: { createSellerInvitation },
+    creatorFacet: { makeWithdrawFeesInvitation, getFeesAccumulatedNotifier },
     publicFacet: {
       makeListingInvitation,
-      makeAuctionSellerInvitation,
       getListing,
       getIssuer: () => issuer,
       pricePerItem: () => listingPrice,
-      addInvitationMaker,
       getBidInvitation,
     },
   });
