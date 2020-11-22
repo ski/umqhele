@@ -12,6 +12,7 @@
             <font-awesome-icon :icon="['fa', 'globe-africa']" />
           </font-awesome-layers>
         </div>
+        <h3 class="has-text-centered">Umqhele</h3>
       </div>
       <div class="navbar-menu">
         <div class="navbar-start"></div>
@@ -70,4 +71,7 @@ export default {
 </script>
 
 <style>
+.has-text-centered{
+  padding-top: 17px;
+}
 </style>

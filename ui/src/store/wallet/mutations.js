@@ -1,6 +1,8 @@
+import Vuex from 'vuex';
+
 const mutations = {
 
-  setConnected(state, data) {    
+  setConnected(state, data) {
     state.connected = data;
   },
 
@@ -26,6 +28,16 @@ const mutations = {
 
   setListingPurse(state, data) {
     state.listingPurse = data;
+  },
+
+  setCatalog(state, data) {
+    state.catalog = [...state.catalog,  ...data ]
+    console.log('catalog',state.catalog);
+    //Vue.set(state, 'catalog', ...data);
+  },
+
+  addCatalogEntry(state, data) {
+    state.catalog = [...state.catalog, { data }]
   }
 }
 

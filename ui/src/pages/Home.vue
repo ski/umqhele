@@ -21,6 +21,7 @@ import Sleeve from "../components/Sleeve.vue";
 import CatalogEntry from "../components/CatalogEntry.vue";
 import VideoEntry from "../components/VideoEntry.vue";
 import CatalogEntryDetail from "../components/CatalogEntryDetail.vue";
+import { mapState } from 'vuex';
 
 export default {
   name: "Home",
@@ -35,12 +36,10 @@ export default {
       isModalVisible: false,
     };
   },
+  
   computed: {   
-    listing() {
-      const purse = this.$store.getters['wallet/getListingPurse'];
-      if(purse.currentAmount)
-        return purse.currentAmount.value;
-      return [];
+    listing() { 
+      return this.$store.state.wallet.catalog;
     }
   },
   methods: {

@@ -1,6 +1,6 @@
 const getters = {
   connected: (state, getters, rootState) => state.connected,
-  catalog: (state) => state.catalog,
+  getCatalog: (state) => state.catalog,
   getZoeInvitationDepositFacetId: (state) => state.zoeInvitationDepositFacetId,
   getWalletSend: (state) => state.walletSend,
   getApiSend: (state) =>  state.apiSend,
