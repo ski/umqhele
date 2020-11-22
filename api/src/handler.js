@@ -47,6 +47,16 @@ const spawnHandler = async (
     harden({
       async onMessage(obj) {
         switch (obj.type) {
+
+          case 'videoTokenizer/catalog': {
+            const listing = await E(videoService).getCatalog();
+            send({
+              type: 'videoTokenizer/catalogResponse',
+              data: { listing },
+            });
+            return true;
+          }
+
           case 'videoTokenizer/listings': {
             const listing = await E(videoService).getListing();
             send({

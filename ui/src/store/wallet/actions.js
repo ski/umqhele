@@ -12,8 +12,6 @@ const actions = {
 
   async makeSellerOffer({ commit, state }, entry) {
 
-    //await setupMint(state);
-
     const offer = {
       id: Date.now(),
 

@@ -173,7 +173,7 @@ const start = async (zcf) => {
           feesAccumulatedUpdater.updateState(currentFeesAccumulated);
           listingSeat.exit();
         });
-
+        
       runningAuctions.init(startTitle, makeBidInvitationObj);
       return startTitle;
     };
@@ -184,6 +184,7 @@ const start = async (zcf) => {
     runningAuctions.get(startTitle).makeBidInvitation();
 
   const getListing = () => runningAuctions.keys();
+  const getCatalog = () => catalog.values();
 
   // the seller is the house here selling a spot in the house to display the listing.
   const makeWithdrawFeesInvitation = () =>
@@ -196,6 +197,7 @@ const start = async (zcf) => {
     publicFacet: {
       makeListingInvitation,
       getListing,
+      getCatalog,
       getIssuer: () => issuer,
       pricePerItem: () => listingPrice,
       getBidInvitation,
