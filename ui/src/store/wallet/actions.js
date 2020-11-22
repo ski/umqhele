@@ -6,8 +6,8 @@ const moolaPursePetname = 'Fun budget';
 
 const actions = {
   async connect({ commit, state }) {
-    await wallet.connect(commit);
-    await api.connect(commit, state.walletSend);    
+    await wallet.connect(commit,state);
+    await api.connect(commit, state.walletSend);
   },
 
   async makeSellerOffer({ commit, state }, entry) {
@@ -49,7 +49,7 @@ const actions = {
     await state.apiSend(apiInvitationRequest);
   },
 
-  async getCatalog({commit, state}){
+  async getCatalog({ commit, state }) {
     const apiRequest = {
       type: 'videoTokenizer/catalog',
       id: Date.now().toLocaleString(),
@@ -58,11 +58,11 @@ const actions = {
     await state.apiSend(apiRequest);
   },
 
-  async getCatalogItem({commit, state}){
+  async getCatalogItem({ commit, state }, key) {
     const apiInvitationRequest = {
-      type: 'videoTokenizer/catalogItem',
+      type: 'videoTokenizer/getCatalogItem',
       id: Date.now().toLocaleString(),
-      data: {},
+      data: { entryId: key },
     };
     await state.apiSend(apiInvitationRequest);
   }

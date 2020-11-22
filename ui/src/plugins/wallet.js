@@ -6,7 +6,7 @@ import { connect } from './connect';
 
 export default {
 
-  connect: async (commit) => {    
+  connect: async (commit, state) => {
     const {
       INVITE_BRAND_BOARD_ID,
       INSTANCE_BOARD_ID,
@@ -36,16 +36,16 @@ export default {
         case 'walletUpdatePurses': {
           // We find the first purse that can accept our token.
           const purses = JSON.parse(obj.data);
-          
+
           const tokenPurse = purses.find(
             // Does the purse's brand match our token brand?
             ({ brandBoardId }) => brandBoardId === AUCTION_BRAND_BOARD_ID,
-            
+
           );
           if (tokenPurse && tokenPurse.pursePetname) {
             // If we got a petname for that purse, use it in the offers we create.   
             //send data to vuex                
-            commit('setListingPurse', tokenPurse); 
+            commit('setListingPurse', tokenPurse);
             commit('setTokenPursePetname', tokenPurse.pursePetname);
           }
           commit('setConnected', true);
@@ -61,7 +61,7 @@ export default {
           break;
         }
         case 'walletOfferAdded': {
-          console.log('walletOfferAdded >',obj);
+          console.log('walletOfferAdded >', obj);
           break;
         }
         case 'walletOfferHandled': {
@@ -69,25 +69,22 @@ export default {
           break;
         }
         case 'walletOfferResult': {
-          //call into the api here?
-          //id: "http://localhost:3000#1606043857082" 
-          //if there are different id results, it could be used to key 
-          //into the store.
-          if(obj.data.outcome) {
-            //outcome: "["2020-12-02T23:44:00.000Z","Duprej zel azusun nid."]"
+          if (obj.data.outcome) {          
             console.log('outcome is the key ', obj.data.outcome);
-          } else {
-            console.log('walletOfferResult >', obj);
-          }
-          
-          
+            const apiRequest = {
+              type: 'videoTokenizer/getCatalogItem',
+              id: Date.now().toLocaleString(),
+              data: { entryId: obj.data.outcome },
+            };
+            state.apiSend(apiRequest);
+          } 
           break;
         }
         case 'walletHaveDappApproval': {
           commit('setConnected', true);
           break;
         }
-        case 'walletOfferDescriptions' : {
+        case 'walletOfferDescriptions': {
           console.log('walletOfferDescriptions', obj);
         }
         default: {

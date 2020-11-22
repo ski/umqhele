@@ -22,11 +22,14 @@ export default {
 
         case 'videoTokenizer/catalogResponse': {
           const { catalog } = obj.data;  
-          console.log('setCatalog',);
-          
-          const test = catalog.flat();
-          console.log('setCatalog',test);
-          commit('setCatalog', test);
+          commit('setCatalog', catalog.flat());
+          break;
+        }
+
+        case 'videoTokenizer/getCatalogItemResponse': {
+          const { entry } = obj.data;  
+          commit('addCatalogEntry', entry[0]);                    
+          break;
         }
 
         case 'CTP_DISCONNECT': {

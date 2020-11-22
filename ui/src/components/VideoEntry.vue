@@ -24,7 +24,7 @@
       <div class="card-headings">
         <div class="user-block">
           <div class="user-infos">
-            <h3>{{entry.title}}</h3>
+            <h3>{{ entry.title }}</h3>
             <div class="field is-grouped is-grouped-multiline">
               <div class="control">
                 <div class="tags has-addons">
@@ -32,39 +32,31 @@
                   <span class="tag is-info">{{ entry.startingBid }} ꟿ</span>
                 </div>
               </div>
-
-              <div class="control">
-                <div class="tags has-addons">
-                  <span class="tag is-dark">Reserve Price</span>
-                  <span class="tag is-success">{{ entry.reservePrice }} ꟿ</span>
-                </div>
-              </div>
-
               <div class="control">
                 <div class="tags has-addons">
                   <span class="tag is-dark">Show Time</span>
                   <span class="tag is-danger">{{ entry.showTime }}</span>
                 </div>
               </div>
-            </div>            
+            </div>
           </div>
         </div>
       </div>
       <div class="product-info">
         <div class="post-text">
           <p>
-           {{entry.description}}
+            {{ entry.description }}
           </p>
         </div>
       </div>
       <div class="product-actions">
         <div class="left"></div>
-        <div @click="publish" class="right">
+        <div @click="bid" class="right">
           <a class="button is-solid accent-button raised link grow">
             <font-awesome-layers class="fa-2x">
-              <font-awesome-icon :icon="['fa', 'sign-in-alt']" />
+              <font-awesome-icon :icon="['fa', 'gavel']" />
             </font-awesome-layers>
-            <span>Publish</span>
+            <span>Bid Now</span>
           </a>
         </div>
       </div>
@@ -72,28 +64,27 @@
   </div>
 </template>
 <script>
-import Chance from 'chance';
-import moment from 'moment';
+
 export default {
   name: 'VideoEntry',
   props: {
-    entry: Object
+    entry: Object,
   },
   data() {
-    return {
-      chance,
-      published: false,
-
+    return {      
     };
   },
-  methods: {   
-    async publish(){
-      await this.$store.dispatch("wallet/publishAuction", this.entry); 
-    }
+  methods: {
+    async bid() {
+      const key = JSON.stringify([new Date(this.entry.showTime).toISOString(), this.entry.title]);
+      await this.$store.dispatch('wallet/getCatalogItem', key);
+      console.log(key);
+    },
   },
 
   mounted() {
     this.chance = new Chance();
+
     // const signalRemote = new IonSDK.IonSFUJSONRPCSignal(
     //   'ws://localhost:7000/ws',
     // );
@@ -111,10 +102,10 @@ export default {
 </script>
 
 <style scoped>
-  .product-info {
-    margin-top: 10px;
-  }
-  .field{
-    margin-top: 10px;
-  }
+.product-info {
+  margin-top: 10px;
+}
+.field {
+  margin-top: 10px;
+}
 </style>

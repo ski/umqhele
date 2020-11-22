@@ -185,6 +185,7 @@ const start = async (zcf) => {
 
   const getListing = () => runningAuctions.keys();
   const getCatalog = () => catalog.values();
+  const getCatalogEntry = (key) => catalog.get(key);
 
   // the seller is the house here selling a spot in the house to display the listing.
   const makeWithdrawFeesInvitation = () =>
@@ -192,12 +193,13 @@ const start = async (zcf) => {
 
   const getFeesAccumulatedNotifier = () => feesAccumulatedNotifier;
 
-  return harden({
+  return harden({ 
     creatorFacet: { makeWithdrawFeesInvitation, getFeesAccumulatedNotifier },
     publicFacet: {
       makeListingInvitation,
       getListing,
       getCatalog,
+      getCatalogEntry,
       getIssuer: () => issuer,
       pricePerItem: () => listingPrice,
       getBidInvitation,

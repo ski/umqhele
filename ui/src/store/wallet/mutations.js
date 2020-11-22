@@ -33,11 +33,11 @@ const mutations = {
   setCatalog(state, data) {
     state.catalog = [...state.catalog,  ...data ]
     console.log('catalog',state.catalog);
-    //Vue.set(state, 'catalog', ...data);
   },
 
   addCatalogEntry(state, data) {
-    state.catalog = [...state.catalog, { data }]
+    state.catalog = [...state.catalog, data]
+    console.log('catalogItem', state.catalog);
   }
 }
 

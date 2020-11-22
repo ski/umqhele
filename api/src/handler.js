@@ -57,11 +57,12 @@ const spawnHandler = async (
             return true;
           }
 
-          case 'videoTokenizer/listings': {
-            const listing = await E(videoService).getListing();
+          case 'videoTokenizer/getCatalogItem': {
+            const { entryId } = obj.data;
+            const entry = await E(videoService).getCatalogEntry(entryId);
             send({
-              type: 'videoTokenizer/listingsResponse',
-              data: { listing },
+              type: 'videoTokenizer/getCatalogItemResponse',
+              data: { entry },
             });
             return true;
           }
