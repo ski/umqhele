@@ -49,10 +49,10 @@ const spawnHandler = async (
         switch (obj.type) {
 
           case 'videoTokenizer/catalog': {
-            const listing = await E(videoService).getCatalog();
+            const catalog = await E(videoService).getCatalog();
             send({
               type: 'videoTokenizer/catalogResponse',
-              data: { listing },
+              data: { catalog },
             });
             return true;
           }

@@ -1,43 +1,32 @@
 const mutations = {
-    setConnection(state, data) {
-        state.connection = data;
-    },
 
-    setInbox(state, data){
-        state.inbox = data;
-    },
+  setConnected(state, data) {    
+    state.connected = data;
+  },
 
-    setIssuers(state, data){
-        state.issuers = data;
-    },
+  setZoeInvitationDepositFacetId(state, data) {
+    state.zoeInvitationDepositFacetId = data;
+  },
 
-    setPurses(state, data){
-        state.purses = data;
-    },
+  setWalletSend(state, data) {
+    state.walletSend = data;
+  },
 
-    setZoeInvitationDepositFacetId(state, data){
-      state.zoeInvitationDepositFacetId = data;
-    },
+  setApiSend(state, data) {
+    state.apiSend = data;
+  },
 
-    setWalletSend(state, data) {
-      state.walletSend = data;
-    },
+  setTokenPursePetname(state, data) {
+    state.tokenPursePetname = data;
+  },
 
-    setApiSend(state, data) {
-      state.apiSend = data;
-    },
+  setSendInvitationResponse(state, data) {
+    state.sendInvitationResponse = data;
+  },
 
-    setTokenPursePetname(state, data){
-      state.tokenPursePetname = data;
-    },
-
-    setSendInvitationResponse(state, data){
-      state.sendInvitationResponse = data;
-    },
-
-    setListingPurse(state, data) {
-      state.listingPurse = data;
-    }
+  setListingPurse(state, data) {
+    state.listingPurse = data;
+  }
 }
 
 export default mutations;

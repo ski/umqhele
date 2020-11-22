@@ -6,8 +6,7 @@ import { connect } from './connect';
 
 export default {
 
-  connect: async (commit) => {
-    console.log('connecting');
+  connect: async (commit) => {    
     const {
       INVITE_BRAND_BOARD_ID,
       INSTANCE_BOARD_ID,
@@ -49,6 +48,7 @@ export default {
             commit('setListingPurse', tokenPurse); 
             commit('setTokenPursePetname', tokenPurse.pursePetname);
           }
+          commit('setConnected', true);
           break;
         }
         case 'walletSuggestIssuerResponse': {
@@ -69,11 +69,22 @@ export default {
           break;
         }
         case 'walletOfferResult': {
-          console.log('walletOfferResult >', obj);
+          //call into the api here?
+          //id: "http://localhost:3000#1606043857082" 
+          //if there are different id results, it could be used to key 
+          //into the store.
+          if(obj.data.outcome) {
+            //outcome: "["2020-12-02T23:44:00.000Z","Duprej zel azusun nid."]"
+            console.log('outcome is the key ', obj.data.outcome);
+          } else {
+            console.log('walletOfferResult >', obj);
+          }
+          
+          
           break;
         }
         case 'walletHaveDappApproval': {
-          console.log('walletHaveDappApproval');
+          commit('setConnected', true);
           break;
         }
         case 'walletOfferDescriptions' : {

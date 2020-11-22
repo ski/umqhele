@@ -1,39 +1,12 @@
 const getters = {
-
-  connected: (state, getters, rootState) => {
-  },
-
-  getIssuers: (state, getters, rootState) => {
-    return state.issuers;
-  },
-
-  getPurses: (state) => {
-    return state.purses;
-  },
-
-  getZoeInvitationDepositFacetId: (state) => {
-    return state.zoeInvitationDepositFacetId;
-  },
-
-  getWalletSend: (state) => {
-    return state.walletSend;
-  },
-
-  getApiSend: (state) => {
-    return state.apiSend;
-  },
-
-  getTokenPursePetname(state) {
-    return state.tokenPursePetname;
-  },
-
-  getSendInvitationResponse(state) {
-    return state.sendInvitationResponse;
-  },
-
-  getListingPurse(state) {
-    return state.listingPurse;
-  }
+  connected: (state, getters, rootState) => state.connected,
+  catalog: (state) => state.catalog,
+  getZoeInvitationDepositFacetId: (state) => state.zoeInvitationDepositFacetId,
+  getWalletSend: (state) => state.walletSend,
+  getApiSend: (state) =>  state.apiSend,
+  getTokenPursePetname: (state) => state.tokenPursePetname,
+  getSendInvitationResponse : (state) => state.sendInvitationResponse,
+  getListingPurse: (state) => state.listingPurse,
 }
 
 export default getters;

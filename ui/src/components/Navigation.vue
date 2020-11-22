@@ -15,8 +15,8 @@
       </div>
       <div class="navbar-menu">
         <div class="navbar-start"></div>
-        <div class="navbar-end">
-          <div class="navbar-item is-icon drop-trigger has-caret">
+        <div class="navbar-end" >         
+          <div class="navbar-item is-icon drop-trigger has-caret" v-if="connected">
             <font-awesome-layers
               @click="newEntry"
               class="fa-2x pv3 ph2 ma0 link grow nav-is-active"
@@ -24,14 +24,6 @@
               <font-awesome-icon :icon="['fa', 'plus']" />
             </font-awesome-layers>
           </div>
-          <!-- <div class="navbar-item is-icon drop-trigger has-caret">
-            <font-awesome-layers
-              @click="init"
-              class="fa-2x pv3 ph2 ma0 link grow nav-is-active"
-            >
-              <font-awesome-icon :icon="['fa', 'chart-line']" />
-            </font-awesome-layers>
-          </div> -->
           <div class="navbar-item is-icon drop-trigger has-caret">
             <font-awesome-layers
               @click.prevent="connect"
@@ -48,20 +40,31 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
-  name: "Navigation",
+  name: 'Navigation',
+  computed: {
+    ...mapState('wallet',['connected'])
+  },
   methods: {
     async connect() {
-      await this.$store.dispatch("wallet/connect");
+      await this.$store.dispatch('wallet/connect');
     },
 
-    async init() {
-      await this.$store.dispatch("wallet/test");
+    async newEntry() {
+      this.$router.push('new');
     },
-
-    async newEntry() {      
-      this.$router.push('new'); 
-    },
+  },
+  watch: {
+    //connection state shas changed.
+    async connected(newValue, oldValue) {
+      if(newValue) {
+        await this.$store.dispatch('wallet/getCatalog'); 
+      }
+    }
+  },
+  mounted() {    
   },
 };
 </script>

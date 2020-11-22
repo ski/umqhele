@@ -37,7 +37,6 @@ export default {
   },
   computed: {   
     listing() {
-      console.log('listing');
       const purse = this.$store.getters['wallet/getListingPurse'];
       if(purse.currentAmount)
         return purse.currentAmount.value;
