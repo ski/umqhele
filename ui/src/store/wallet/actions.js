@@ -1,5 +1,6 @@
 import wallet from '../../plugins/wallet';
 import api from '../../plugins/api';
+import { setupMint } from './mint';
 
 const moolaPursePetname = 'Fun budget';
 
@@ -11,7 +12,7 @@ const actions = {
 
   async makeSellerOffer({ commit, state }, entry) {
 
-    await setupMint(state);
+    //await setupMint(state);
 
     const offer = {
       id: Date.now(),

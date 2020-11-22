@@ -117,19 +117,18 @@ const start = async (zcf) => {
 
       const zoe = zcf.getZoeService();
 
-      const { creatorInvitation: auctionCreatorInvitation } = await E(
-        zoe,
-      ).startInstance(
-        auctionInstallation,
-        harden({
-          Asset: issuer,
-          Ask: auctionProceedsIssuer,
-        }),
-        harden({
-          timeAuthority,
-          closesAfter,
-        }),
-      );
+      const { creatorInvitation: auctionCreatorInvitation }
+        = await E(zoe).startInstance(
+          auctionInstallation,
+          harden({
+            Asset: issuer,
+            Ask: auctionProceedsIssuer,
+          }),
+          harden({
+            timeAuthority,
+            closesAfter,
+          }),
+        );
 
       const reservePrice = listingSeat.getProposal().want.AuctionProceeds;
 
@@ -139,7 +138,7 @@ const start = async (zcf) => {
         exit: { waived: null },
       });
 
-      const auctionCreatorUserSeat = zoe.offer(
+      const auctionCreatorUserSeat = await E(zoe).offer(
         auctionCreatorInvitation,
         auctionProposal,
         itemPaymentRecord,

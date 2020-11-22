@@ -4,7 +4,7 @@
 import fs from 'fs';
 import { E } from '@agoric/eventual-send';
 import '@agoric/zoe/exported';
-import { makeLocalAmountMath } from '@agoric/ertp';
+import { makeAmountMath, makeLocalAmountMath } from '@agoric/ertp';
 import installationConstants from '../ui/public/conf/installationConstants';
 
 // deploy.js runs in an ephemeral Node.js outside of swingset. The
@@ -79,6 +79,7 @@ export default async function deployApi(
   const auctionBrand = await E(auctionIssuerP).getBrand();
   const auctionIssuer = await auctionIssuerP;
   const invitationIssuer = await invitationIssuerP;
+  const itemMath = await makeLocalAmountMath(auctionIssuer);
 
   const [
     INSTANCE_BOARD_ID,
@@ -107,12 +108,13 @@ export default async function deployApi(
     const handler = E(handlerInstall).spawn({
       creatorFacet,
       moneyPurse,
+      itemMath,
       timeAuthority,
       videoService,
       board,
       http,
-      invitationIssuer,
-      auctionIssuer,
+      invitationIssuer,     
+      auctionIssuer, 
       zoe,
     });
 

@@ -1,21 +1,25 @@
 // @ts-check
 import { E } from '@agoric/eventual-send';
 import { makeWebSocketHandler } from './lib-http';
+import { makeLocalAmountMath } from '@agoric/ertp';
 
 const spawnHandler = async (
   {
     creatorFacet,
     moneyPurse,
-    itemMath,
     timeAuthority,
     videoService,
     board,
     http,
     invitationIssuer,
+    auctionIssuer,
     zoe,
   },
   _invitationMaker,
 ) => {
+
+  const itemMath = await makeLocalAmountMath(auctionIssuer);
+
   // withdraw fees from the contract and deposit them in the dapp wallet
   const notifier = await E(creatorFacet).getFeesAccumulatedNotifier();
 
@@ -59,31 +63,23 @@ const spawnHandler = async (
             const listingInvitationP = await E(
               videoService,
             ).makeListingInvitation(itemToAuction, timeAuthority, closesAfter);
+
             const invitationAmount = await E(invitationIssuer).getAmountOf(
               listingInvitationP,
             );
-
             const {
               value: [{ handle }],
             } = invitationAmount;
-
             const invitationHandleBoardId = await E(board).getId(handle);
             const updatedOffer = { ...offer, invitationHandleBoardId };
             await E(depositFacet).receive(listingInvitationP);
+
             send({
               type: 'videoTokenizer/createListingResponse',
               data: { updatedOffer },
             });
-            return true;
-          }
-
-          case 'videoTokenizer/setup': {
-            send({
-              type: 'videoTokenizer/setupResponse',
-              data: { message: 'setup has already occurred' },
-            });
-            return true;
-          }
+            return true;            
+          }          
 
           default:
             console.log(JSON.stringify(obj));
