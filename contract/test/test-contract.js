@@ -116,8 +116,7 @@ test('tokenized video', async (t) => {
       harden({ ListingFee: listingPayment }),
     );
 
-    const keya = await E(aliceListerSeat).getOfferResult();
-    const key = billing.uuid;//JSON.stringify([new Date(billing.showTime).toISOString(), billing.title]);    
+    const key = await E(aliceListerSeat).getOfferResult();   
     listing.resolve({ show: show2, key });
 
     const aliceAuctionProceedsPayoutP = E(aliceListerSeat).getPayout(
