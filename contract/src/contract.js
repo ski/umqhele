@@ -147,9 +147,8 @@ const start = async (zcf) => {
       const makeBidInvitationObj = await E(
         auctionCreatorUserSeat,
       ).getOfferResult();
-
-      const invitation = await E(auctionCreatorUserSeat).getOfferResult();
-      console.log('makeListingInvitation@@==@0', invitation);
+      
+      console.log('makeListingInvitation@@==@0', makeBidInvitationObj);
       
       // Give the auction winnings to the user through the listingSeat
       E(auctionCreatorUserSeat)
@@ -177,22 +176,14 @@ const start = async (zcf) => {
           feesAccumulatedUpdater.updateState(currentFeesAccumulated);
           listingSeat.exit();
         });            
-      runningAuctions.init(startTitle, makeBidInvitationObj);
-      console.log('makeListingInvitation@@==@1', startTitle);
-      console.log('makeListingInvitation@@==@2', makeBidInvitationObj);
-      console.log('makeListingInvitation@@==@3', runningAuctions.keys());
-      console.log('makeListingInvitation@@==@4', runningAuctions.get(startTitle));
+      runningAuctions.init(startTitle, makeBidInvitationObj);      
       return startTitle;
     };
     return zcf.makeInvitation(listItem, 'list item');
   };
 
   const getBidInvitation = async (startTitle) => {
-    assert(runningAuctions.has(startTitle), `${startTitle} not found`);
-    console.log('getBidInvitation@@=1@',startTitle);
-    console.log('getBidInvitation@@=2@',runningAuctions.keys());
-    console.log('getBidInvitation@@=3@',runningAuctions.values());
-    console.log('getBidInvitation@@=4@',await runningAuctions.get(startTitle));
+    assert(runningAuctions.has(startTitle), `${startTitle} not found`);   
     return runningAuctions.get(startTitle).makeBidInvitation();
   }
     

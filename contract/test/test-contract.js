@@ -117,12 +117,7 @@ test('tokenized video', async (t) => {
     );
 
     const keya = await E(aliceListerSeat).getOfferResult();
-    const key = billing.uuid;//JSON.stringify([new Date(billing.showTime).toISOString(), billing.title]);
-    
-    console.log('key2@@========@',billing.uuid);
-    console.log('key@@========@',key);
-    //console.log(key2);
-    // share the listing
+    const key = billing.uuid;//JSON.stringify([new Date(billing.showTime).toISOString(), billing.title]);    
     listing.resolve({ show: show2, key });
 
     const aliceAuctionProceedsPayoutP = E(aliceListerSeat).getPayout(
