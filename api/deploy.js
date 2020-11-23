@@ -4,7 +4,7 @@
 import fs from 'fs';
 import { E } from '@agoric/eventual-send';
 import '@agoric/zoe/exported';
-import { makeAmountMath, makeLocalAmountMath } from '@agoric/ertp';
+import { makeLocalAmountMath } from '@agoric/ertp';
 import installationConstants from '../ui/public/conf/installationConstants';
 
 // deploy.js runs in an ephemeral Node.js outside of swingset. The
@@ -28,7 +28,7 @@ const API_PORT = process.env.API_PORT || '8000';
 
 /**
  * @typedef {{ zoe: ZoeService, board: Board, spawner, wallet,
- * uploads, http, chainTimerService }} Home
+ * uploads, http, chainTimerService,localTimerService }} Home
  * @param {Promise<Home>} homePromise
  * A promise for the references available from REPL home
  * @param {DeployPowers} powers
@@ -38,7 +38,7 @@ export default async function deployApi(
   { bundleSource, pathResolve },
 ) {
   const home = await homePromise;
-  const { spawner, zoe, http, board, wallet, chainTimerService } = home;
+  const { spawner, zoe, http, board, wallet, chainTimerService, localTimerService } = home;
 
   const {
     INSTALLATION_BOARD_ID,
@@ -101,6 +101,7 @@ export default async function deployApi(
   console.log(`-- AUCTION_BRAND_BOARD_ID: ${AUCTION_ISSUER_BOARD_ID}`);
 
   const timeAuthority = chainTimerService;
+  //const timeAuthority = localTimerService;
 
   const installURLHandler = async () => {
     const bundle = await bundleSource(pathResolve('./src/handler.js'));
@@ -113,8 +114,8 @@ export default async function deployApi(
       videoService,
       board,
       http,
-      invitationIssuer,     
-      auctionIssuer, 
+      invitationIssuer,
+      auctionIssuer,
       zoe,
     });
 

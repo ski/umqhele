@@ -6,6 +6,7 @@ import { connect } from './connect';
 
 export default {
 
+  
   connect: async (commit, state) => {
     const {
       INVITE_BRAND_BOARD_ID,
@@ -69,14 +70,19 @@ export default {
           break;
         }
         case 'walletOfferResult': {
-          if (obj.data.outcome) {          
+          if (obj.data.outcome) {
+            //expecting an UUID back so test.
+            const uuid = new RegExp(/^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$/);       
             console.log('outcome is the key ', obj.data.outcome);
-            const apiRequest = {
-              type: 'videoTokenizer/getCatalogItem',
-              id: Date.now().toLocaleString(),
-              data: { entryId: obj.data.outcome },
-            };
-            state.apiSend(apiRequest);
+            const isCatalogItem = uuid.test(obj.data.outcome);
+            if(isCatalogItem){
+              const apiRequest = {
+                type: 'videoTokenizer/getCatalogItem',
+                id: Date.now().toLocaleString(),
+                data: { entryId: obj.data.outcome },
+              };
+              state.apiSend(apiRequest);
+            }           
           } 
           break;
         }
@@ -92,9 +98,6 @@ export default {
         }
       }
     };
-
-    // http://localhost:3000#1605891345654
-    // http://localhost:3000#1605891345654
 
     const walletSend = await connect(
       'wallet',

@@ -1,0 +1,689 @@
+[
+  {
+    "brandBoardId": "1667979430",
+    "depositBoardId": "604346717",
+    "brandPetname": "zoe invite",
+    "pursePetname": "Default Zoe invite purse",
+    "displayInfo": {
+      "amountMathKind": "set"
+    },
+    "value": [
+      {
+        "auctionedAssets": {
+          "brand": {},
+          "value": [
+            {
+              "uuid": "69bcaa7e-0724-40d6-bf85-769be0845e65",
+              "title": "Pacoc li ileca kabbi.",
+              "description": "Bet kerowap us cubak nusig piwuviw subfi majac nifkaki cuha nu tucvi olnot tid oczah valelbew nu hibgic samzacil sobo jac zonus luzwalmed fihutka sovujigu nitegeka fasi kuhtak tutsoji ja.",
+              "showTime": "12/20/2020 12:54",
+              "duration": 2,
+              "reservePrice": 19,
+              "startingBid": 14
+            }
+          ]
+        },
+        "minimumBid": {
+          "brand": {},
+          "value": 9
+        },
+        "closesAfter": 1609753627,
+        "timeAuthority": {},
+        "description": "bid",
+        "handle": {},
+        "instance": {},
+        "installation": {}
+      },
+      {
+        "auctionedAssets": {
+          "brand": {},
+          "value": [
+            {
+              "uuid": "447ae3e4-c2dd-41b8-8b67-06098ac71cd9",
+              "title": "Pel gadkeb josutneb goviola.",
+              "description": "Ehanud caj got sochowwig jafil wic sisazsuh hazatti vori leb zibac kosupa mip un jopzuj cikufnuc ta ni dihcaba nuk be dangu sefpalu nicadfo pewujo feh zozjaple pe ke heh.",
+              "showTime": "12/31/2020 03:45",
+              "duration": 2,
+              "reservePrice": 15,
+              "startingBid": 5
+            }
+          ]
+        },
+        "minimumBid": {
+          "brand": {},
+          "value": 9
+        },
+        "closesAfter": 1609753271,
+        "timeAuthority": {},
+        "description": "bid",
+        "handle": {},
+        "instance": {},
+        "installation": {}
+      },
+      {
+        "auctionedAssets": {
+          "brand": {},
+          "value": [
+            {
+              "uuid": "447ae3e4-c2dd-41b8-8b67-06098ac71cd9",
+              "title": "Pel gadkeb josutneb goviola.",
+              "description": "Ehanud caj got sochowwig jafil wic sisazsuh hazatti vori leb zibac kosupa mip un jopzuj cikufnuc ta ni dihcaba nuk be dangu sefpalu nicadfo pewujo feh zozjaple pe ke heh.",
+              "showTime": "12/31/2020 03:45",
+              "duration": 2,
+              "reservePrice": 15,
+              "startingBid": 5
+            }
+          ]
+        },
+        "minimumBid": {
+          "brand": {},
+          "value": 9
+        },
+        "closesAfter": 1609753271,
+        "timeAuthority": {},
+        "description": "bid",
+        "handle": {},
+        "instance": {},
+        "installation": {}
+      }
+    ],
+    "currentAmountSlots": {
+      "body": "{\"brand\":{\"@qclass\":\"slot\",\"index\":0},\"value\":[{\"auctionedAssets\":{\"brand\":{\"@qclass\":\"slot\",\"index\":1},\"value\":[{\"uuid\":\"69bcaa7e-0724-40d6-bf85-769be0845e65\",\"title\":\"Pacoc li ileca kabbi.\",\"description\":\"Bet kerowap us cubak nusig piwuviw subfi majac nifkaki cuha nu tucvi olnot tid oczah valelbew nu hibgic samzacil sobo jac zonus luzwalmed fihutka sovujigu nitegeka fasi kuhtak tutsoji ja.\",\"showTime\":\"12/20/2020 12:54\",\"duration\":2,\"reservePrice\":19,\"startingBid\":14}]},\"minimumBid\":{\"brand\":{\"@qclass\":\"slot\",\"index\":2},\"value\":9},\"closesAfter\":1609753627,\"timeAuthority\":{\"@qclass\":\"slot\",\"index\":3},\"description\":\"bid\",\"handle\":{\"@qclass\":\"slot\",\"index\":4},\"instance\":{\"@qclass\":\"slot\",\"index\":5},\"installation\":{\"@qclass\":\"slot\",\"index\":6}},{\"auctionedAssets\":{\"brand\":{\"@qclass\":\"slot\",\"index\":7},\"value\":[{\"uuid\":\"447ae3e4-c2dd-41b8-8b67-06098ac71cd9\",\"title\":\"Pel gadkeb josutneb goviola.\",\"description\":\"Ehanud caj got sochowwig jafil wic sisazsuh hazatti vori leb zibac kosupa mip un jopzuj cikufnuc ta ni dihcaba nuk be dangu sefpalu nicadfo pewujo feh zozjaple pe ke heh.\",\"showTime\":\"12/31/2020 03:45\",\"duration\":2,\"reservePrice\":15,\"startingBid\":5}]},\"minimumBid\":{\"brand\":{\"@qclass\":\"ibid\",\"index\":9},\"value\":9},\"closesAfter\":1609753271,\"timeAuthority\":{\"@qclass\":\"ibid\",\"index\":10},\"description\":\"bid\",\"handle\":{\"@qclass\":\"slot\",\"index\":8},\"instance\":{\"@qclass\":\"slot\",\"index\":9},\"installation\":{\"@qclass\":\"slot\",\"index\":10}},{\"auctionedAssets\":{\"brand\":{\"@qclass\":\"ibid\",\"index\":16},\"value\":[{\"uuid\":\"447ae3e4-c2dd-41b8-8b67-06098ac71cd9\",\"title\":\"Pel gadkeb josutneb goviola.\",\"description\":\"Ehanud caj got sochowwig jafil wic sisazsuh hazatti vori leb zibac kosupa mip un jopzuj cikufnuc ta ni dihcaba nuk be dangu sefpalu nicadfo pewujo feh zozjaple pe ke heh.\",\"showTime\":\"12/31/2020 03:45\",\"duration\":2,\"reservePrice\":15,\"startingBid\":5}]},\"minimumBid\":{\"brand\":{\"@qclass\":\"ibid\",\"index\":9},\"value\":9},\"closesAfter\":1609753271,\"timeAuthority\":{\"@qclass\":\"ibid\",\"index\":10},\"description\":\"bid\",\"handle\":{\"@qclass\":\"slot\",\"index\":11},\"instance\":{\"@qclass\":\"ibid\",\"index\":21},\"installation\":{\"@qclass\":\"ibid\",\"index\":22}}]}",
+      "slots": [
+        {
+          "kind": "brand",
+          "petname": "zoe invite"
+        },
+        {
+          "kind": "brand",
+          "petname": [
+            "OneVideoAuctions",
+            "Token",
+            "7"
+          ]
+        },
+        {
+          "kind": "brand",
+          "petname": "moola"
+        },
+        {
+          "kind": "unnamed",
+          "petname": "unnamed-16"
+        },
+        {
+          "kind": "unnamed",
+          "petname": "unnamed-25"
+        },
+        {
+          "kind": "unnamed",
+          "petname": "unnamed-26"
+        },
+        {
+          "kind": "unnamed",
+          "petname": "unnamed-27"
+        },
+        {
+          "kind": "brand",
+          "petname": [
+            "OneVideoAuctions",
+            "Token",
+            "6"
+          ]
+        },
+        {
+          "kind": "unnamed",
+          "petname": "unnamed-21"
+        },
+        {
+          "kind": "unnamed",
+          "petname": "unnamed-18"
+        },
+        {
+          "kind": "unnamed",
+          "petname": "unnamed-19"
+        },
+        {
+          "kind": "unnamed",
+          "petname": "unnamed-17"
+        }
+      ]
+    },
+    "currentAmount": {
+      "brand": {
+        "kind": "brand",
+        "petname": "zoe invite"
+      },
+      "value": [
+        {
+          "auctionedAssets": {
+            "brand": {
+              "kind": "brand",
+              "petname": [
+                "OneVideoAuctions",
+                "Token",
+                "7"
+              ]
+            },
+            "value": [
+              {
+                "uuid": "69bcaa7e-0724-40d6-bf85-769be0845e65",
+                "title": "Pacoc li ileca kabbi.",
+                "description": "Bet kerowap us cubak nusig piwuviw subfi majac nifkaki cuha nu tucvi olnot tid oczah valelbew nu hibgic samzacil sobo jac zonus luzwalmed fihutka sovujigu nitegeka fasi kuhtak tutsoji ja.",
+                "showTime": "12/20/2020 12:54",
+                "duration": 2,
+                "reservePrice": 19,
+                "startingBid": 14
+              }
+            ]
+          },
+          "minimumBid": {
+            "brand": {
+              "kind": "brand",
+              "petname": "moola"
+            },
+            "value": 9
+          },
+          "closesAfter": 1609753627,
+          "timeAuthority": {
+            "kind": "unnamed",
+            "petname": "unnamed-16"
+          },
+          "description": "bid",
+          "handle": {
+            "kind": "unnamed",
+            "petname": "unnamed-25"
+          },
+          "instance": {
+            "kind": "unnamed",
+            "petname": "unnamed-26"
+          },
+          "installation": {
+            "kind": "unnamed",
+            "petname": "unnamed-27"
+          }
+        },
+        {
+          "auctionedAssets": {
+            "brand": {
+              "kind": "brand",
+              "petname": [
+                "OneVideoAuctions",
+                "Token",
+                "6"
+              ]
+            },
+            "value": [
+              {
+                "uuid": "447ae3e4-c2dd-41b8-8b67-06098ac71cd9",
+                "title": "Pel gadkeb josutneb goviola.",
+                "description": "Ehanud caj got sochowwig jafil wic sisazsuh hazatti vori leb zibac kosupa mip un jopzuj cikufnuc ta ni dihcaba nuk be dangu sefpalu nicadfo pewujo feh zozjaple pe ke heh.",
+                "showTime": "12/31/2020 03:45",
+                "duration": 2,
+                "reservePrice": 15,
+                "startingBid": 5
+              }
+            ]
+          },
+          "minimumBid": {
+            "brand": {
+              "kind": "brand",
+              "petname": "moola"
+            },
+            "value": 9
+          },
+          "closesAfter": 1609753271,
+          "timeAuthority": {
+            "kind": "unnamed",
+            "petname": "unnamed-16"
+          },
+          "description": "bid",
+          "handle": {
+            "kind": "unnamed",
+            "petname": "unnamed-21"
+          },
+          "instance": {
+            "kind": "unnamed",
+            "petname": "unnamed-18"
+          },
+          "installation": {
+            "kind": "unnamed",
+            "petname": "unnamed-19"
+          }
+        },
+        {
+          "auctionedAssets": {
+            "brand": {
+              "kind": "brand",
+              "petname": [
+                "OneVideoAuctions",
+                "Token",
+                "6"
+              ]
+            },
+            "value": [
+              {
+                "uuid": "447ae3e4-c2dd-41b8-8b67-06098ac71cd9",
+                "title": "Pel gadkeb josutneb goviola.",
+                "description": "Ehanud caj got sochowwig jafil wic sisazsuh hazatti vori leb zibac kosupa mip un jopzuj cikufnuc ta ni dihcaba nuk be dangu sefpalu nicadfo pewujo feh zozjaple pe ke heh.",
+                "showTime": "12/31/2020 03:45",
+                "duration": 2,
+                "reservePrice": 15,
+                "startingBid": 5
+              }
+            ]
+          },
+          "minimumBid": {
+            "brand": {
+              "kind": "brand",
+              "petname": "moola"
+            },
+            "value": 9
+          },
+          "closesAfter": 1609753271,
+          "timeAuthority": {
+            "kind": "unnamed",
+            "petname": "unnamed-16"
+          },
+          "description": "bid",
+          "handle": {
+            "kind": "unnamed",
+            "petname": "unnamed-17"
+          },
+          "instance": {
+            "kind": "unnamed",
+            "petname": "unnamed-18"
+          },
+          "installation": {
+            "kind": "unnamed",
+            "petname": "unnamed-19"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "brandBoardId": "815824725",
+    "brandPetname": "moola",
+    "pursePetname": "Fun budget",
+    "displayInfo": {
+      "amountMathKind": "nat"
+    },
+    "value": 1886,
+    "currentAmountSlots": {
+      "body": "{\"brand\":{\"@qclass\":\"slot\",\"index\":0},\"value\":1886}",
+      "slots": [
+        {
+          "kind": "brand",
+          "petname": "moola"
+        }
+      ]
+    },
+    "currentAmount": {
+      "brand": {
+        "kind": "brand",
+        "petname": "moola"
+      },
+      "value": 1886
+    }
+  },
+  {
+    "brandBoardId": "1456154132",
+    "brandPetname": "Testnet.$USD",
+    "pursePetname": "Local currency",
+    "displayInfo": {
+      "decimalPlaces": 3,
+      "amountMathKind": "nat"
+    },
+    "value": 20000,
+    "currentAmountSlots": {
+      "body": "{\"brand\":{\"@qclass\":\"slot\",\"index\":0},\"value\":20000}",
+      "slots": [
+        {
+          "kind": "brand",
+          "petname": "Testnet.$USD"
+        }
+      ]
+    },
+    "currentAmount": {
+      "brand": {
+        "kind": "brand",
+        "petname": "Testnet.$USD"
+      },
+      "value": 20000
+    }
+  },
+  {
+    "brandBoardId": "262188032",
+    "brandPetname": "simolean",
+    "pursePetname": "Nest egg",
+    "displayInfo": {
+      "amountMathKind": "nat"
+    },
+    "value": 1900,
+    "currentAmountSlots": {
+      "body": "{\"brand\":{\"@qclass\":\"slot\",\"index\":0},\"value\":1900}",
+      "slots": [
+        {
+          "kind": "brand",
+          "petname": "simolean"
+        }
+      ]
+    },
+    "currentAmount": {
+      "brand": {
+        "kind": "brand",
+        "petname": "simolean"
+      },
+      "value": 1900
+    }
+  },
+  {
+    "brandBoardId": "500716545",
+    "brandPetname": "Testnet.$LINK",
+    "pursePetname": "Oracle fee",
+    "displayInfo": {
+      "decimalPlaces": 6,
+      "amountMathKind": "nat"
+    },
+    "value": 7000000,
+    "currentAmountSlots": {
+      "body": "{\"brand\":{\"@qclass\":\"slot\",\"index\":0},\"value\":7000000}",
+      "slots": [
+        {
+          "kind": "brand",
+          "petname": "Testnet.$LINK"
+        }
+      ]
+    },
+    "currentAmount": {
+      "brand": {
+        "kind": "brand",
+        "petname": "Testnet.$LINK"
+      },
+      "value": 7000000
+    }
+  },
+  {
+    "brandBoardId": "177231517",
+    "brandPetname": [
+      "OneVideoAuctions",
+      "Token",
+      "2"
+    ],
+    "pursePetname": [
+      "OneVideoAuctions",
+      "Token",
+      "2"
+    ],
+    "displayInfo": {
+      "amountMathKind": "set"
+    },
+    "value": [],
+    "currentAmountSlots": {
+      "body": "{\"brand\":{\"@qclass\":\"slot\",\"index\":0},\"value\":[]}",
+      "slots": [
+        {
+          "kind": "brand",
+          "petname": [
+            "OneVideoAuctions",
+            "Token",
+            "2"
+          ]
+        }
+      ]
+    },
+    "currentAmount": {
+      "brand": {
+        "kind": "brand",
+        "petname": [
+          "OneVideoAuctions",
+          "Token",
+          "2"
+        ]
+      },
+      "value": []
+    }
+  },
+  {
+    "brandBoardId": "715805464",
+    "brandPetname": [
+      "OneVideoAuctions",
+      "Token",
+      "3"
+    ],
+    "pursePetname": [
+      "OneVideoAuctions",
+      "Token",
+      "3"
+    ],
+    "displayInfo": {
+      "amountMathKind": "set"
+    },
+    "value": [],
+    "currentAmountSlots": {
+      "body": "{\"brand\":{\"@qclass\":\"slot\",\"index\":0},\"value\":[]}",
+      "slots": [
+        {
+          "kind": "brand",
+          "petname": [
+            "OneVideoAuctions",
+            "Token",
+            "3"
+          ]
+        }
+      ]
+    },
+    "currentAmount": {
+      "brand": {
+        "kind": "brand",
+        "petname": [
+          "OneVideoAuctions",
+          "Token",
+          "3"
+        ]
+      },
+      "value": []
+    }
+  },
+  {
+    "brandBoardId": "984638224",
+    "brandPetname": [
+      "OneVideoAuctions",
+      "Token",
+      "4"
+    ],
+    "pursePetname": [
+      "OneVideoAuctions",
+      "Token",
+      "4"
+    ],
+    "displayInfo": {
+      "amountMathKind": "set"
+    },
+    "value": [],
+    "currentAmountSlots": {
+      "body": "{\"brand\":{\"@qclass\":\"slot\",\"index\":0},\"value\":[]}",
+      "slots": [
+        {
+          "kind": "brand",
+          "petname": [
+            "OneVideoAuctions",
+            "Token",
+            "4"
+          ]
+        }
+      ]
+    },
+    "currentAmount": {
+      "brand": {
+        "kind": "brand",
+        "petname": [
+          "OneVideoAuctions",
+          "Token",
+          "4"
+        ]
+      },
+      "value": []
+    }
+  },
+  {
+    "brandBoardId": "1168060102",
+    "brandPetname": [
+      "OneVideoAuctions",
+      "Token",
+      "5"
+    ],
+    "pursePetname": [
+      "OneVideoAuctions",
+      "Token",
+      "5"
+    ],
+    "displayInfo": {
+      "amountMathKind": "set"
+    },
+    "value": [],
+    "currentAmountSlots": {
+      "body": "{\"brand\":{\"@qclass\":\"slot\",\"index\":0},\"value\":[]}",
+      "slots": [
+        {
+          "kind": "brand",
+          "petname": [
+            "OneVideoAuctions",
+            "Token",
+            "5"
+          ]
+        }
+      ]
+    },
+    "currentAmount": {
+      "brand": {
+        "kind": "brand",
+        "petname": [
+          "OneVideoAuctions",
+          "Token",
+          "5"
+        ]
+      },
+      "value": []
+    }
+  },
+  {
+    "brandBoardId": "192932059",
+    "brandPetname": [
+      "OneVideoAuctions",
+      "Token",
+      "6"
+    ],
+    "pursePetname": [
+      "OneVideoAuctions",
+      "Token",
+      "6"
+    ],
+    "displayInfo": {
+      "amountMathKind": "set"
+    },
+    "value": [],
+    "currentAmountSlots": {
+      "body": "{\"brand\":{\"@qclass\":\"slot\",\"index\":0},\"value\":[]}",
+      "slots": [
+        {
+          "kind": "brand",
+          "petname": [
+            "OneVideoAuctions",
+            "Token",
+            "6"
+          ]
+        }
+      ]
+    },
+    "currentAmount": {
+      "brand": {
+        "kind": "brand",
+        "petname": [
+          "OneVideoAuctions",
+          "Token",
+          "6"
+        ]
+      },
+      "value": []
+    }
+  },
+  {
+    "brandBoardId": "1493185302",
+    "brandPetname": [
+      "OneVideoAuctions",
+      "Token",
+      "7"
+    ],
+    "pursePetname": [
+      "OneVideoAuctions",
+      "Token",
+      "7"
+    ],
+    "displayInfo": {
+      "amountMathKind": "set"
+    },
+    "value": [],
+    "currentAmountSlots": {
+      "body": "{\"brand\":{\"@qclass\":\"slot\",\"index\":0},\"value\":[]}",
+      "slots": [
+        {
+          "kind": "brand",
+          "petname": [
+            "OneVideoAuctions",
+            "Token",
+            "7"
+          ]
+        }
+      ]
+    },
+    "currentAmount": {
+      "brand": {
+        "kind": "brand",
+        "petname": [
+          "OneVideoAuctions",
+          "Token",
+          "7"
+        ]
+      },
+      "value": []
+    }
+  },
+  {
+    "brandBoardId": "605437304",
+    "brandPetname": [
+      "OneVideoAuctions",
+      "Token"
+    ],
+    "pursePetname": [
+      "OneVideoAuctions",
+      "Token"
+    ],
+    "displayInfo": {
+      "amountMathKind": "set"
+    },
+    "value": [],
+    "currentAmountSlots": {
+      "body": "{\"brand\":{\"@qclass\":\"slot\",\"index\":0},\"value\":[]}",
+      "slots": [
+        {
+          "kind": "brand",
+          "petname": [
+            "OneVideoAuctions",
+            "Token"
+          ]
+        }
+      ]
+    },
+    "currentAmount": {
+      "brand": {
+        "kind": "brand",
+        "petname": [
+          "OneVideoAuctions",
+          "Token"
+        ]
+      },
+      "value": []
+    }
+  }
+]

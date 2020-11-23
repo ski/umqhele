@@ -34,6 +34,10 @@ export default {
 
         case 'videoTokenizer/makeBidResponse': {
           const { updatedOffer } = obj.data;  
+          walletSend({
+            type: 'walletAddOffer',
+            data: updatedOffer,
+          });
           console.log('what do i do withi this?', updatedOffer);                    
           break;
         }

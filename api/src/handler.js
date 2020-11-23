@@ -106,13 +106,13 @@ const spawnHandler = async (
             const { depositFacetId, offer, key} = obj.data;
             const depositFacet = await E(board).getValue(depositFacetId);
             const bidInvitationP = await E(videoService).getBidInvitation(key);
-            const invitationAmount = await E(auctionIssuer).getAmountOf(
+            const invitationAmount = await E(invitationIssuer).getAmountOf(
               bidInvitationP,
             );
             const {
               value: [{ handle }],
             } = invitationAmount;
-            const invitationHandleBoardId = await E(board).getId(handle);
+            const invitationHandleBoardId = await E(board).getId(handle);            
             const updatedOffer = { ...offer, invitationHandleBoardId };
             await E(depositFacet).receive(bidInvitationP);
             send({

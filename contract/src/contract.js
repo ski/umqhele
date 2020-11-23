@@ -42,7 +42,7 @@ const start = async (zcf) => {
   const listingMint = await zcf.makeZCFMint('Items', MathKind.SET);
   // Create the internal catalog entry mint
   const { issuer } = listingMint.getIssuerRecord();
-  
+
   const catalog = makeStore('startTitle');
 
   const withdrawFees = (seat) => {
@@ -94,12 +94,8 @@ const start = async (zcf) => {
       );
 
       // Currently only a single item is supported
-      const [{ title, showTime, uuid }] = itemToAuction.value;
+      const [{ uuid }] = itemToAuction.value;
       const startTitle = uuid
-      // const startTitle = JSON.stringify([
-      //   new Date(showTime).toISOString(),
-      //   title,
-      // ]);
 
       assert(!catalog.has(uuid), details`time / title taken`);
 
@@ -147,9 +143,7 @@ const start = async (zcf) => {
       const makeBidInvitationObj = await E(
         auctionCreatorUserSeat,
       ).getOfferResult();
-      
-      console.log('makeListingInvitation@@==@0', makeBidInvitationObj);
-      
+
       // Give the auction winnings to the user through the listingSeat
       E(auctionCreatorUserSeat)
         .getPayouts()
@@ -175,18 +169,20 @@ const start = async (zcf) => {
           const currentFeesAccumulated = houseSeat.getCurrentAllocation();
           feesAccumulatedUpdater.updateState(currentFeesAccumulated);
           listingSeat.exit();
-        });            
-      runningAuctions.init(startTitle, makeBidInvitationObj);      
+        });
+      runningAuctions.init(startTitle, makeBidInvitationObj);
       return startTitle;
     };
     return zcf.makeInvitation(listItem, 'list item');
   };
 
   const getBidInvitation = async (startTitle) => {
-    assert(runningAuctions.has(startTitle), `${startTitle} not found`);   
-    return runningAuctions.get(startTitle).makeBidInvitation();
+    assert(runningAuctions.has(startTitle), `${startTitle} not found`);
+    const invitationMaker = runningAuctions.get(startTitle);
+    const invitation = await E(invitationMaker).makeBidInvitation();
+    return invitation;
   }
-    
+
   const getListing = () => runningAuctions.keys();
   const getCatalog = () => catalog.values();
   const getCatalogEntry = (key) => catalog.get(key);
@@ -198,7 +194,7 @@ const start = async (zcf) => {
 
   const getFeesAccumulatedNotifier = () => feesAccumulatedNotifier;
 
-  return harden({ 
+  return harden({
     creatorFacet: { makeWithdrawFeesInvitation, getFeesAccumulatedNotifier },
     publicFacet: {
       makeListingInvitation,

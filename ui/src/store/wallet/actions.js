@@ -1,5 +1,6 @@
 import wallet from '../../plugins/wallet';
 import api from '../../plugins/api';
+import moment from 'moment';
 
 const moolaPursePetname = 'Fun budget';
 const tokenPursePetname = ['OneVideoAuctions', 'Token'];
@@ -32,10 +33,9 @@ const actions = {
       dappContext: true,
     };
 
-    // TODO: make more robust.
-    const currentTime = Math.floor(Date.now() / 1000);
-    const hour = 1000 * 60 * 60;
-
+    console.log(moment().unix());
+    console.log(moment().add(5, 'm').unix());
+    
     const request = {
       type: 'videoTokenizer/createListing',
       id: Date.now().toLocaleString(),
@@ -43,7 +43,7 @@ const actions = {
         depositFacetId: state.zoeInvitationDepositFacetId,
         offer,
         entry,
-        closesAfter: currentTime + hour,
+        closesAfter: moment().add(5, 'm').unix(), //5 mins from now
       },
     };
     await state.apiSend(request);
@@ -76,9 +76,8 @@ const actions = {
     await state.apiSend(request);
   },
 
-  async makeBid({ commit, state }, entry) {
-    console.log('showTime@@==@', entry.showTime);
-    const key = entry.uuid;//JSON.stringify([new Date(entry.showTime).toISOString(), entry.title]);
+  async makeBid({ commit, state }, entry) {   
+    const key = entry.uuid;
 
     const offer = {
       id: Date.now(),
