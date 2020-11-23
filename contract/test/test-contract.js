@@ -8,6 +8,7 @@ import { E } from '@agoric/eventual-send';
 import { makeLocalAmountMath } from '@agoric/ertp';
 import { makePromiseKit } from '@agoric/promise-kit';
 import { setupMixed } from './setup';
+import uuid4 from "uuid4";
 
 const contractPath = `${__dirname}/../src/contract`;
 
@@ -80,18 +81,18 @@ test('tokenized video', async (t) => {
     const listingMaker = await makeLocalAmountMath(listingIssuer);
 
     const reservePrice = 9;
+    const billing = {
+      title: 'Learn to build smart contracts',
+      showTime: Date.parse('12/22/2020 12:34'),
+      uuid: uuid4(),
+      // these don't go in the amountmath, do they?
+      auctionEndDate: Date.parse('2020-11-16 14:00:00'),
+      reservePrice,
+      startingBid: 3,
+    };
 
     const show2 = listingMaker.make(
-      harden([
-        {
-          title: 'Learn to build smart contracts',
-          showTime: Date.parse('2020-11-30 14:00:00'),
-          // these don't go in the amountmath, do they?
-          auctionEndDate: Date.parse('2020-11-16 14:00:00'),
-          reservePrice,
-          startingBid: 3,
-        },
-      ]),
+      harden([billing]),
     );
 
     const AliceListingOffer = harden({
@@ -115,8 +116,12 @@ test('tokenized video', async (t) => {
       harden({ ListingFee: listingPayment }),
     );
 
-    const key = await E(aliceListerSeat).getOfferResult();
-
+    const keya = await E(aliceListerSeat).getOfferResult();
+    const key = billing.uuid;//JSON.stringify([new Date(billing.showTime).toISOString(), billing.title]);
+    
+    console.log('key2@@========@',billing.uuid);
+    console.log('key@@========@',key);
+    //console.log(key2);
     // share the listing
     listing.resolve({ show: show2, key });
 
@@ -134,8 +139,8 @@ test('tokenized video', async (t) => {
     const videoService = await webSite.promise;
     const { show, key } = await listing.promise;
 
-    const eveBidInvitation = videoService.getBidInvitation(key);
-
+    const eveBidInvitation = await videoService.getBidInvitation(key);
+    console.log(eveBidInvitation);
     const eveBidOffer = harden({
       want: { Asset: show },
       give: { Bid: makeMoola(20) },

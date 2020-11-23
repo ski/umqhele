@@ -77,8 +77,7 @@ export default {
   methods: {
     async bid() {
       const key = JSON.stringify([new Date(this.entry.showTime).toISOString(), this.entry.title]);
-      await this.$store.dispatch('wallet/getCatalogItem', key);
-      console.log(key);
+      this.$store.dispatch('wallet/makeBid',this.entry);      
     },
   },
 

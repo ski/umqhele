@@ -32,6 +32,18 @@ export default {
           break;
         }
 
+        case 'videoTokenizer/makeBidResponse': {
+          const { updatedOffer } = obj.data;  
+          console.log('what do i do withi this?', updatedOffer);                    
+          break;
+        }
+
+        case 'videoTokenizer/getRunningAuctionsResponse': {
+          const { list } = obj.data;  
+          console.log('what do i do with this?', list);                    
+          break;
+        }
+
         case 'CTP_DISCONNECT': {
           // TODO: handle this appropriately
           break;

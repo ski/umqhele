@@ -1,12 +1,12 @@
 import wallet from '../../plugins/wallet';
 import api from '../../plugins/api';
-import { setupMint } from './mint';
 
 const moolaPursePetname = 'Fun budget';
+const tokenPursePetname = ['OneVideoAuctions', 'Token'];
 
 const actions = {
   async connect({ commit, state }) {
-    await wallet.connect(commit,state);
+    await wallet.connect(commit, state);
     await api.connect(commit, state.walletSend);
   },
 
@@ -36,7 +36,7 @@ const actions = {
     const currentTime = Math.floor(Date.now() / 1000);
     const hour = 1000 * 60 * 60;
 
-    const apiInvitationRequest = {
+    const request = {
       type: 'videoTokenizer/createListing',
       id: Date.now().toLocaleString(),
       data: {
@@ -46,25 +46,70 @@ const actions = {
         closesAfter: currentTime + hour,
       },
     };
-    await state.apiSend(apiInvitationRequest);
+    await state.apiSend(request);
   },
 
   async getCatalog({ commit, state }) {
-    const apiRequest = {
+    const request = {
       type: 'videoTokenizer/catalog',
       id: Date.now().toLocaleString(),
       data: {},
     };
-    await state.apiSend(apiRequest);
+    await state.apiSend(request);
   },
 
   async getCatalogItem({ commit, state }, key) {
-    const apiInvitationRequest = {
+    const request = {
       type: 'videoTokenizer/getCatalogItem',
       id: Date.now().toLocaleString(),
       data: { entryId: key },
     };
-    await state.apiSend(apiInvitationRequest);
+    await state.apiSend(request);
+  },
+
+  async getRunningAuctions({ commit, state }, key) {
+    const request = {
+      type: 'videoTokenizer/getRunningAuctions',
+      id: Date.now().toLocaleString(),
+      data: { },
+    };
+    await state.apiSend(request);
+  },
+
+  async makeBid({ commit, state }, entry) {
+    console.log('showTime@@==@', entry.showTime);
+    const key = entry.uuid;//JSON.stringify([new Date(entry.showTime).toISOString(), entry.title]);
+
+    const offer = {
+      id: Date.now(),
+
+      proposalTemplate: {
+        want: {
+          Asset: {
+            pursePetname: tokenPursePetname,
+            value: [entry],
+          },
+        },
+        give: {
+          Bid: {
+            pursePetname: moolaPursePetname,
+            value: Number(42),
+          },
+        },
+      },
+      dappContext: true,
+    };
+
+    const request = {
+      type: 'videoTokenizer/makeBid',
+      id: Date.now().toLocaleString(),
+      data: {
+        offer,
+        key,
+        depositFacetId: state.zoeInvitationDepositFacetId,
+      },
+    };
+    await state.apiSend(request);
   }
 };
 

@@ -67,6 +67,16 @@ const spawnHandler = async (
             return true;
           }
 
+          case 'videoTokenizer/getRunningAuctions' : {
+            const { entryId } = obj.data;
+            const list = await E(videoService).getRunningAuctions();
+            send({
+              type: 'videoTokenizer/getRunningAuctionsResponse',
+              data: { list },
+            });
+            return true;
+          }
+
           case 'videoTokenizer/createListing': {
             const { depositFacetId, offer, entry, closesAfter } = obj.data;
             const depositFacet = await E(board).getValue(depositFacetId);
@@ -90,7 +100,27 @@ const spawnHandler = async (
               data: { updatedOffer },
             });
             return true;            
-          }          
+          }     
+          
+          case 'videoTokenizer/makeBid': {
+            const { depositFacetId, offer, key} = obj.data;
+            const depositFacet = await E(board).getValue(depositFacetId);
+            const bidInvitationP = await E(videoService).getBidInvitation(key);
+            const invitationAmount = await E(auctionIssuer).getAmountOf(
+              bidInvitationP,
+            );
+            const {
+              value: [{ handle }],
+            } = invitationAmount;
+            const invitationHandleBoardId = await E(board).getId(handle);
+            const updatedOffer = { ...offer, invitationHandleBoardId };
+            await E(depositFacet).receive(bidInvitationP);
+            send({
+              type: 'videoTokenizer/makeBidResponse',
+              data: { updatedOffer },
+            });
+            return true;
+          }
 
           default:
             console.log(JSON.stringify(obj));

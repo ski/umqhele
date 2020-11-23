@@ -42,8 +42,7 @@ const start = async (zcf) => {
   const listingMint = await zcf.makeZCFMint('Items', MathKind.SET);
   // Create the internal catalog entry mint
   const { issuer } = listingMint.getIssuerRecord();
-
-  // ISSUE / TODO: how does this relate to webrtc key?
+  
   const catalog = makeStore('startTitle');
 
   const withdrawFees = (seat) => {
@@ -95,13 +94,14 @@ const start = async (zcf) => {
       );
 
       // Currently only a single item is supported
-      const [{ title, showTime }] = itemToAuction.value;
-      const startTitle = JSON.stringify([
-        new Date(showTime).toISOString(),
-        title,
-      ]);
+      const [{ title, showTime, uuid }] = itemToAuction.value;
+      const startTitle = uuid
+      // const startTitle = JSON.stringify([
+      //   new Date(showTime).toISOString(),
+      //   title,
+      // ]);
 
-      assert(!catalog.has(startTitle), details`time / title taken`);
+      assert(!catalog.has(uuid), details`time / title taken`);
 
       // Mint the item to be put up for auction
       listingMint.mintGains({ Asset: itemToAuction }, houseSeat);
@@ -143,10 +143,14 @@ const start = async (zcf) => {
         auctionProposal,
         itemPaymentRecord,
       );
+
       const makeBidInvitationObj = await E(
         auctionCreatorUserSeat,
       ).getOfferResult();
 
+      const invitation = await E(auctionCreatorUserSeat).getOfferResult();
+      console.log('makeListingInvitation@@==@0', invitation);
+      
       // Give the auction winnings to the user through the listingSeat
       E(auctionCreatorUserSeat)
         .getPayouts()
@@ -172,20 +176,30 @@ const start = async (zcf) => {
           const currentFeesAccumulated = houseSeat.getCurrentAllocation();
           feesAccumulatedUpdater.updateState(currentFeesAccumulated);
           listingSeat.exit();
-        });
-        
+        });            
       runningAuctions.init(startTitle, makeBidInvitationObj);
+      console.log('makeListingInvitation@@==@1', startTitle);
+      console.log('makeListingInvitation@@==@2', makeBidInvitationObj);
+      console.log('makeListingInvitation@@==@3', runningAuctions.keys());
+      console.log('makeListingInvitation@@==@4', runningAuctions.get(startTitle));
       return startTitle;
     };
     return zcf.makeInvitation(listItem, 'list item');
   };
 
-  const getBidInvitation = (startTitle) =>
-    runningAuctions.get(startTitle).makeBidInvitation();
-
+  const getBidInvitation = async (startTitle) => {
+    assert(runningAuctions.has(startTitle), `${startTitle} not found`);
+    console.log('getBidInvitation@@=1@',startTitle);
+    console.log('getBidInvitation@@=2@',runningAuctions.keys());
+    console.log('getBidInvitation@@=3@',runningAuctions.values());
+    console.log('getBidInvitation@@=4@',await runningAuctions.get(startTitle));
+    return runningAuctions.get(startTitle).makeBidInvitation();
+  }
+    
   const getListing = () => runningAuctions.keys();
   const getCatalog = () => catalog.values();
   const getCatalogEntry = (key) => catalog.get(key);
+  const getRunningAuctions = () => runningAuctions.keys();
 
   // the seller is the house here selling a spot in the house to display the listing.
   const makeWithdrawFeesInvitation = () =>
@@ -200,6 +214,7 @@ const start = async (zcf) => {
       getListing,
       getCatalog,
       getCatalogEntry,
+      getRunningAuctions,
       getIssuer: () => issuer,
       pricePerItem: () => listingPrice,
       getBidInvitation,

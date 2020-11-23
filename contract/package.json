@@ -13,14 +13,14 @@
     "lint-check-jessie": "eslint -c '.eslintrc-jessie.js' '**/*.{js,jsx}'"
   },
   "devDependencies": {
+    "ava": "^3.13.0",
     "eslint": "^7.11.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-jessie": "^0.0.6",
     "eslint-config-prettier": "^6.12.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.1.0",
-    "prettier": "^2.1.2",
-    "ava": "^3.13.0"
+    "prettier": "^2.1.2"
   },
   "dependencies": {
     "@agoric/assert": "*",
@@ -31,7 +31,8 @@
     "@agoric/notifier": "*",
     "@agoric/store": "*",
     "@agoric/zoe": "*",
-    "esm": "^3.2.5"
+    "esm": "^3.2.5",
+    "uuid4": "^2.0.2"
   },
   "ava": {
     "files": [

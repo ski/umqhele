@@ -28,7 +28,7 @@
 
                       <!-- Close X button -->
                       <li class="close-wrap">
-                        <span class="close-publish">
+                        <span class="close-publish" @click="close">
                           <font-awesome-layers class="fa-1x">
                             <font-awesome-icon :icon="['fa', 'times']" />
                           </font-awesome-layers>
@@ -171,11 +171,12 @@
 <script>
 import Chance from 'chance';
 import moment from 'moment';
+import uuid4 from "uuid4";
 
 export default {
   name: 'NewEntry',
   data() {
-    return {
+    return {      
       title: chance.sentence({ words: 4 }),
       description: chance.sentence({ words: 30 }),
       showTime: moment(chance.date({ year: 2020, month: 11 })).format(
@@ -188,8 +189,10 @@ export default {
   },
 
   methods: {
+    
     async save() {
       const entry = {
+        uuid : uuid4(),
         title: this.title,
         description: this.description,
         showTime: this.showTime,
@@ -200,6 +203,10 @@ export default {
       await this.$store.dispatch("wallet/makeSellerOffer", entry); 
       this.$router.push('/');
     },
+
+    close(){
+      this.$router.push('/');
+    }
   },
 };
 </script>
