@@ -1,13 +1,14 @@
 export default function () {
   return {
-    connected: false,   
+    connected: false,
+    approved: false,
     zoeInvitationDepositFacetId: '',
     walletSend: {},
     apiSend: {},
     moolaPursePetname: 'Fun budget',
     tokenPursePetname: ['OneVideoAuctions', 'Token'],
     listingPurse: [],
-    catalog:[],
+    catalog: [],
     sendInvitationResponse: {}, //this is the sell item invitation response.
   };
 }

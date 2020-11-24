@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/bin/node /usr/share/yarn/bin/yarn.js add uuid4
+  /usr/bin/node /usr/share/yarn/bin/yarn.js add primeicons
 
 PATH: 
-  /home/ski/bin:/home/ski/.local/bin:/usr/bin:/home/ski/.vscode-server/bin/e5a624b788d92b8d34d1392e4c4d9789406efe8f/bin:/home/ski/.cargo/bin:/home/ski/bin:/home/ski/bin:/home/ski/.local/bin:/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Python38/Scripts/:/mnt/c/Python38/:/mnt/c/Program Files/Java/jdk-10.0.2/bin:/mnt/c/Program Files/PuTTY/:/mnt/c/flutter/bin:/mnt/c/ffmpeg/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64:/mnt/c/Program Files/Microsoft SQL Server/130/Tools/Binn/:/mnt/c/flutter/bin/cache/dart-sdk/bin:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/c/Program Files/CMake/bin:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/PowerShell/7-preview/preview:/mnt/c/Program Files/PowerShell/7/:/mnt/c/Program Files/nodejs/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/tools/bin/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/ProgramData/DockerDesktop/version-bin:/mnt/c/Go/bin:/mnt/c/Users/suhai/.cargo/bin:/mnt/c/Users/suhai/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/suhai/go/bin:/mnt/c/tools/dart-sdk/bin:/mnt/c/Users/suhai/AppData/Roaming/Pub/Cache/bin:/mnt/c/Users/suhai/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files (x86)/GnuWin32/bin:/mnt/c/Users/suhai/AppData/Roami:/mnt/c/Users/suhai/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/suhai/AppData/Roaming/npm:/mnt/c/Users/suhai/go/bin:/snap/bin:/usr/local/go/bin:/home/ski/go/bin:/usr/local/go/bin:/home/ski/go/bin
+  /home/ski/.cargo/bin:/home/ski/bin:/home/ski/bin:/home/ski/.local/bin:/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Python38/Scripts/:/mnt/c/Python38/:/mnt/c/Program Files/Java/jdk-10.0.2/bin:/mnt/c/Program Files/PuTTY/:/mnt/c/flutter/bin:/mnt/c/ffmpeg/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64:/mnt/c/Program Files/Microsoft SQL Server/130/Tools/Binn/:/mnt/c/flutter/bin/cache/dart-sdk/bin:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/c/Program Files/CMake/bin:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/PowerShell/7-preview/preview:/mnt/c/Program Files/nodejs/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/tools/bin/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/ProgramData/DockerDesktop/version-bin:/mnt/c/Go/bin:/mnt/c/Program Files/PowerShell/7/:/mnt/c/Users/suhai/.cargo/bin:/mnt/c/Users/suhai/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/suhai/go/bin:/mnt/c/tools/dart-sdk/bin:/mnt/c/Users/suhai/AppData/Roaming/Pub/Cache/bin:/mnt/c/Users/suhai/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files (x86)/GnuWin32/bin:/mnt/c/Users/suhai/AppData/Roami:/mnt/c/Users/suhai/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/suhai/AppData/Roaming/npm:/mnt/c/Users/suhai/go/bin:/snap/bin:/usr/local/go/bin:/home/ski/go/bin
 
 Yarn version: 
   1.22.5
@@ -14,7 +14,7 @@ Platform:
   linux x64
 
 Trace: 
-  Error: ENOENT: no such file or directory, lstat '/home/ski/umqhele/ui/node_modules/@agoric/bundle-source/node_modules/@rollup/plugin-node-resolve/node_modules'
+  Error: ENOENT: no such file or directory, lstat '/home/ski/umqhele/ui/node_modules/@agoric/bundle-source/node_modules/rollup/node_modules'
 
 npm manifest: 
   {
@@ -91,6 +91,7 @@ npm manifest:
       "chance": "^1.1.7",
       "moment": "^2.29.1",
       "ses": "^0.11.0",
+      "uuid4": "^2.0.2",
       "vue": "^3.0.2",
       "vue-router": "^4.0.0-rc.2",
       "vuex": "^4.0.0-beta.2"
@@ -3743,6 +3744,11 @@ Lockfile:
     version "1.0.2"
     resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
     integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
+  
+  uuid4@^2.0.2:
+    version "2.0.2"
+    resolved "https://registry.yarnpkg.com/uuid4/-/uuid4-2.0.2.tgz#d33169f4a8fe84b217f50a0f28f971cd9ff56216"
+    integrity sha512-TzsQS8sN1B2m9WojyNp0X/3JL8J2RScnrAJnooNPL6lq3lA02/XdoWysyUgI6rAif0DzkkWk51N6OggujPy2RA==
   
   v8-compile-cache@^2.0.3:
     version "2.2.0"

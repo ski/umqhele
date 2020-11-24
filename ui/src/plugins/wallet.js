@@ -27,7 +27,7 @@ export default {
           break;
         }
         case 'walletNeedDappApproval': {
-          console.log('wallet needs approvals');
+          commit('setApproved', true);
           break;
         }
         case 'walletURL': {
@@ -88,6 +88,7 @@ export default {
         }
         case 'walletHaveDappApproval': {
           commit('setConnected', true);
+          commit('setApproved', false);
           break;
         }
         case 'walletOfferDescriptions': {

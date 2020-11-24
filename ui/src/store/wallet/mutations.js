@@ -1,5 +1,3 @@
-import Vuex from 'vuex';
-
 const mutations = {
 
   setConnected(state, data) {
@@ -32,12 +30,14 @@ const mutations = {
 
   setCatalog(state, data) {
     state.catalog = [...state.catalog,  ...data ]
-    console.log('catalog',state.catalog);
   },
 
   addCatalogEntry(state, data) {
     state.catalog = [...state.catalog, data]
-    console.log('catalogItem', state.catalog);
+  },
+
+  setApproved(state, data) {
+    state.approved = data;
   }
 }
 

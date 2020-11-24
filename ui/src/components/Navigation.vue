@@ -36,7 +36,7 @@
           <span class="mr5"></span>
         </div>
       </div>
-    </div>
+    </div>    
   </nav>
 </template>
 
@@ -45,14 +45,14 @@ import { mapState } from 'vuex';
 
 export default {
   name: 'Navigation',
+  components: {},
   computed: {
-    ...mapState('wallet',['connected'])
+    ...mapState('wallet',['connected']),
   },
   methods: {
     async connect() {
       await this.$store.dispatch('wallet/connect');
     },
-
     async newEntry() {
       this.$router.push('new');
     },
@@ -63,10 +63,12 @@ export default {
       if(newValue) {
         await this.$store.dispatch('wallet/getCatalog'); 
       }
-    }
-  },
-  mounted() {    
-  },
+    },
+    // async approved(newValue, oldValue) {
+    //   console.log('> dappApproved', newValue);
+    //   console.log('> dappApproved', oldValue);
+    // }
+  }
 };
 </script>
 
@@ -86,5 +88,4 @@ h3.has-text-centered:after {
 	color: rgba(255,0,0,0.5); 
   padding-top: 16px;  
 }
-
 </style>

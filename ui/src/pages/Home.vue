@@ -5,26 +5,29 @@
         <!--Catalog entries-->
         <div id="products-tab" class="store-tab-pane is-active">
           <div class="columns is-multiline">
-
             <!-- <CatalogEntry v-for="item in listing" :key='item.showTime' @details='showDetails'></CatalogEntry> -->
-            <VideoEntry v-for="item in listing" :key='item.showTime' :entry="item"></VideoEntry>
+            <VideoEntry
+              v-for="item in listing"
+              :key="item.showTime"
+              :entry="item"
+            ></VideoEntry>
             <!-- <CatalogEntry @details='showDetails'></CatalogEntry> -->
           </div>
         </div>
       </div>
-    </div>    
-  </div>  
+    </div>
+  </div>
 </template>
 
 <script>
-import Sleeve from "../components/Sleeve.vue";
-import CatalogEntry from "../components/CatalogEntry.vue";
-import VideoEntry from "../components/VideoEntry.vue";
-import CatalogEntryDetail from "../components/CatalogEntryDetail.vue";
+import Sleeve from '../components/Sleeve.vue';
+import CatalogEntry from '../components/CatalogEntry.vue';
+import VideoEntry from '../components/VideoEntry.vue';
+import CatalogEntryDetail from '../components/CatalogEntryDetail.vue';
 import { mapState } from 'vuex';
 
 export default {
-  name: "Home",
+  name: 'Home',
   components: {
     Sleeve,
     CatalogEntry,
@@ -36,11 +39,10 @@ export default {
       isModalVisible: false,
     };
   },
-  
-  computed: {   
-    listing() { 
+  computed: {
+    listing() {
       return this.$store.state.wallet.catalog;
-    }
+    },
   },
   methods: {
     showDetails() {
@@ -48,7 +50,7 @@ export default {
     },
     closeModal() {
       this.isModalVisible = false;
-    }   
+    },
   },
 };
 </script>

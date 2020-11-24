@@ -7,6 +7,7 @@ const getters = {
   getTokenPursePetname: (state) => state.tokenPursePetname,
   getSendInvitationResponse : (state) => state.sendInvitationResponse,
   getListingPurse: (state) => state.listingPurse,
+  getDappApproved: (state) => state.dappApproved,
 }
 
 export default getters;
