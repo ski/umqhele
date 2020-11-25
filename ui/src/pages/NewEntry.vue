@@ -93,7 +93,31 @@
                           <div class="channel-name">Showing On</div>
                           <div class="dropdown is-spaced is-modern is-right">
                             <div>
-                              <input class="input" v-model="showTime" />
+                              <DatePicker
+                                class="inline-block h-full"
+                                mode="dateTime"
+                                :minute-increment="10"
+                                v-model="date">
+                                <template v-slot="{ inputValue, togglePopover }">
+                                  <div class="flex items-center">                                  
+                                    <div class="control has-icons-left has-icons-right">
+                                      <input
+                                        class="input"
+                                        :value="inputValue"
+                                        readonly
+                                        @click="togglePopover({
+                                          placement: 'auto-start',
+                                        })"
+                                      />
+                                      <span class="icon is-medium is-left">
+                                        <font-awesome-layers class="fa-1x">
+                                          <font-awesome-icon :icon="['fa', 'calendar']"/>
+                                        </font-awesome-layers>
+                                      </span>                                      
+                                    </div>
+                                  </div>
+                                </template>
+                              </DatePicker>
                             </div>
                           </div>
                         </div>
@@ -138,8 +162,8 @@
                           </div>
                           <div class="channel-name">Auction Duration</div>
                           <div class="dropdown is-spaced is-modern is-right">
-                            <div>
-                              <input class="input" v-model="duration" />
+                            <div class="has-icons-right">
+                              <input class="input" v-model="duration" />                                 
                             </div>
                           </div>
                         </div>
@@ -152,7 +176,7 @@
                         class="button is-solid primary-button is-fullwidth"
                         @click="save"
                       >
-                        Save Auction
+                        Mint Auction Token
                       </button>
                     </div>
                   </div>
@@ -171,12 +195,20 @@
 <script>
 import Chance from 'chance';
 import moment from 'moment';
-import uuid4 from "uuid4";
+import uuid4 from 'uuid4';
+import { Calendar, DatePicker } from 'v-calendar';
 
 export default {
   name: 'NewEntry',
+  components: {
+    Calendar,
+    DatePicker,
+  },
   data() {
-    return {      
+    let date = new Date();
+    date.setMinutes(0, 0, 0);
+    return {
+      date: new Date(),
       title: chance.sentence({ words: 4 }),
       description: chance.sentence({ words: 30 }),
       showTime: moment(chance.date({ year: 2020, month: 11 })).format(
@@ -189,10 +221,9 @@ export default {
   },
 
   methods: {
-    
     async save() {
       const entry = {
-        uuid : uuid4(),
+        uuid: uuid4(),
         title: this.title,
         description: this.description,
         showTime: this.showTime,
@@ -200,13 +231,13 @@ export default {
         reservePrice: this.reservePrice,
         startingBid: this.minBid,
       };
-      await this.$store.dispatch("wallet/makeSellerOffer", entry); 
+      await this.$store.dispatch('wallet/makeSellerOffer', entry);
       this.$router.push('/');
     },
 
-    close(){
+    close() {
       this.$router.push('/');
-    }
+    },
   },
 };
 </script>
