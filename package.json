@@ -1,49 +1,46 @@
 {
   "name": "umqhele",
   "version": "0.0.1",
+  "description": "this and that",
+  "productName": "umqhele",
+  "author": "suhailski",
   "private": true,
-  "useWorkspaces": true,
-  "main": "index.js",
-  "workspaces": [
-    "api",
-    "contract",
-    "_agstate/agoric-servers"
-  ],
-  "devDependencies": {
-    "eslint": "^7.11.0",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-config-jessie": "^0.0.6",
-    "eslint-config-prettier": "^6.12.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.2",
-    "eslint-plugin-react": "^7.21.4",
-    "eslint-plugin-react-hooks": "^4.1.2",
-    "prettier": "^2.1.2"
-  },
   "scripts": {
-    "preinstall": "node -e \"process.env.AGORIC_INSTALL && process.exit(0); console.warn('please use: agoric install . For details, see https://agoric.com/documentation/'); process.exit(1)\"",
-    "lint": "yarn workspaces run lint-fix",
-    "lint-check": "yarn workspaces run lint-check",
-    "test": "yarn workspaces run test",
-    "build": "yarn workspaces run build"
+    "lint": "eslint --ext .js,.vue ./",
+    "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "agoric": "*",
-    "eslint-plugin-eslint-comments": "^3.1.2"
+    "@agoric/captp": "^1.7.0",
+    "@agoric/eventual-send": "^0.13.0",
+    "@agoric/notifier": "^0.3.0",
+    "@quasar/extras": "^1.0.0",
+    "core-js": "^3.6.5",
+    "quasar": "^1.0.0"
   },
-  "prettier": {
-    "trailingComma": "all",
-    "singleQuote": true,
-    "overrides": [
-      {
-        "files": [
-          "*.js",
-          "*.cjs",
-          "*.mjs"
-        ]
-      }
-    ]
+  "devDependencies": {
+    "@quasar/app": "^2.0.0",
+    "agoric": "^0.11.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-loader": "^3.0.3",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-vue": "^6.1.2"
+  },
+  "browserslist": [
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
+  ],
+  "engines": {
+    "node": ">= 10.18.1",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
   }
 }
